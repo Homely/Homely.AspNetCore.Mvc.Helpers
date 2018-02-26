@@ -2,7 +2,7 @@
 
 # Homely - ASP.NET Core MVC Helpers
 
-This library contains a collection of helpers, models and extension methods that help reduce the time and ceremony to improve an ASP.NET MVC WebApi/RESTful API.
+This library contains a collection of helpers, models and extension methods that help reduce the time and ceremony to improve an ASP.NET-Core MVC WebApi/RESTful API.
 
 ---
 

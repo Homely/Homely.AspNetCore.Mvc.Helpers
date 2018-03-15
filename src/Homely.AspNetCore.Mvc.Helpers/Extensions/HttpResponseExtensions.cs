@@ -36,15 +36,11 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
                         {
                             ... <api error in here> ...
                         }
-                   ]
+                   ],
+                   "stackTrace": "<blah">
                }
             */
-            var errorModel = new
-            {
-                errors = apiErrors,
-                stacktrace = stackTrace
-            };
-
+            var errorModel = new ApiErrorResult(apiErrors, stackTrace);
             var json = JsonConvert.SerializeObject(errorModel, JsonHelpers.JsonSerializerSettings);
             
             // Send that RESPONSE payload!

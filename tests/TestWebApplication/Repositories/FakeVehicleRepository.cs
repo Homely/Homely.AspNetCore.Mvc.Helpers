@@ -16,7 +16,8 @@ namespace TestWebApplication.Repositories
                 throw new ArgumentNullException(nameof(fakeVehicle));
             }
 
-            fakeVehicle.Id = _fakeVehicles.Count;
+            // NOTE: Obviously, not thread safe.
+            fakeVehicle.Id = _fakeVehicles.Count + 1;
 
             _fakeVehicles.Add(fakeVehicle.Id, fakeVehicle);
         }
@@ -38,7 +39,8 @@ namespace TestWebApplication.Repositories
                 throw new ArgumentOutOfRangeException(nameof(id));
             }
 
-            return _fakeVehicles[id];
+            _fakeVehicles.TryGetValue(id, out FakeVehicle fakeVehicle);
+            return fakeVehicle;
         }
 
         public IQueryable<FakeVehicle> Index()

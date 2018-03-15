@@ -7,6 +7,7 @@ using TestWebApplication.Repositories;
 
 namespace TestWebApplication.Controllers
 {
+    [Route("test")]
     public class TestController : Controller
     {
         private readonly IFakeVehicleRepository _fakeVehicleRepository;
@@ -17,7 +18,7 @@ namespace TestWebApplication.Controllers
         }
 
         // GET: /test/1
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name ="GetId")]
         public IActionResult Get(int id)
         {
             var model = _fakeVehicleRepository.Get(id);
@@ -27,21 +28,20 @@ namespace TestWebApplication.Controllers
                 : Ok(model);
         }
 
-        // POST: /test/Create
+        // POST: /test
         [HttpPost]
-        public IActionResult Create(FakeVehicle fakeVehicle)
+        public IActionResult Post(FakeVehicle fakeVehicle)
         {
             _fakeVehicleRepository.Add(fakeVehicle);
 
-            return CreatedAtAction("Get", new { id = fakeVehicle.Id });
-            //return Created("https://www.localhost.com/test/fakeVehicle/1", null);
+            return CreatedAtRoute("GetId", new { id = fakeVehicle.Id }, null);
         }
 
         // GET: /test/error
-        [HttpGet]
+        [HttpGet("error")]
         public IActionResult Error()
         {
-            throw new System.Exception("Something bad ass happened.");
+            throw new Exception("Something bad ass happened.");
         }
     }
 }

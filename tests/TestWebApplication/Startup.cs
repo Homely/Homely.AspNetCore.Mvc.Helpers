@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Homely.AspNetCore.Mvc.Helpers.ActionFilters;
+﻿using Homely.AspNetCore.Mvc.Helpers.ActionFilters;
 using Homely.AspNetCore.Mvc.Helpers.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using TestWebApplication.Repositories;
 
 namespace TestWebApplication
 {
     public class Startup
     {
+        private IConfiguration configuration;
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -27,7 +26,23 @@ namespace TestWebApplication
             services.AddMvcCore(config => { config.Filters.Add(new ValidateModelAttribute()); })
                     .AddACommonJsonFormatter();
 
-            services.AddSingleton<IFakeVehicleRepository>(new FakeVehicleRepository());
+            ConfigureRepositories(services);
+        }
+
+        /// <remarks>This method can be overwritten in a test project to define a stubbed/pre-seeded repository.</remarks>
+        public virtual void ConfigureRepositories(IServiceCollection services)
+        {
+            services.AddSingleton<IFakeVehicleRepository, FakeVehicleRepository>();
+        }
+
+        public virtual void ConfigureJsonExceptionPage(IApplicationBuilder app)
+        {
+            if (app == null)
+            {
+                throw new ArgumentNullException(nameof(app));
+            }
+
+            app.UseJsonExceptionPage();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,7 +50,6 @@ namespace TestWebApplication
         {
             if (env.IsDevelopment())
             {
-                //app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
             }
             else
@@ -43,15 +57,11 @@ namespace TestWebApplication
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseStaticFiles()
-               .UseJsonExceptionPage();
+            app.UseStaticFiles();
+            
+            ConfigureJsonExceptionPage(app);
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.UseMvc();
         }
     }
 }

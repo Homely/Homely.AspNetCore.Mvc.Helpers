@@ -35,7 +35,8 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
             return app.UseExceptionHandler(options => options.Run(
                                                async httpContext => await ExceptionResponseAsync(httpContext, 
                                                corsPolicyName,
-                                               includeStackTrace)));
+                                               includeStackTrace,
+                                               customExceptionFunction)));
         }
 
         private static async Task ExceptionResponseAsync(HttpContext httpContext,

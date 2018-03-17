@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using TestWebApplication.Models;
 using TestWebApplication.Repositories;
 
@@ -42,6 +45,20 @@ namespace TestWebApplication.Controllers
         public IActionResult Error()
         {
             throw new Exception("Something bad ass happened.");
+        }
+
+        // GET: /test/validationerror
+        [HttpGet("validationError/{id?}")]
+        public IActionResult ValidationError(int id = 1)
+        {
+            var errors = new List<ValidationFailure>
+            {
+                new ValidationFailure("age", "Age is not valid."),
+                new ValidationFailure("id", "no person Id was provided."),
+                new ValidationFailure("name", "No person name was provided.")
+            };
+            
+            throw new ValidationException(errors);
         }
     }
 }

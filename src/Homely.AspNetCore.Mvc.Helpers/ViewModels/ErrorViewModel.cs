@@ -19,8 +19,8 @@ namespace Homely.AspNetCore.Mvc.Helpers.ViewModels
         public IEnumerable<ApiError> Errors { get; }
 
         /// <summary>
-        /// A custom status code to help further identifier the _type_ of error this is.
+        /// OPTIONAL: A custom status code to help further identifier the _type_ of error this is.
         /// </summary>
-        public int CustomStatusCode { get; set; }
+        public int? CustomStatusCode { get; set; }
     }
 }

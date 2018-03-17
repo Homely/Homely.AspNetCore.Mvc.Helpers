@@ -37,7 +37,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
         }
 
         [Fact]
-        public async Task GivenAGetRequestAndACustomExceptionFunction_Error_ReturnsAnHttp419()
+        public async Task GivenAGetRequestAndACustomExceptionFunction_Error_ReturnsAnHttp426()
         {
             // Arrange.
 

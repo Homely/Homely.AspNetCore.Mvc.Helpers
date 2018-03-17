@@ -1,4 +1,5 @@
-﻿using Homely.AspNetCore.Mvc.Helpers.Models;
+﻿using FluentValidation;
+using Homely.AspNetCore.Mvc.Helpers.Models;
 using Homely.AspNetCore.Mvc.Helpers.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
@@ -60,7 +61,9 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
             };
             
             var exception = exceptionFeature.Error;
-            var statusCode = HttpStatusCode.InternalServerError;
+            var statusCode = exception is ValidationException 
+                ? HttpStatusCode.BadRequest
+                : HttpStatusCode.InternalServerError;
             IEnumerable<ApiError> apiErrors = new List<ApiError>();
 
             JsonExceptionPageResult jsonExceptionPageResult = null;

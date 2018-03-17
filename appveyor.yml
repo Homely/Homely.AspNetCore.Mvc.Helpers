@@ -37,14 +37,12 @@ test_script:
 
 after_test:
   - codecov -f "coverage.xml" -t $(codecov_token)
+  - dotnet pack -c %CONFIGURATION% /p:Version=%APPVEYOR_BUILD_VERSION% --no-restore --no-build
 
 artifacts:
   - path: '**\*.nupkg'
     name: homely-nugets
     type: NuGetPackage
-
-before_deploy:
-  - dotnet pack -c %CONFIGURATION% /p:Version=%APPVEYOR_BUILD_VERSION% --no-restore --no-build
 
 deploy:
   - provider: NuGet

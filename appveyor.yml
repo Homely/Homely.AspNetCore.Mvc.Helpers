@@ -5,6 +5,10 @@ os: Visual Studio 2017
 pull_requests:
   do_not_increment_build_number: true
 
+environment:
+  codecov_token:
+    secure: Tis+n7V0gFaHKdN0QSwwUqa6NFR4jO5m07gbDaGfDMmhR6mnDMw3hM6I6u4o2Hzc
+
 # Override the 'version' if this is a GH-tag-commit -or- this is a custom branch (i.e not 'master').
 init:
   - ps: |
@@ -19,20 +23,28 @@ init:
 before_build:
   # Display .NET Core version
   - cmd: dotnet --info
+  # Install Codecov prerequisite
+  - choco install opencover.portable
+  - choco install codecov
   # Display minimal restore text
   - cmd: dotnet restore --verbosity quiet
 
 build_script:
-  - dotnet build -c %CONFIGURATION% -v minimal /p:Version=%APPVEYOR_BUILD_VERSION% --no-restore
+  - dotnet build -c %CONFIGURATION% -v minimal /p:Version=%APPVEYOR_BUILD_VERSION% /p:DebugType=full --no-restore
 
 test_script:
-  - dotnet test tests\Homely.AspNetCore.Mvc.Helpers.Tests -c %CONFIGURATION% -v minimal --no-restore --no-build
-  - dotnet pack -c %CONFIGURATION% /p:Version=%APPVEYOR_BUILD_VERSION% --no-restore --no-build
+  - OpenCover.Console.exe -register:user -target:"dotnet.exe" -targetargs:"test tests\Homely.AspNetCore.Mvc.Helpers.Tests -c %CONFIGURATION% -v minimal --no-restore --no-build " -filter:"+[Homely.*]* -[Homely.*.Tests]*" -output:".\coverage.xml" -oldstyle
+
+after_test:
+  - codecov -f "coverage.xml" -t $(codecov_token)
 
 artifacts:
   - path: '**\*.nupkg'
     name: homely-nugets
     type: NuGetPackage
+
+before_deploy:
+  - dotnet pack -c %CONFIGURATION% /p:Version=%APPVEYOR_BUILD_VERSION% --no-restore --no-build
 
 deploy:
   - provider: NuGet

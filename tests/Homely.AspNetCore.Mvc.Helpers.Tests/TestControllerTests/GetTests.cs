@@ -35,7 +35,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             // Assert.
             response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
             var content = await response.Content.ReadAsStringAsync();
-            content.ShouldBeNullOrWhiteSpace();
+            content.ShouldNotBeNullOrWhiteSpace();
         }
     }
 }

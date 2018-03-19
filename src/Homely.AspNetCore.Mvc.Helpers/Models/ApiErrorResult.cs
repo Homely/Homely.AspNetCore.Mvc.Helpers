@@ -1,9 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Models
 {
     public class ApiErrorResult
     {
+        public ApiErrorResult(string message,
+                              string stackTrace = null) : this(new ApiError(message), stackTrace) 
+        {
+        }
+
+        public ApiErrorResult(ApiError error,
+                              string stackTrace = null) : this(new ApiError[] { error }, stackTrace) 
+        {
+        }
+
+        [JsonConstructor()]
         public ApiErrorResult(IEnumerable<ApiError> errors,
                               string stackTrace)
         {

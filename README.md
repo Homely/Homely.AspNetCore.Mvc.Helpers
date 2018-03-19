@@ -12,7 +12,7 @@ This library contains a collection of helpers, models and extension methods that
 
 - [Automatic Model Validation via FluentValidation.](#Sample1)
 - [Consistent Api Error schema.](#Sample2)
-- [All Error Responses are in JSON format](#Sample3) (this is an API after all...)
+- [All Responses are in JSON format](#Sample3) (this is an API after all...)
 
 ### <a name="Sample1">Automatic Model Validation via FluentValidation.</a>
 
@@ -54,7 +54,7 @@ Schema is as follows:
 }
 ```
 
-### <a name="Sample1">All Error Responses are in JSON format</a> (this is an API after all...)
+### <a name="Sample3">All Responses are in JSON format</a> (this is an API after all...)
 
 1. Common/standard usage: some nice consistent and readable Json settings.
 
@@ -67,8 +67,10 @@ public void ConfigureServices(IServiceCollection services)
 
 public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 {
-    // Standard json exception page for production.
-    app.UseJsonExceptionPage();
+    // NOTE: order is important here...
+    app.UseAllResponsesAsJson()
+       .UseStaticFiles() // etc.
+       .UseMvc();
 }
 ```
 
@@ -83,15 +85,16 @@ public void ConfigureServices(IServiceCollection services)
 
 public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 {
-    // Json exception page which includes a stack trace for development.
-    app.UseJsonExceptionPage(includeStackTrace: env.IsDevelopment());
+    // NOTE: order is important here...
+    app.UseAllResponsesAsJson(includeStackTrace: env.IsDevelopment())
+       .UseStaticFiles() // etc.
+       .UseMvc();
 }
 ```
 
 3. Settings a CORS policy. Why? If there's an AJAX request which errors, we need to make sure the client which executes the AJAX request can correctly accept the error response. CORS are required when doing AJAX requests.
 
 ```
-
 public void ConfigureServices(IServiceCollection services)
 {
     // Common/standard usage: some nice consistent and readable Json settings.
@@ -100,8 +103,11 @@ public void ConfigureServices(IServiceCollection services)
 
 public void Configure(IApplicationBuilder app, IHostingEnvironment env)
 {
-    // Json exception page which includes a stack trace for development.
-    app.UseJsonExceptionPage(corsPolicyName);
+    // NOTE: order is important here...
+	var corsPolicyName = "Some Cors policy blah blah";
+    app.UseAllResponsesAsJson(corsPolicyName)
+       .UseStaticFiles() // etc.
+       .UseMvc();
 }
 ```
 

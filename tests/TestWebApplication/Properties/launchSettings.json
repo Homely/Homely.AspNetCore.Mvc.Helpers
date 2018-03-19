@@ -8,11 +8,19 @@
     }
   },
   "profiles": {
-    "Kestrel - WWW Web App": {
+    "Kestrel (Development)": {
       "commandName": "Project",
       "launchBrowser": false,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "http://localhost:53017/"
+    },
+    "Kestrel (Production)": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Production"
       },
       "applicationUrl": "http://localhost:53017/"
     }

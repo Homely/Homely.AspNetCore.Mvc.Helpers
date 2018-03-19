@@ -39,25 +39,24 @@ namespace TestWebApplication
             services.AddSingleton<IFakeVehicleRepository>(stubbedFakeVehicleRepository);
         }
 
-        public virtual void ConfigureJsonExceptionPage(IApplicationBuilder app)
+        /// <remarks>This method can be overwitten in a test project to define how to custom handle any exceptions in a test.</remarks>
+        public virtual void ConfigureUseAllResponsesAsJson(IApplicationBuilder app)
         {
             if (app == null)
             {
                 throw new ArgumentNullException(nameof(app));
             }
 
-            app.UseJsonExceptionPage();
+            app.UseAllResponsesAsJson();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseStaticFiles();
-
-            app.UseJsonExceptionPage(includeStackTrace: env.IsDevelopment());
-            ConfigureJsonExceptionPage(app);
-
-            app.UseMvc();
+            // NOTE: order is important here..
+            ConfigureUseAllResponsesAsJson(app);
+            app.UseStaticFiles()
+               .UseMvc();
         }
     }
 }

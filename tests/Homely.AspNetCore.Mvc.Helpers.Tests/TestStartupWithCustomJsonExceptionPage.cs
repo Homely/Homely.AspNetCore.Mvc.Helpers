@@ -14,7 +14,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
         {
         }
 
-        public override void ConfigureJsonExceptionPage(IApplicationBuilder app)
+        public override void ConfigureUseAllResponsesAsJson(IApplicationBuilder app)
         {
             if (app == null)
             {
@@ -36,8 +36,8 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
                 };
             };
 
-            app.UseJsonExceptionPage(includeStackTrace: true, 
-                                    customExceptionFunction: HandleException);
+            app.UseAllResponsesAsJson(includeStackTrace: true, 
+                                      customExceptionFunction: HandleException);
         }
     }
 }

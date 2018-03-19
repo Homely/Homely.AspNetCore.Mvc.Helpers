@@ -19,9 +19,9 @@ namespace TestWebApplication.Controllers
         {
             _fakeVehicleRepository = fakeVehicleRepository ?? throw new ArgumentNullException(nameof(fakeVehicleRepository));
         }
-
+        
         // GET: /test/1
-        [HttpGet("{id}", Name ="GetId")]
+        [HttpGet("{id:int}", Name ="GetId")]
         public IActionResult Get(int id)
         {
             var model = _fakeVehicleRepository.Get(id);
@@ -29,6 +29,13 @@ namespace TestWebApplication.Controllers
             return model == null 
                 ? (IActionResult)NotFound() 
                 : Ok(model);
+        }
+
+        // GET: /test/notFound
+        [HttpGet("/notfound")]
+        public IActionResult GetNotFound()
+        {
+            return NotFound();
         }
 
         // POST: /test
@@ -47,6 +54,14 @@ namespace TestWebApplication.Controllers
             throw new Exception("Something bad ass happened.");
         }
 
+        // GET: /test/dynamicError
+        // This tests that an exception HTTP STATUS 500 doesn't get cached. 
+        [HttpGet("dynamicError")]
+        public IActionResult DynamicError()
+        {
+            throw new Exception(Guid.NewGuid().ToString());
+        }
+
         // GET: /test/validationerror
         [HttpGet("validationError/{id?}")]
         public IActionResult ValidationError(int id = 1)
@@ -55,6 +70,20 @@ namespace TestWebApplication.Controllers
             {
                 new ValidationFailure("age", "Age is not valid."),
                 new ValidationFailure("id", "no person Id was provided."),
+                new ValidationFailure("name", "No person name was provided.")
+            };
+            
+            throw new ValidationException(errors);
+        }
+
+        // GET: /test/dynamicValidationerror
+        [HttpGet("dynamicValidationError")]
+        public IActionResult DynamicValidationError()
+        {
+            var errors = new List<ValidationFailure>
+            {
+                new ValidationFailure("age", "Age is not valid."),
+                new ValidationFailure("id", Guid.NewGuid().ToString()),
                 new ValidationFailure("name", "No person name was provided.")
             };
             

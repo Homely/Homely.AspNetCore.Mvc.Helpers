@@ -1,5 +1,4 @@
-﻿using Homely.AspNetCore.Mvc.Helpers.ActionFilters;
-using Homely.AspNetCore.Mvc.Helpers.Extensions;
+﻿using Homely.AspNetCore.Mvc.Helpers.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,8 +22,9 @@ namespace TestWebApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvcCore(config => { config.Filters.Add(new ValidateModelAttribute()); })
-                    .AddACommonJsonFormatter();
+            services.AddMvcCore()
+                    .AddACommonJsonFormatter()
+                    .AddCustomFluentValidation(typeof(Startup));
 
             ConfigureRepositories(services);
         }
@@ -32,7 +32,11 @@ namespace TestWebApplication
         /// <remarks>This method can be overwritten in a test project to define a stubbed/pre-seeded repository.</remarks>
         public virtual void ConfigureRepositories(IServiceCollection services)
         {
-            services.AddSingleton<IFakeVehicleRepository, FakeVehicleRepository>();
+            // Create our fake data.
+            var stubbedFakeVehicleRepository = StubbedFakeVehicleRepository.CreateAFakeVehicleRepository();
+
+            // Inject our repo.
+            services.AddSingleton<IFakeVehicleRepository>(stubbedFakeVehicleRepository);
         }
 
         public virtual void ConfigureJsonExceptionPage(IApplicationBuilder app)
@@ -48,17 +52,9 @@ namespace TestWebApplication
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
-
             app.UseStaticFiles();
-            
+
+            app.UseJsonExceptionPage(includeStackTrace: env.IsDevelopment());
             ConfigureJsonExceptionPage(app);
 
             app.UseMvc();

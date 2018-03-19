@@ -10,10 +10,100 @@ This library contains a collection of helpers, models and extension methods that
 
 ## Sample / highlights
 
-- Automatic Model Validation (will be removed/replaced with MVC2.1 when that is released Q3/Q4 2018).
-- Consistent Api Error schema.
-- All Error Responses are in JSON format (this is an API after all...)
-- Can optionally set CORS headers for JSON API Errors.
+- [Automatic Model Validation via FluentValidation.](#Sample1)
+- [Consistent Api Error schema.](#Sample2)
+- [All Error Responses are in JSON format](#Sample3) (this is an API after all...)
+
+### <a name="Sample1">Automatic Model Validation via FluentValidation.</a>
+
+```
+public void ConfigureServices(IServiceCollection services)
+{
+    // Reflect through the current assembly looking for FluentValidation Validators 
+    services.AddCustomFluentValidation(this.GetType());
+}
+
+ -- or --
+
+public void ConfigureServices(IServiceCollection services)
+{
+    // Reflect through the all assemblies looking for any FluentValidation Validators. 
+    var types = new [] { typeof(Startup), typeof(AnotherClassFromAnotherAssembly) };
+    services.AddCustomFluentValidation(types);
+}
+```
+
+### <a name="Sample2">Consistent Api Error schema and JSON responses.</a>
+
+Schema is as follows:
+- Collection of `errors`
+- Optional: Stacktrace of the error.
+
+```
+{
+    "errors": [
+        {
+            "key": <some key>,
+            "message": <description of the error>
+        },
+        {
+            ... <api error in here> ...
+        }
+    ],
+    "stackTrace": "<blah">
+}
+```
+
+### <a name="Sample1">All Error Responses are in JSON format</a> (this is an API after all...)
+
+1. Common/standard usage: some nice consistent and readable Json settings.
+
+```
+public void ConfigureServices(IServiceCollection services)
+{
+    // Common/standard usage: some nice consistent and readable Json settings.
+    services.AddACommonJsonFormatter();
+}
+
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    // Standard json exception page for production.
+    app.UseJsonExceptionPage();
+}
+```
+
+2. Standard settings but adding a stacktrace to the output if there's an error.
+
+```
+public void ConfigureServices(IServiceCollection services)
+{
+    // Common/standard usage: some nice consistent and readable Json settings.
+    services.AddACommonJsonFormatter();
+}
+
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    // Json exception page which includes a stack trace for development.
+    app.UseJsonExceptionPage(includeStackTrace: env.IsDevelopment());
+}
+```
+
+3. Settings a CORS policy. Why? If there's an AJAX request which errors, we need to make sure the client which executes the AJAX request can correctly accept the error response. CORS are required when doing AJAX requests.
+
+```
+
+public void ConfigureServices(IServiceCollection services)
+{
+    // Common/standard usage: some nice consistent and readable Json settings.
+    services.AddACommonJsonFormatter();
+}
+
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    // Json exception page which includes a stack trace for development.
+    app.UseJsonExceptionPage(corsPolicyName);
+}
+```
 
 ---
 

@@ -21,20 +21,20 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
                 throw new ArgumentNullException(nameof(app));
             }
 
-            JsonExceptionPageResult HandleException(Exception result) 
-            { 
-                return new JsonExceptionPageResult
+    JsonExceptionPageResult HandleException(Exception result) 
+    { 
+        return new JsonExceptionPageResult
+        {
+            StatusCode = System.Net.HttpStatusCode.UpgradeRequired,
+            ApiErrors = new List<ApiError>
+            {
+                new ApiError
                 {
-                    StatusCode = System.Net.HttpStatusCode.UpgradeRequired,
-                    ApiErrors = new List<ApiError>
-                    {
-                        new ApiError
-                        {
-                            Message = "I'm a little tea pot, short and stout."
-                        }
-                    }
-                };
-            };
+                    Message = "I'm a little tea pot, short and stout."
+                }
+            }
+        };
+    };
 
             app.UseJsonExceptionPages(customExceptionFunction: HandleException);
         }

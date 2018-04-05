@@ -19,43 +19,6 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
     public static class JsonExceptionPageExtensions
     {
         private const string JsonContentType = "application/json";
-        //private static ConcurrentDictionary<int, string> staticCodeDictionary = new ConcurrentDictionary<int, string>();
-
-        ///// <summary>
-        ///// Handles all status code results as json results. For HTTP 500 errors, has it's own logic to generate a smarter error response.
-        ///// </summary>
-        ///// <remarks>All responses, regardless of the status code, conform to the standard ApiErrorResponse schema.</remarks>
-        ///// <param name="app">A class that provides the mechanisms to configure an application's request.</param>
-        ///// <param name="corsPolicyName">Optional: Name of the CORS policy to re-add to the specific details back to the response header.</param>
-        ///// <param name="includeStackTrace">Wether a stacktrace is included in the output or not.</param>
-        ///// <param name="customExceptionFunction">Optional: Custom function to handle any unique logic when an exception is handled. For example, what do you do if a custom exception is thrown? You can handle any custom code, here.</param>
-        ///// <returns>This class that provides the mechanisms to configure an application's request</returns>
-        //public static IApplicationBuilder Use200OKResponsesAsJson(this IApplicationBuilder app,
-        //                                                          string corsPolicyName = null,
-        //                                                          bool includeStackTrace = false,
-        //                                                          Func<Exception, JsonExceptionPageResult> customExceptionFunction = null)
-        //{
-        //    //var statusCodePagesOptions = new StatusCodePagesOptions
-        //    //{
-        //    //    HandleAsync = (context) =>
-        //    //    {
-        //    //        // NOTE: Based upon Microsoft source code for their StatusCode middleware:
-        //    //        // - https://github.com/aspnet/Diagnostics/blob/4e044a1e30454b87edbc316f40ba608d1160cb28/src/Microsoft.AspNetCore.Diagnostics/StatusCodePage/StatusCodePagesExtensions.cs#L84
-        //    //        // - https://github.com/aspnet/Diagnostics/blob/4e044a1e30454b87edbc316f40ba608d1160cb28/src/Microsoft.AspNetCore.Diagnostics/StatusCodePage/StatusCodePagesOptions.cs#L20
-        //    //        var body = staticCodeDictionary.GetOrAdd(context.HttpContext.Response.StatusCode,
-        //    //                                                 statusCode => BuildResponseBody(statusCode));
-        //    //        //var body = BuildResponseBody(context.HttpContext.Response.StatusCode);
-        //    //        context.HttpContext.Response.ContentType = JsonContentType;
-        //    //        return context.HttpContext.Response.WriteAsync(body);
-        //    //    }
-        //    //};
-
-        //    return app.UseStatusCodePages(statusCodePagesOptions)
-        //              //.UseStatusCodePages()
-        //              .UseJsonExceptionPages(corsPolicyName,
-        //                                     includeStackTrace,
-        //                                     customExceptionFunction);
-        //}
 
         /// <summary>
         /// Adds a simple json error message for a WebApi/REST website.
@@ -140,14 +103,6 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
                                                                  includeStackTrace 
                                                                      ? exception.StackTrace
                                                                      : null);
-        }
-        
-        private static string BuildResponseBody(int statusCode)
-        {
-            var reasonPhrase = ReasonPhrases.GetReasonPhrase(statusCode);
-            var message = $"Status Code: {statusCode}{(string.IsNullOrWhiteSpace(reasonPhrase) ? "" : "; ")}{reasonPhrase}";
-            var error = new ApiErrorResult(message);
-            return JsonConvert.SerializeObject(error, JsonHelpers.JsonSerializerSettings);
         }
 
         /// The headers are cleaered when a custom exception is applied. 

@@ -59,12 +59,12 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
                 throw new ArgumentNullException(nameof(mvcCoreBuilder));
             }
 
-            return mvcCoreBuilder.AddFluentValidation(options =>
-                                 {
-                                     options.RegisterValidatorsFromAssemblyContaining(type);
-                                     options.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
-                                 })
-                                 .AddMvcOptions(options => options.Filters.Add(new ValidateModelAttribute()));
+            var types = new List<Type>
+            {
+                type
+            };
+
+            return mvcCoreBuilder.AddCustomFluentValidation(types);
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Homely.AspNetCore.Mvc.Helpers.Extensions;
+using Homely.AspNetCore.Mvc.Helpers.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -39,24 +40,23 @@ namespace TestWebApplication
             services.AddSingleton<IFakeVehicleRepository>(stubbedFakeVehicleRepository);
         }
 
-        /// <remarks>This method can be overwitten in a test project to define how to custom handle any exceptions in a test.</remarks>
-        public virtual void ConfigureUseAllResponsesAsJson(IApplicationBuilder app)
+        /// <remarks>This method can be overwritten in a test project to define how the exception page is rendered.
+        ///          You would not do this in production, but we need to test our Helper library!</remarks>
+        public virtual void ConfigureJsonExceptionPages(IApplicationBuilder app)
         {
-            if (app == null)
-            {
-                throw new ArgumentNullException(nameof(app));
-            }
-
-            app.UseAllResponsesAsJson();
+            app.UseJsonExceptionPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            // NOTE: order is important here..
-            ConfigureUseAllResponsesAsJson(app);
             app.UseStaticFiles()
-               .UseMvc();
+               .UseStatusCodePages();
+
+            // Allows the unit tests to define custom unit test logic for the json exception pages.
+            ConfigureJsonExceptionPages(app);
+            
+            app.UseMvc();
         }
     }
 }

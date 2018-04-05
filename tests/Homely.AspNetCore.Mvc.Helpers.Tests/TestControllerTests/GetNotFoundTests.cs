@@ -5,30 +5,15 @@ using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 {
-    public class GetTests : TestSetup
+    public class GetNotFoundTests : TestSetup
     {
         [Fact]
-        public async Task GivenAValidId_Get_ReturnsAnHttp200()
-        {
-            // Arrange.
-            const int id = 1;
-            var expectedFakeVehicle = FakeVehicleHelpers.CreateAFakeVehicle(1);
-            
-            // Act.
-            var response = await Client.GetAsync($"/test/{id}");
-
-            // Assert.
-            response.IsSuccessStatusCode.ShouldBeTrue();
-            await response.Content.ShouldLookLike(expectedFakeVehicle);
-        }
-
-        [Fact]
-        public async Task GivenAnInvalidId_Get_ReturnsAnHttp400()
+        public async Task GivenABadRoute_Get_ReturnsAnHttp400()
         {
             // Arrange.
             const int id = int.MaxValue;
             var expectedFakeVehicle = FakeVehicleHelpers.CreateAFakeVehicle(1);
-
+            
             // Act.
             var response = await Client.GetAsync($"/test/{id}");
 

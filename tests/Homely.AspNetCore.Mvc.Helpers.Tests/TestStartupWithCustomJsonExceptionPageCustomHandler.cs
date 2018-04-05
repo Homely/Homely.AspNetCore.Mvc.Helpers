@@ -8,13 +8,13 @@ using TestWebApplication;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests
 {
-    public class TestStartupWithCustomJsonExceptionPage : Startup
+    public class TestStartupWithCustomJsonExceptionPageCustomHandler : Startup
     {
-        public TestStartupWithCustomJsonExceptionPage(IConfiguration configuration) : base(configuration)
+        public TestStartupWithCustomJsonExceptionPageCustomHandler(IConfiguration configuration) : base(configuration)
         {
         }
 
-        public override void ConfigureUseAllResponsesAsJson(IApplicationBuilder app)
+        public override void ConfigureJsonExceptionPages(IApplicationBuilder app)
         {
             if (app == null)
             {
@@ -36,8 +36,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
                 };
             };
 
-            app.UseAllResponsesAsJson(includeStackTrace: true, 
-                                      customExceptionFunction: HandleException);
+            app.UseJsonExceptionPages(customExceptionFunction: HandleException);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
+using Homely.AspNetCore.Mvc.Helpers.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace TestWebApplication.Controllers
             _fakeVehicleRepository = fakeVehicleRepository ?? throw new ArgumentNullException(nameof(fakeVehicleRepository));
         }
         
-        // GET: /test/1
+        // GET: /test/1 | 200 OK.
         [HttpGet("{id:int}", Name ="GetId")]
         public IActionResult Get(int id)
         {
@@ -31,14 +32,14 @@ namespace TestWebApplication.Controllers
                 : Ok(model);
         }
 
-        // GET: /test/notFound
-        [HttpGet("/notfound")]
+        // GET: /test/notFound | 404 Not Found.
+        [HttpGet("notfound")]
         public IActionResult GetNotFound()
         {
             return NotFound();
         }
 
-        // POST: /test
+        // POST: /test | 201 Created.
         [HttpPost]
         public IActionResult Post(FakeVehicle fakeVehicle)
         {
@@ -47,14 +48,14 @@ namespace TestWebApplication.Controllers
             return CreatedAtRoute("GetId", new { id = fakeVehicle.Id }, null);
         }
 
-        // GET: /test/error
+        // GET: /test/error | 500 Server Error.
         [HttpGet("error")]
         public IActionResult Error()
         {
             throw new Exception("Something bad ass happened.");
         }
 
-        // GET: /test/dynamicError
+        // GET: /test/dynamicError | 500 Server Error.
         // This tests that an exception HTTP STATUS 500 doesn't get cached. 
         [HttpGet("dynamicError")]
         public IActionResult DynamicError()
@@ -62,7 +63,7 @@ namespace TestWebApplication.Controllers
             throw new Exception(Guid.NewGuid().ToString());
         }
 
-        // GET: /test/validationerror
+        // GET: /test/validationerror | 400 Bad Request.
         [HttpGet("validationError/{id?}")]
         public IActionResult ValidationError(int id = 1)
         {
@@ -76,7 +77,8 @@ namespace TestWebApplication.Controllers
             throw new ValidationException(errors);
         }
 
-        // GET: /test/dynamicValidationerror
+        // GET: /test/dynamicValidationerror | 400 Bad Request.
+        // This tests that the validation error doesn't get cached.
         [HttpGet("dynamicValidationError")]
         public IActionResult DynamicValidationError()
         {
@@ -88,6 +90,13 @@ namespace TestWebApplication.Controllers
             };
             
             throw new ValidationException(errors);
+        }
+
+        // Specific Status Code check | 409 Conflict.
+        [HttpGet("conflict")]
+        public IActionResult Conflict()
+        {
+            return base.StatusCode(409, new ApiErrorResult("agent was already modified"));
         }
     }
 }

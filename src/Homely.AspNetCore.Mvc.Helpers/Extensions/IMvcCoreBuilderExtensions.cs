@@ -15,11 +15,11 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         /// </summary>
         public static IMvcCoreBuilder AddACommonJsonFormatter(this IMvcCoreBuilder mvcCoreBuilder)
         {
-            return mvcCoreBuilder.AddJsonFormatters(options =>
+            return mvcCoreBuilder.AddJsonFormatters(settings =>
             {
-                options.NullValueHandling = NullValueHandling.Ignore;
-                options.Formatting = Formatting.Indented;
-                options.Converters.Add(new StringEnumConverter());
+                settings.NullValueHandling = NullValueHandling.Ignore;
+                settings.Formatting = Formatting.Indented;
+                settings.Converters.Add(new StringEnumConverter());
             });
         }
 

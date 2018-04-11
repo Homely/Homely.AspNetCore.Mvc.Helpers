@@ -1,9 +1,6 @@
-﻿using System;
-using Homely.AspNetCore.Mvc.Helpers.Models;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TestWebApplication;
-using TestWebApplication.Models;
 using TestWebApplication.Repositories;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests

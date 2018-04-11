@@ -1,15 +1,11 @@
 ﻿using FluentValidation;
-using Homely.AspNetCore.Mvc.Helpers.Helpers;
 using Homely.AspNetCore.Mvc.Helpers.Models;
 using Homely.AspNetCore.Mvc.Helpers.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.WebUtilities;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;

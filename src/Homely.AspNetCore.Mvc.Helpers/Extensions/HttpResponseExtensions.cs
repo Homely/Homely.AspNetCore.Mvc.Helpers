@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using Homely.AspNetCore.Mvc.Helpers.Helpers;
+using Homely.AspNetCore.Mvc.Helpers.Models;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Homely.AspNetCore.Mvc.Helpers.Models;
-using Newtonsoft.Json;
-using Homely.AspNetCore.Mvc.Helpers.Helpers;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Extensions
 {

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Homely.AspNetCore.Mvc.Helpers.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Homely.AspNetCore.Mvc.Helpers.Models;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Extensions
 {

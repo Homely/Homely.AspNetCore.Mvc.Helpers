@@ -23,7 +23,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
         }
 
         [Fact]
-        public async Task GivenAnInvalidId_Get_ReturnsAnHttp400()
+        public async Task GivenAnInvalidId_Get_ReturnsAnHttp404()
         {
             // Arrange.
             const int id = int.MaxValue;

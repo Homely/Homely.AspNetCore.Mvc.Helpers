@@ -8,7 +8,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
     public class GetNotFoundTests : TestSetup
     {
         [Fact]
-        public async Task GivenABadRoute_Get_ReturnsAnHttp400()
+        public async Task GivenABadRoute_Get_ReturnsAnHttp404()
         {
             // Arrange.
             const int id = int.MaxValue;

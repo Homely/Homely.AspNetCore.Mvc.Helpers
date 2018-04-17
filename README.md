@@ -163,7 +163,7 @@ public void ConfigureServices(IServiceCollection services)
 
 ## Contributing
 
-Discussions and pull requests are encouraged :) Please ask all general questions in this repo or pick a specialized repo for specific, targetted issues. We also have a [contributing](https://github.com/OpenRealEstate/Homely/blob/master/CONTRIBUTING.md) document which goes into detail about how to do this.
+Discussions and pull requests are encouraged :) Please ask all general questions in this repo or pick a specialized repo for specific, targetted issues. We also have a [contributing](https://github.com/Homely/Homely/blob/master/CONTRIBUTING.md) document which goes into detail about how to do this.
 
 ## Code of Conduct
 Yep, we also have a [code of conduct](https://github.com/Homely/Homely/blob/master/CODE_OF_CONDUCT.md) which applies to all repositories in the (GitHub) Homely organisation.

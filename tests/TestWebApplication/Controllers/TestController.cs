@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using Homely.AspNetCore.Mvc.Helpers.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using TestWebApplication.Repositories;
 
 namespace TestWebApplication.Controllers
 {
+    [AllowAnonymous]
     [Route("test")]
     public class TestController : Controller
     {

@@ -1,10 +1,10 @@
 ﻿using FluentValidation.AspNetCore;
-using Homely.AspNetCore.Mvc.Helpers.ActionFilters;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
 using System.Collections.Generic;
+using Homely.AspNetCore.Mvc.Helpers.Filters;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Extensions
 {
@@ -46,7 +46,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
                                      }
                                      options.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
                                  })
-                                 .AddMvcOptions(options => options.Filters.Add(new ValidateModelAttribute()));
+                                 .AddMvcOptions(options => options.Filters.Add(new ValidateModelFilter()));
         }
 
         /// <summary>

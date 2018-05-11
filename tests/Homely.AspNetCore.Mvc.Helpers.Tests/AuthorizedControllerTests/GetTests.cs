@@ -12,7 +12,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.AuthorizedControllerTests
             // Arrange.
             
             // Act.
-            var response = await Client.GetAsync($"/authorized");
+            var response = await Client.GetAsync("/authorized");
 
             // Assert.
             response.IsSuccessStatusCode.ShouldBeFalse();

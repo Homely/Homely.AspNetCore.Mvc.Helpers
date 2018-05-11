@@ -25,6 +25,8 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             var response1Text = await response1.Content.ReadAsStringAsync();
             var response2Text = await response2.Content.ReadAsStringAsync();
             response1.ShouldNotBe(response2);
+            response1Text.ShouldNotBeNullOrWhiteSpace();
+            response2Text.ShouldNotBeNullOrWhiteSpace();
         }
     }
 }

@@ -12,15 +12,11 @@ namespace TestWebApplication
 {
     public class Startup
     {
-        private readonly IConfiguration configuration;
         private string _configuredCorsPolicy;
-        
+
         public Startup(IConfiguration configuration)
         {
-            this.configuration = configuration;
         }
-
-        public IConfiguration Configuration { get; }
 
         /// <remarks>This method can be overwritten in a test project to define configure CORS. If any CORS profiles are configured then return true, so CORS will then be wired up to use em.</remarks>
         public virtual string ConfigureCors(IServiceCollection services)

@@ -6,7 +6,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
 {
     public abstract class TestSetup
     {
-        public TestSetup()
+        protected TestSetup()
         {
             TestServer = new TestServer(new WebHostBuilder().UseStartup<TestStartup>());
             Client = TestServer.CreateClient();

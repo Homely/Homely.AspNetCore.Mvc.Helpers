@@ -3,10 +3,10 @@ using Homely.AspNetCore.Mvc.Helpers.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace Homely.AspNetCore.Mvc.Helpers.ActionFilters
+namespace Homely.AspNetCore.Mvc.Helpers.Filters
 {
     // http://www.jerriepelser.com/blog/validation-response-aspnet-core-webapi/
-    public class ValidateModelAttribute : ActionFilterAttribute
+    public class ValidateModelFilter : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {

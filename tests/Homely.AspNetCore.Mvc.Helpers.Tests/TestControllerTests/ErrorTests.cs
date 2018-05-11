@@ -13,7 +13,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 {
     public class ErrorTests : TestSetup
     {
-        private static ErrorViewModel DefaultErrorViewModel = CreateErrorViewModel();
+        private static readonly ErrorViewModel DefaultErrorViewModel = CreateErrorViewModel();
         
         [Fact]
         public async Task GivenAGetRequest_Error_ReturnsAnHttp500()
@@ -122,6 +122,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             await response.Content.ShouldLookLike(DefaultErrorViewModel);
             var doesHeaderExist = response.Headers.TryGetValues("Access-Control-Allow-Origin", out var values);
             doesHeaderExist.ShouldBeFalse();
+            values.ShouldBeNull();
         }
 
         private static ErrorViewModel CreateErrorViewModel(string errorMessage = null)

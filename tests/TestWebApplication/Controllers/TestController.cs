@@ -100,7 +100,7 @@ namespace TestWebApplication.Controllers
         [HttpGet("conflict")]
         public IActionResult Conflict()
         {
-            return base.StatusCode(409, new ApiErrorResult("agent was already modified"));
+            return StatusCode(409, new ApiErrorResult("agent was already modified"));
         }
 
         [HttpGet("slowDelay")]

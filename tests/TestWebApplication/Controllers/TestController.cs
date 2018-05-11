@@ -104,12 +104,13 @@ namespace TestWebApplication.Controllers
         }
 
         [HttpGet("slowDelay")]
-        public async Task<IActionResult> SlowDelay(CancellationToken cancellationToken)
+        [HttpGet("slowDelay/{seconds:int}")]
+        public async Task<IActionResult> SlowDelay(CancellationToken cancellationToken, int seconds = 50)
         {
             // Pretend some logic takes a long time. Like getting some data from a database.
             var startTime = DateTime.UtcNow;
 
-            await Task.Delay(1000 * 50, cancellationToken);
+            await Task.Delay(1000 * seconds, cancellationToken);
 
             var endTime = DateTime.UtcNow;
 

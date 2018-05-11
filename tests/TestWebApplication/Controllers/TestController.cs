@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using TestWebApplication.Models;
 using TestWebApplication.Repositories;
 
@@ -99,6 +101,23 @@ namespace TestWebApplication.Controllers
         public IActionResult Conflict()
         {
             return base.StatusCode(409, new ApiErrorResult("agent was already modified"));
+        }
+
+        [HttpGet("slowDelay")]
+        public async Task<IActionResult> SlowDelay(CancellationToken cancellationToken)
+        {
+            // Pretend some logic takes a long time. Like getting some data from a database.
+            var startTime = DateTime.UtcNow;
+
+            await Task.Delay(1000 * 50, cancellationToken);
+
+            var endTime = DateTime.UtcNow;
+
+            return Ok(new
+            {
+                startTime,
+                endTime
+            });
         }
     }
 }

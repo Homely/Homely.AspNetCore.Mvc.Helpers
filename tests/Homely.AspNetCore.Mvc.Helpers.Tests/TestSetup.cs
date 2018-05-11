@@ -6,14 +6,14 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
 {
     public abstract class TestSetup
     {
-        private readonly HttpClient _client;
-
         public TestSetup()
         {
-            var server = new TestServer(new WebHostBuilder().UseStartup<TestStartup>());
-            _client = server.CreateClient();
+            TestServer = new TestServer(new WebHostBuilder().UseStartup<TestStartup>());
+            Client = TestServer.CreateClient();
         }
 
-        public HttpClient Client => _client;
+        public TestServer TestServer { get; set; }
+
+        public HttpClient Client { get; }        
     }
 }

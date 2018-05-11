@@ -27,7 +27,6 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
         {
             // Arrange.
             const int id = int.MaxValue;
-            var expectedFakeVehicle = FakeVehicleHelpers.CreateAFakeVehicle(1);
 
             // Act.
             var response = await Client.GetAsync($"/test/{id}");

@@ -1,5 +1,4 @@
-﻿using Homely.AspNetCore.Mvc.Helpers.ActionFilters;
-using Homely.AspNetCore.Mvc.Helpers.ViewModels;
+﻿using Homely.AspNetCore.Mvc.Helpers.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -10,6 +9,7 @@ using Moq;
 using Shouldly;
 using System.Collections.Generic;
 using System.Linq;
+using Homely.AspNetCore.Mvc.Helpers.Filters;
 using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests
@@ -30,7 +30,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
                                                      new Dictionary<string, object>(),
                                                      new Mock<Controller>().Object);
 
-            var attribute = new ValidateModelAttribute();
+            var attribute = new ValidateModelFilter();
 
             // Act.
             attribute.OnActionExecuting(context);
@@ -60,7 +60,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
                                                      new Dictionary<string, object>(),
                                                      new Mock<Controller>().Object);
 
-            var attribute = new ValidateModelAttribute();
+            var attribute = new ValidateModelFilter();
 
             // Act.
             attribute.OnActionExecuting(context);
@@ -69,10 +69,10 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
             context.Result.ShouldNotBeNull();
             context.Result.ShouldBeOfType<BadRequestObjectResult>();
 
-            var result = context.Result as BadRequestObjectResult;
+            var result = (BadRequestObjectResult)context.Result;
             result.Value.ShouldBeOfType<ErrorViewModel>();
 
-            var errorViewModel = result.Value as ErrorViewModel;
+            var errorViewModel = (ErrorViewModel)result.Value;
             errorViewModel.Errors.Count().ShouldBe(1);
 
             var apiError = errorViewModel.Errors.First();

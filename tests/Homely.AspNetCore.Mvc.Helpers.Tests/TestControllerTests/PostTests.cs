@@ -1,4 +1,6 @@
-﻿using Shouldly;
+﻿using Homely.AspNetCore.Mvc.Helpers.ViewModels;
+using Newtonsoft.Json;
+using Shouldly;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -29,7 +31,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             // Assert.
             response.EnsureSuccessStatusCode();
             response.StatusCode.ShouldBe(HttpStatusCode.Created);
-            response.Headers.Location.ShouldBe(new System.Uri($"http://localhost/test/5"));
+            response.Headers.Location.ShouldBe(new System.Uri("http://localhost/test/5"));
             var responseString = await response.Content.ReadAsStringAsync();
             responseString.ShouldBeNullOrWhiteSpace();
         }
@@ -57,7 +59,8 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             // Assert.  
             response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
             var responseContent = await response.Content.ReadAsStringAsync();
-
+            var responseModel = JsonConvert.DeserializeObject<ErrorViewModel>(responseContent);
+            responseModel.ShouldLookLike(expectedResponseContent);
         }
     }
 }

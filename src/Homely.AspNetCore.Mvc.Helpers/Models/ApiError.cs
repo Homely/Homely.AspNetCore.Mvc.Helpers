@@ -7,7 +7,6 @@ namespace Homely.AspNetCore.Mvc.Helpers.Models
     /// </summary>
     public class ApiError
     {
-        
         public ApiError()
         {   
         }

@@ -13,6 +13,8 @@ This library contains a collection of helpers, models and extension methods that
 - [Consistent Api Error schema.](#Sample1)
 - [500 Internal Server Error (unhandled errors) are Json results.](#Sample2) (this is an API after all...)
 - [Automatic Model Validation via FluentValidation.](#Sample3)
+- Graceful handling of interupted/cut/cancelled Requests, mid flight.
+- Global Authorization (of a default policy).
 
 ### <a name="Sample1">Consistent Api Error schema and JSON responses.</a>
 

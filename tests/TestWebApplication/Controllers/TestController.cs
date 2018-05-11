@@ -1,9 +1,12 @@
 ﻿using FluentValidation;
 using FluentValidation.Results;
 using Homely.AspNetCore.Mvc.Helpers.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using TestWebApplication.Models;
 using TestWebApplication.Repositories;
 
@@ -11,6 +14,7 @@ using TestWebApplication.Repositories;
 
 namespace TestWebApplication.Controllers
 {
+    [AllowAnonymous]
     [Route("test")]
     public class TestController : Controller
     {
@@ -96,7 +100,25 @@ namespace TestWebApplication.Controllers
         [HttpGet("conflict")]
         public IActionResult Conflict()
         {
-            return base.StatusCode(409, new ApiErrorResult("agent was already modified"));
+            return StatusCode(409, new ApiErrorResult("agent was already modified"));
+        }
+
+        [HttpGet("slowDelay")]
+        [HttpGet("slowDelay/{seconds:int}")]
+        public async Task<IActionResult> SlowDelay(CancellationToken cancellationToken, int seconds = 50)
+        {
+            // Pretend some logic takes a long time. Like getting some data from a database.
+            var startTime = DateTime.UtcNow;
+
+            await Task.Delay(1000 * seconds, cancellationToken);
+
+            var endTime = DateTime.UtcNow;
+
+            return Ok(new
+            {
+                startTime,
+                endTime
+            });
         }
     }
 }

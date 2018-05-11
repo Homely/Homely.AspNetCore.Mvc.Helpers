@@ -15,7 +15,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Models
         {
         }
 
-        [JsonConstructor()]
+        [JsonConstructor]
         public ApiErrorResult(IEnumerable<ApiError> errors,
                               string stackTrace)
         {

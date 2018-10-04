@@ -19,7 +19,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Helpers
                 };
 
                 settings.Converters.Add(new StringEnumConverter());
-            
+
                 return settings;
             }
         }

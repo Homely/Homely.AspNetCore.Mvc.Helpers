@@ -15,20 +15,19 @@ namespace Homely.AspNetCore.Mvc.Helpers.Filters
         private readonly ILogger _logger;
         private readonly int _statusCode;
 
-        public OperationCancelledExceptionFilter(ILoggerFactory loggerFactory, int statusCode = 499)
+        public OperationCancelledExceptionFilter(int statusCode = 499,
+                                                 ILoggerFactory loggerFactory = null)
         {
-            if (loggerFactory == null)
-            {
-                throw new ArgumentNullException(nameof(loggerFactory));
-            }
-
             if (statusCode <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(statusCode), "'StatusCode' should be a valid status code. Need help determining a status code? Try referencing a wiki on Http Status Codes: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes");
             }
 
-            _logger = loggerFactory.CreateLogger<OperationCancelledExceptionFilter>();
             _statusCode = statusCode;
+
+            _logger = loggerFactory != null
+                ? loggerFactory.CreateLogger<OperationCancelledExceptionFilter>()
+                : null;
         }
 
         public override void OnException(ExceptionContext context)
@@ -36,7 +35,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Filters
             if (context.Exception is OperationCanceledException)
             {
                 _logger.LogDebug("Request was cancelled by User/Source computer.");
-                
+
                 context.ExceptionHandled = true;
                 context.Result = new StatusCodeResult(_statusCode);
             }

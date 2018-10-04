@@ -14,7 +14,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
     public class ErrorTests : TestSetup
     {
         private static readonly ErrorViewModel DefaultErrorViewModel = CreateErrorViewModel();
-        
+
         [Fact]
         public async Task GivenAGetRequest_Error_ReturnsAnHttp500()
         {
@@ -27,7 +27,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             await response.Content.ShouldLookLike(DefaultErrorViewModel);
         }
-        
+
         [Fact]
         public async Task GivenAGetRequestAndACustomExceptionFunction_Error_ReturnsAnHttp426()
         {
@@ -86,43 +86,6 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             var apiErrorResult = JsonConvert.DeserializeObject<ApiErrorResult>(apiErrorsJson);
             apiErrorResult.Errors.ShouldLookLike(DefaultErrorViewModel.Errors);
             apiErrorResult.StackTrace.ShouldNotBeNullOrWhiteSpace();
-        }
-
-        [Fact]
-        public async Task GivenAnAjaxGetRequestWithCorsEnabled_Error_ReturnsAnHttp500()
-        {
-            // Arrange.
-
-            // We want to use our own startup stuff so we can define our error callback.
-            var server = new TestServer(new WebHostBuilder().UseStartup<TestStartupWithCors>());
-            var client = server.CreateClient();
-            client.DefaultRequestHeaders.Add("Origin", "http://foo.example");
-
-            // Act.
-            var response = await client.GetAsync("/test/error");
-
-            // Assert.
-            response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
-            await response.Content.ShouldLookLike(DefaultErrorViewModel);
-            var corsResponseValue = string.Join(string.Empty, response.Headers.GetValues("Access-Control-Allow-Origin"));
-            corsResponseValue.ShouldBe("*");
-        }
-
-        [Fact]
-        public async Task GivenAnAjaxRequestWithNoCorsEnabled_Error_ReturnsACorsError()
-        {
-            // Arrange.
-            Client.DefaultRequestHeaders.Add("Origin", "http://foo.example");
-
-            // Act.
-            var response = await Client.GetAsync("/test/error");
-
-            // Assert.
-            response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
-            await response.Content.ShouldLookLike(DefaultErrorViewModel);
-            var doesHeaderExist = response.Headers.TryGetValues("Access-Control-Allow-Origin", out var values);
-            doesHeaderExist.ShouldBeFalse();
-            values.ShouldBeNull();
         }
 
         private static ErrorViewModel CreateErrorViewModel(string errorMessage = null)

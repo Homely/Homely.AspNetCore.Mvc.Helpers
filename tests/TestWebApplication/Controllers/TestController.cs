@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-using FluentValidation.Results;
-using Homely.AspNetCore.Mvc.Helpers.Models;
+﻿using Homely.AspNetCore.Mvc.Helpers.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -24,15 +22,15 @@ namespace TestWebApplication.Controllers
         {
             _fakeVehicleRepository = fakeVehicleRepository ?? throw new ArgumentNullException(nameof(fakeVehicleRepository));
         }
-        
+
         // GET: /test/1 | 200 OK.
         [HttpGet("{id:int}", Name ="GetId")]
         public IActionResult Get(int id)
         {
             var model = _fakeVehicleRepository.Get(id);
 
-            return model == null 
-                ? (IActionResult)NotFound() 
+            return model == null
+                ? (IActionResult)NotFound()
                 : Ok(model);
         }
 
@@ -67,38 +65,9 @@ namespace TestWebApplication.Controllers
             throw new Exception(Guid.NewGuid().ToString());
         }
 
-        // GET: /test/validationerror | 400 Bad Request.
-        [HttpGet("validationError/{id?}")]
-        public IActionResult ValidationError(int id = 1)
-        {
-            var errors = new List<ValidationFailure>
-            {
-                new ValidationFailure("age", "Age is not valid."),
-                new ValidationFailure("id", "no person Id was provided."),
-                new ValidationFailure("name", "No person name was provided.")
-            };
-            
-            throw new ValidationException(errors);
-        }
-
-        // GET: /test/dynamicValidationerror | 400 Bad Request.
-        // This tests that the validation error doesn't get cached.
-        [HttpGet("dynamicValidationError")]
-        public IActionResult DynamicValidationError()
-        {
-            var errors = new List<ValidationFailure>
-            {
-                new ValidationFailure("age", "Age is not valid."),
-                new ValidationFailure("id", Guid.NewGuid().ToString()),
-                new ValidationFailure("name", "No person name was provided.")
-            };
-            
-            throw new ValidationException(errors);
-        }
-
         // Specific Status Code check | 409 Conflict.
         [HttpGet("conflict")]
-        public IActionResult Conflict()
+        public IActionResult ConflictCheck()
         {
             return StatusCode(409, new ApiErrorResult("agent was already modified"));
         }

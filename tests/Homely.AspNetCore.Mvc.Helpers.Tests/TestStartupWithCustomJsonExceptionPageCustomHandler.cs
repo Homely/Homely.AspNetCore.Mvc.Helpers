@@ -21,8 +21,8 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
                 throw new ArgumentNullException(nameof(app));
             }
 
-            JsonExceptionPageResult HandleException(Exception result) 
-            { 
+            JsonExceptionPageResult HandleException(Exception result)
+            {
                 return new JsonExceptionPageResult
                 {
                     StatusCode = System.Net.HttpStatusCode.UpgradeRequired,
@@ -34,7 +34,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
                         }
                     }
                 };
-            };
+            }
 
             app.UseJsonExceptionPages(customExceptionFunction: HandleException);
         }

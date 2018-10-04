@@ -13,7 +13,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         public static Task WriteApiErrorsAsJsonAsync(this HttpResponse response,
                                                      ApiError apiError, 
                                                      string stackTrace = null,
-                                                     CancellationToken cancellationToken = default(CancellationToken))
+                                                     CancellationToken cancellationToken = default)
         {
             return response.WriteApiErrorsAsJsonAsync(new [] { apiError }, 
                                                       stackTrace,
@@ -23,7 +23,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         public static Task WriteApiErrorsAsJsonAsync(this HttpResponse response,
                                                      IEnumerable<ApiError> apiErrors, 
                                                      string stackTrace = null,
-                                                     CancellationToken cancellationToken = default(CancellationToken))
+                                                     CancellationToken cancellationToken = default)
         {
             /* Errors result will look like:
                {
@@ -40,7 +40,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
             */
             var errorModel = new ApiErrorResult(apiErrors, stackTrace);
             var json = JsonConvert.SerializeObject(errorModel, JsonHelpers.JsonSerializerSettings);
-            
+
             // Send that RESPONSE payload!
             return response.WriteAsync(json, cancellationToken);
         }

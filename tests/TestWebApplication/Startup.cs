@@ -12,16 +12,8 @@ namespace TestWebApplication
 {
     public class Startup
     {
-        private string _configuredCorsPolicy;
-
         public Startup(IConfiguration configuration)
         {
-        }
-
-        /// <remarks>This method can be overwritten in a test project to define configure CORS. If any CORS profiles are configured then return true, so CORS will then be wired up to use em.</remarks>
-        public virtual string ConfigureCors(IServiceCollection services)
-        {
-            return null;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -43,19 +35,30 @@ namespace TestWebApplication
                     });
 
             services.AddMvcCore(options =>
-            {
-                options.WithGlobalAuthorization() // Everything is locked down by default.
-                       .WithGlobalCancelledRequestHandler(); // Handle when a request is cancelled.
-            })
+                               {
+                                   options.WithGlobalCancelledRequestHandler(); // Handle when a request is cancelled.
+                               })
+                    .AddAHomeController(services, typeof(Startup), "pew pew")
                     .AddAuthorization()
-                    .AddACommonJsonFormatter()
-                    .AddCustomFluentValidation(typeof(Startup));
+                    .AddACommonJsonFormatter();
 
-            _configuredCorsPolicy = ConfigureCors(services);
             ConfigureRepositories(services);
         }
 
-        /// <remarks>This method can be overwritten in a test project to define a stubbed/pre-seeded repository.</remarks>
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        {
+            app.UseStaticFiles()
+               .UseStatusCodePages();
+
+            // Allows the unit tests to define custom unit test logic for the json exception pages.
+            ConfigureJsonExceptionPages(app);
+
+            app.UseMvc();
+        }
+
+        // This method can be overwritten in a test project to define our repository.
+        //          You would not do this in production, but we need to test our Helper library!
         public virtual void ConfigureRepositories(IServiceCollection services)
         {
             // Create our fake data.
@@ -65,29 +68,11 @@ namespace TestWebApplication
             services.AddSingleton<IFakeVehicleRepository>(stubbedFakeVehicleRepository);
         }
 
-        /// <remarks>This method can be overwritten in a test project to define how the exception page is rendered.
-        ///          You would not do this in production, but we need to test our Helper library!</remarks>
+        // This method can be overwritten in a test project to define how the exception page is rendered.
+        //          You would not do this in production, but we need to test our Helper library!
         public virtual void ConfigureJsonExceptionPages(IApplicationBuilder app)
         {
-            app.UseJsonExceptionPages(_configuredCorsPolicy);
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            app.UseAuthentication()
-               .UseStaticFiles()
-               .UseStatusCodePages();
-
-            // Allows the unit tests to define custom unit test logic for the json exception pages.
-            ConfigureJsonExceptionPages(app);
-            
-            if (!string.IsNullOrWhiteSpace(_configuredCorsPolicy))
-            {
-                app.UseCors(_configuredCorsPolicy);
-            }
-
-            app.UseMvc();
+            app.UseJsonExceptionPages();
         }
     }
 }

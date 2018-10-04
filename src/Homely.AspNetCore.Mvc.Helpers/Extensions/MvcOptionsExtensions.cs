@@ -1,7 +1,5 @@
 ﻿using Homely.AspNetCore.Mvc.Helpers.Filters;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Extensions
 {

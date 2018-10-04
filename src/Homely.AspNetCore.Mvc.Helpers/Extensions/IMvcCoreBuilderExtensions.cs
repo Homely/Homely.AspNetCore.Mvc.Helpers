@@ -23,11 +23,11 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         /// <summary>
         /// Registers a common webapi home controller.
         /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="services"></param>
-        /// <param name="callingType"></param>
-        /// <param name="asciiBanner"></param>
-        /// <returns></returns>
+        /// <param name="builder">An interface for configuring essential MVC services.</param>
+        /// <param name="services">Specifies the contract for a collection of service descriptors.</param>
+        /// <param name="callingType">Type of the calling assembly. This would usually be the main assembly of the web site.</param>
+        /// <param name="asciiBanner">Optional: some text to display in the home controller output.</param>
+        /// <returns>Chaining: the interface for configuring essential MVC services.</returns>
         public static IMvcCoreBuilder AddAHomeController(this IMvcCoreBuilder builder,
                                                          IServiceCollection services,
                                                          Type callingType,

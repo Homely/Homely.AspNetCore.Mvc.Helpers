@@ -11,17 +11,17 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
     public static class HttpResponseExtensions
     {
         public static Task WriteApiErrorsAsJsonAsync(this HttpResponse response,
-                                                     ApiError apiError, 
+                                                     ApiError apiError,
                                                      string stackTrace = null,
                                                      CancellationToken cancellationToken = default)
         {
-            return response.WriteApiErrorsAsJsonAsync(new [] { apiError }, 
+            return response.WriteApiErrorsAsJsonAsync(new [] { apiError },
                                                       stackTrace,
                                                       cancellationToken);
         }
 
         public static Task WriteApiErrorsAsJsonAsync(this HttpResponse response,
-                                                     IEnumerable<ApiError> apiErrors, 
+                                                     IEnumerable<ApiError> apiErrors,
                                                      string stackTrace = null,
                                                      CancellationToken cancellationToken = default)
         {

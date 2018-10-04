@@ -25,9 +25,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Filters
 
             _statusCode = statusCode;
 
-            _logger = loggerFactory != null
-                ? loggerFactory.CreateLogger<OperationCancelledExceptionFilter>()
-                : null;
+            _logger = loggerFactory?.CreateLogger<OperationCancelledExceptionFilter>();
         }
 
         public override void OnException(ExceptionContext context)

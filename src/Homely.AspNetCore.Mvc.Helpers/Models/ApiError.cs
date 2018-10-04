@@ -8,16 +8,16 @@ namespace Homely.AspNetCore.Mvc.Helpers.Models
     public class ApiError
     {
         public ApiError()
-        {   
+        {
         }
-        
+
         public ApiError(string errorMessage)
         {
             if (string.IsNullOrWhiteSpace(errorMessage))
             {
                 throw new ArgumentException(nameof(errorMessage));
             }
-            
+
             Message = errorMessage;
         }
 

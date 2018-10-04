@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace Homely.AspNetCore.Mvc.Helpers.Filters
 {
     // http://www.jerriepelser.com/blog/validation-response-aspnet-core-webapi/
+
+    /// <summary>
+    /// Validates the ModelState and if there are model state errors, then returns a BadRequest with well formed error result.
+    /// </summary>
     public class ValidateModelFilter : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext context)

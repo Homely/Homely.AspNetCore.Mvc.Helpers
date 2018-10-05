@@ -14,6 +14,6 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
 
         public TestServer TestServer { get; set; }
 
-        public HttpClient Client { get; }        
+        public HttpClient Client { get; }
     }
 }

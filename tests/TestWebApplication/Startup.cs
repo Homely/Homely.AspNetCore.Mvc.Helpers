@@ -37,6 +37,7 @@ namespace TestWebApplication
             services.AddMvcCore(options =>
                                {
                                    options.WithGlobalCancelledRequestHandler(); // Handle when a request is cancelled.
+                                   options.WithEarlyWaningModelValidation(); // Error early if there's a bad model in the request.
                                })
                     .AddAHomeController(services, typeof(Startup), "pew pew")
                     .AddAuthorization()

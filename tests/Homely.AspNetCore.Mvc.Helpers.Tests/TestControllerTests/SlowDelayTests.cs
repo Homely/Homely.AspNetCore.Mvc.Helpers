@@ -1,4 +1,6 @@
-﻿using Shouldly;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Shouldly;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -14,12 +16,21 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             var cancellationToken = new CancellationTokenSource();
             cancellationToken.CancelAfter(1000 * 1);
 
+            var error = new ProblemDetails
+            {
+                Type = "https://httpstatuses.com/499",
+                Title = "Request was cancelled.",
+                Status = 499,
+                Instance = "/test/slowdelay"
+            };
+
             // Act.
             var response = await Client.GetAsync("/test/slowdelay", cancellationToken.Token);
 
             // Assert.
             response.IsSuccessStatusCode.ShouldBeFalse();
             ((int)response.StatusCode).ShouldBe(499);
+            await response.Content.ShouldLookLike(error);
         }
 
         [Fact]

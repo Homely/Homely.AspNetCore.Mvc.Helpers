@@ -1,4 +1,6 @@
 ﻿using Homely.AspNetCore.Mvc.Helpers.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -15,55 +17,20 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
         public async Task GivenAGetRequestWhichManuallyThrowsAValidationError_ValidationError_ReturnsAnHttp400()
         {
             // Arrange.
-
-            // TODO: Fix
-            throw new NotImplementedException();
-            //var errors = new
-            //{
-            //    errors = new List<ApiError>
-            //    {
-            //        new ApiError
-            //        {
-            //            Message = "Validation failed: \r\n -- Age is not valid.\r\n -- no person Id was provided.\r\n -- No person name was provided."
-            //        }
-            //    }
-            //};
+            var error = new ValidationProblemDetails
+            {
+                Type = "https://httpstatuses.com/400",
+                Title = "One or more validation errors occurred.",
+                Status = StatusCodes.Status400BadRequest
+            };
+            error.Errors.Add("someProperty", new[] { "This property failed validation." });
 
             // Act.
             var response = await Client.GetAsync("/test/validationerror");
 
             // Assert.
             response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-            //await response.Content.ShouldLookLike(errors);
-        }
-
-        // Route argument value is invalid. Passed in a string, expects an int.
-        [Fact]
-        public async Task GivenAGetRequestWithABadInputModel_Error_ReturnsAnHttp400()
-        {
-            // TODO: Fix
-            throw new NotImplementedException();
-
-            // Arrange.
-            var routeValue = "aaa";
-            //var errors = new
-            //{
-            //    errors = new List<ApiError>
-            //    {
-            //        new ApiError
-            //        {
-            //            Key = "id",
-            //            Message = $"The value '{routeValue}' is not valid."
-            //        }
-            //    }
-            //};
-
-            // Act.
-            var response = await Client.GetAsync($"/test/validationerror/{routeValue}");
-
-            // Assert.
-            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-            //await response.Content.ShouldLookLike(errors);
+            await response.Content.ShouldLookLike(error);
         }
     }
 }

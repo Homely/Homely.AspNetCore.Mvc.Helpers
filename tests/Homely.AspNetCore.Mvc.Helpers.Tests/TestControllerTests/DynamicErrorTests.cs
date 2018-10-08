@@ -1,4 +1,6 @@
-﻿using Shouldly;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Shouldly;
 using System.Net;
 using System.Threading.Tasks;
 using Xunit;
@@ -9,10 +11,18 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
     {
         // Controller manually threw a ValidationException.
         [Fact]
-        public async Task GivenTwoGetRequestWhichManuallyThrowsAnError_ValidationError_ReturnsTwoHttp500ResponsesAndTheyAreDifferent()
+        public async Task GivenTwoGetRequestsWhichManuallyThrowsAnError_ValidationError_ReturnsTwoHttp500ResponsesAndTheyAreDifferent()
         {
             // Arrange.
             const string route = "/test/dynamicError";
+            var error = new ProblemDetails
+            {
+                Type = "https://httpstatuses.com/500",
+                Title = "Internal Server Error",
+                Status = StatusCodes.Status500InternalServerError
+            };
+
+            // TODO: Set IsDevelopment() so we can proove that both error messages are different.
 
             // Act.
             var response1 = await Client.GetAsync(route);
@@ -21,12 +31,9 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             // Assert.
             response1.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             response2.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
-            
-            var response1Text = await response1.Content.ReadAsStringAsync();
-            var response2Text = await response2.Content.ReadAsStringAsync();
-            response1.ShouldNotBe(response2);
-            response1Text.ShouldNotBeNullOrWhiteSpace();
-            response2Text.ShouldNotBeNullOrWhiteSpace();
+
+            await response1.Content.ShouldLookLike(error);
+            await response2.Content.ShouldLookLike(error);
         }
     }
 }

@@ -1,10 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using TestWebApplication.Models;
 using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
@@ -18,9 +21,10 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             var fakeVehicle = FakeVehicleHelpers.CreateAFakeVehicle();
             var formData = new Dictionary<string, string>
             {
-                { "Name", fakeVehicle.Name },
-                { "RegistrationNumber", fakeVehicle.RegistrationNumber },
-                { "Colour", fakeVehicle.Colour.ToString() }
+                { nameof(FakeVehicle.Id), fakeVehicle.Id.ToString() },
+                { nameof(FakeVehicle.Name), fakeVehicle.Name },
+                { nameof(FakeVehicle.RegistrationNumber), fakeVehicle.RegistrationNumber },
+                { nameof(FakeVehicle.Colour), fakeVehicle.Colour.ToString() }
             };
 
             var content = new FormUrlEncodedContent(formData);
@@ -31,7 +35,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             // Assert.
             response.EnsureSuccessStatusCode();
             response.StatusCode.ShouldBe(HttpStatusCode.Created);
-            response.Headers.Location.ShouldBe(new System.Uri("http://localhost/test/5"));
+            response.Headers.Location.ShouldBe(new Uri("http://localhost/test/5"));
             var responseString = await response.Content.ReadAsStringAsync();
             responseString.ShouldBeNullOrWhiteSpace();
         }
@@ -39,34 +43,34 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
         [Fact]
         public async Task GivenPostingAnInvalidModel_Post_ReturnsAnHttp400()
         {
-            // might not need this.
-            // TODO: Fix
-            throw new NotImplementedException();
+            // Arrange.
+            const string badColour = "pewpew";
+            var fakeVehicle = FakeVehicleHelpers.CreateAFakeVehicle();
+            var formData = new Dictionary<string, string>
+            {
+                { nameof(FakeVehicle.Id), fakeVehicle.Id.ToString() },
+                { nameof(FakeVehicle.Name), fakeVehicle.Name },
+                { nameof(FakeVehicle.RegistrationNumber), fakeVehicle.RegistrationNumber },
+                { nameof(FakeVehicle.Colour), badColour }
+            };
+            var content = new FormUrlEncodedContent(formData);
 
-            //// Arrange.
-            //const string badColour = "pewpew";
-            //var expectedResponseContent = TestHelpers.CreateAnApiError("Colour",
-            //    $"The value '{badColour}' is not valid for Colour.");
-            //var fakeVehicle = FakeVehicleHelpers.CreateAFakeVehicle();
-            //var formData = new Dictionary<string, string>
-            //{
-            //    { "Name", fakeVehicle.Name },
-            //    { "RegistrationNumber", fakeVehicle.RegistrationNumber },
-            //    { "Colour", badColour }
-            //};
+            var error = new ValidationProblemDetails
+            {
+                Type = "https://httpstatuses.com/400",
+                Title = "Request model contains invalid data.",
+                Status = StatusCodes.Status400BadRequest,
+                Detail = "Please refer to the errors property for additional details.",
+                Instance = "/test"
+            };
+            error.Errors.Add("colour", new[] { "The value 'pewpew' is not valid for Colour." });
 
-            //var content = new FormUrlEncodedContent(formData);
+            // Act.
+            var response = await Client.PostAsync("/test", content);
 
-            //// Act.
-            //var response = await Client.PostAsync("/test", content);
-
-            //// Assert.  
-            //response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-            //var responseContent = await response.Content.ReadAsStringAsync();
-           
-            //// TODO: Fix.
-            ////var responseModel = JsonConvert.DeserializeObject<ErrorViewModel>(responseContent);
-            ////responseModel.ShouldLookLike(expectedResponseContent);
+            // Assert.  
+            response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            await response.Content.ShouldLookLike(error);
         }
     }
 }

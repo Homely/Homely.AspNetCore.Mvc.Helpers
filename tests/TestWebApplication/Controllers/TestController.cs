@@ -1,5 +1,7 @@
-﻿using Homely.AspNetCore.Mvc.Helpers.Models;
+﻿using Hellang.Middleware.ProblemDetails;
+using Homely.AspNetCore.Mvc.Helpers.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -44,7 +46,7 @@ namespace TestWebApplication.Controllers
 
         // POST: /test | 201 Created.
         [HttpPost]
-        public IActionResult Post(FakeVehicle fakeVehicle)
+        public IActionResult Post([FromForm] FakeVehicle fakeVehicle)
         {
             if (!ModelState.IsValid)
             {
@@ -71,6 +73,21 @@ namespace TestWebApplication.Controllers
             throw new Exception(Guid.NewGuid().ToString());
         }
 
+        // GET: /test/validationerror | 400 Bad Request.
+        [HttpGet("validationerror")]
+        public IActionResult ValidationError()
+        {
+            ModelState.AddModelError("someProperty", "This property failed validation.");
+
+            var validation = new ValidationProblemDetails(ModelState)
+            {
+                Type = "https://httpstatuses.com/400",
+                Status = StatusCodes.Status400BadRequest
+            };
+
+            throw new ProblemDetailsException(validation);
+        }
+
         // Specific Status Code check | 409 Conflict.
         [HttpGet("conflict")]
         public IActionResult ConflictCheck()
@@ -79,6 +96,7 @@ namespace TestWebApplication.Controllers
             {
                 Type = "https://httpstatuses.com/409",
                 Title = "Agent was already modified.",
+                Status = StatusCodes.Status409Conflict,
                 Instance = "/test/conflict",
                 Detail = "agent was already modified after you retrieved the latest data. So you would then override the most recent copy. As such, you will need to refresh the page (to get the latest data) then modify that, if required."
             };

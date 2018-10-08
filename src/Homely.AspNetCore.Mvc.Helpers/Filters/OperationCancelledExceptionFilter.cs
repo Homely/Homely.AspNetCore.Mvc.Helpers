@@ -34,8 +34,20 @@ namespace Homely.AspNetCore.Mvc.Helpers.Filters
             {
                 _logger.LogDebug("Request was cancelled by User/Source computer.");
 
+                const int clientClosedRequestStatusCode = 499;
+                var error = new ProblemDetails
+                {
+                    Type = "https://httpstatuses.com/499",
+                    Title = "Request was cancelled.",
+                    Status = clientClosedRequestStatusCode,
+                    Instance = context.HttpContext.Request.Path
+                };
+
                 context.ExceptionHandled = true;
-                context.Result = new StatusCodeResult(_statusCode);
+                context.Result =   new ObjectResult(error)
+                {
+                    StatusCode = clientClosedRequestStatusCode
+                };
             }
         }
     }

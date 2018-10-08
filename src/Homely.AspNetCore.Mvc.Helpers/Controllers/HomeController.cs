@@ -7,6 +7,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Controllers
 {
     [AllowAnonymous]
     [Route("")]
+    [ApiController]
     public class HomeController : ControllerBase
     {
         private readonly IHomeControllerBanner _banner;

@@ -14,7 +14,8 @@ namespace TestWebApplication.Controllers
 {
     [AllowAnonymous]
     [Route("test")]
-    public class TestController : Controller
+    [ApiController]
+    public class TestController : ControllerBase
     {
         private readonly IFakeVehicleRepository _fakeVehicleRepository;
 
@@ -45,6 +46,11 @@ namespace TestWebApplication.Controllers
         [HttpPost]
         public IActionResult Post(FakeVehicle fakeVehicle)
         {
+            if (!ModelState.IsValid)
+            {
+                throw new Exception("Model is invalid -> it should have been auto checked and auto 400 returned.");
+            }
+
             _fakeVehicleRepository.Add(fakeVehicle);
 
             return CreatedAtRoute("GetId", new { id = fakeVehicle.Id }, null);

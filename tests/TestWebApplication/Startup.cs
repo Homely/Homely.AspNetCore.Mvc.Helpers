@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
@@ -37,11 +38,12 @@ namespace TestWebApplication
             services.AddMvcCore(options =>
                                {
                                    options.WithGlobalCancelledRequestHandler(); // Handle when a request is cancelled.
-                                   options.WithEarlyWaningModelValidation(); // Error early if there's a bad model in the request.
+                                   //options.WithEarlyWaningModelValidation(); // Error early if there's a bad model in the request.
                                })
                     .AddAHomeController(services, typeof(Startup), "pew pew")
                     .AddAuthorization()
-                    .AddACommonJsonFormatter();
+                    .AddACommonJsonFormatter()
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             ConfigureRepositories(services);
         }

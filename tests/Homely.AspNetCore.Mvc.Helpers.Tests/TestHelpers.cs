@@ -1,6 +1,4 @@
 ﻿using Homely.AspNetCore.Mvc.Helpers.Helpers;
-using Homely.AspNetCore.Mvc.Helpers.Models;
-using Homely.AspNetCore.Mvc.Helpers.ViewModels;
 using Newtonsoft.Json;
 using Shouldly;
 using System.Net.Http;
@@ -25,7 +23,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
                 return;
             }
 
-            var actualJson = JsonConvert.SerializeObject(actual, JsonHelpers.JsonSerializerSettings);
+            var actualJson = JsonConvert.SerializeObject(actual, JsonHelpers.CreateJsonSerializerSettings());
             ShouldLookLike(actualJson, expected);
         }
 
@@ -44,22 +42,6 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
             ShouldLookLike(responseJson, expected);
         }
 
-        public static ErrorViewModel CreateAnApiError(string key, string message)
-        {
-            message.ShouldNotBeNullOrWhiteSpace();
-
-            var apiErrors = new[]
-            {
-                new ApiError
-                {
-                    Key = key, // Optional.
-                    Message = message
-                }
-            };
-
-            return new ErrorViewModel(apiErrors);
-        }
-
         private static void ShouldLookLike<T>(string actual, T expected)
         {
             if (string.IsNullOrWhiteSpace(actual) &&
@@ -68,7 +50,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
                 return;
             }
 
-            var expectedJson = JsonConvert.SerializeObject(expected, JsonHelpers.JsonSerializerSettings);
+            var expectedJson = JsonConvert.SerializeObject(expected, JsonHelpers.CreateJsonSerializerSettings());
             actual.ShouldBe(expectedJson);
         }
     }

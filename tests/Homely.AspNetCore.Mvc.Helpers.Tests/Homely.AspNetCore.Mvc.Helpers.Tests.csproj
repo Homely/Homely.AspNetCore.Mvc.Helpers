@@ -26,4 +26,8 @@
     <ProjectReference Include="..\TestWebApplication\TestWebApplication.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ExtensionsTests\" />
+  </ItemGroup>
+
 </Project>

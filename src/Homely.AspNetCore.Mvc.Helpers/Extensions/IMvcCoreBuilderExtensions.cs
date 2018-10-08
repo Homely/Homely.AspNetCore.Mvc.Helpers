@@ -14,9 +14,18 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         /// <param name="mvcCoreBuilder">Configuring essential MVC services.</param>
         public static IMvcCoreBuilder AddACommonJsonFormatter(this IMvcCoreBuilder mvcCoreBuilder)
         {
-            return mvcCoreBuilder.AddJsonFormatters(settings =>
+            return mvcCoreBuilder.AddJsonFormatters(options =>
             {
-                settings = JsonHelpers.JsonSerializerSettings;
+                // Currently, there's no easy way to say: MVC pipelines use -this- instance of some JSS.
+                // So, we have to manually set those values. Yes, if we add a new property setting (in the 
+                // static class, then we have to add it here and yes ... we might forget to do that :(
+                var settings = JsonHelpers.CreateJsonSerializerSettings();
+                options.ContractResolver = settings.ContractResolver;
+                options.Formatting = settings.Formatting;
+                options.NullValueHandling = settings.NullValueHandling;
+                options.DateFormatHandling = settings.DateFormatHandling;
+
+                options.Converters = settings.Converters;
             });
         }
 

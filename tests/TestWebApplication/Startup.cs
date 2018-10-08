@@ -1,9 +1,9 @@
-﻿using Homely.AspNetCore.Mvc.Helpers.Extensions;
+﻿using Hellang.Middleware.ProblemDetails;
+using Homely.AspNetCore.Mvc.Helpers.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -13,10 +13,6 @@ namespace TestWebApplication
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-        }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -37,13 +33,15 @@ namespace TestWebApplication
 
             services.AddMvcCore(options =>
                                {
-                                   options.WithGlobalCancelledRequestHandler(); // Handle when a request is cancelled.
-                                   //options.WithEarlyWaningModelValidation(); // Error early if there's a bad model in the request.
+                                   options.WithGlobalCancelledRequestHandler(); // Handle a user-cancelled request.
                                })
                     .AddAHomeController(services, typeof(Startup), "pew pew")
                     .AddAuthorization()
                     .AddACommonJsonFormatter()
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            // Invalid model states display ProblemDetails as their model.
+            services.ConfigureInvalidModelStateProblemDetails();
 
             ConfigureRepositories(services);
         }
@@ -51,11 +49,7 @@ namespace TestWebApplication
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseStaticFiles()
-               .UseStatusCodePages();
-
-            // Allows the unit tests to define custom unit test logic for the json exception pages.
-            ConfigureJsonExceptionPages(app);
+            app.UseProblemDetails(x => x.IncludeExceptionDetails = _ => env.IsDevelopment());
 
             app.UseMvc();
         }
@@ -69,13 +63,6 @@ namespace TestWebApplication
 
             // Inject our repo.
             services.AddSingleton<IFakeVehicleRepository>(stubbedFakeVehicleRepository);
-        }
-
-        // This method can be overwritten in a test project to define how the exception page is rendered.
-        //          You would not do this in production, but we need to test our Helper library!
-        public virtual void ConfigureJsonExceptionPages(IApplicationBuilder app)
-        {
-            app.UseJsonExceptionPages();
         }
     }
 }

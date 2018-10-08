@@ -17,18 +17,5 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
 
             return options;
         }
-
-        /// <summary>
-        /// Circuit break the request early on, if there's a bad model.
-        /// </summary>
-        /// <param name="options">Application Mvc specific options.</param>
-        /// <returns>The Mvc options which were updated.</returns>
-        /// <remarks>If the requested data model is bad, this will return an HTTP 400 BAD REQUEST with the error projected into the common API Error model.</remarks>
-        public static MvcOptions WithEarlyWaningModelValidation(this MvcOptions options)
-        {
-            options.Filters.Add<ValidateModelFilter>();
-
-            return options;
-        }
     }
 }

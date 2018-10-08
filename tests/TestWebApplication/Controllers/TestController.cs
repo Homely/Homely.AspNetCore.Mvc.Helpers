@@ -75,7 +75,15 @@ namespace TestWebApplication.Controllers
         [HttpGet("conflict")]
         public IActionResult ConflictCheck()
         {
-            return StatusCode(409, new ApiErrorResult("agent was already modified"));
+            var error = new ProblemDetails
+            {
+                Type = "https://httpstatuses.com/409",
+                Title = "Agent was already modified.",
+                Instance = "/test/conflict",
+                Detail = "agent was already modified after you retrieved the latest data. So you would then override the most recent copy. As such, you will need to refresh the page (to get the latest data) then modify that, if required."
+            };
+
+            return StatusCode(409, error);
         }
 
         [HttpGet("slowDelay")]

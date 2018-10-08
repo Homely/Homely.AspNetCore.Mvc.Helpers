@@ -70,6 +70,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 
             // Assert.  
             response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+            var sss = await response.Content.ReadAsStringAsync();
             await response.Content.ShouldLookLike(error);
         }
     }

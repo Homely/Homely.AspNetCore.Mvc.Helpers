@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TestWebApplication;
 using TestWebApplication.Repositories;
@@ -7,7 +8,8 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
 {
     public class TestStartup : Startup
     {
-        public TestStartup(IConfiguration configuration) : base(configuration)
+        public TestStartup(IConfiguration configuration,
+                           IHostingEnvironment hostingEnvironment) : base(configuration, hostingEnvironment)
         {
         }
 

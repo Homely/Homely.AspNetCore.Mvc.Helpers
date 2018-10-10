@@ -5,7 +5,6 @@ using System;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Controllers
 {
-    [AllowAnonymous]
     [Route("")]
     [ApiController]
     public class HomeController : ControllerBase

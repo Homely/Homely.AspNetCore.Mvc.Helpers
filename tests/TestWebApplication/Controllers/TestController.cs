@@ -1,9 +1,12 @@
-﻿using FluentValidation;
-using FluentValidation.Results;
+﻿using Hellang.Middleware.ProblemDetails;
 using Homely.AspNetCore.Mvc.Helpers.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using TestWebApplication.Models;
 using TestWebApplication.Repositories;
 
@@ -11,8 +14,10 @@ using TestWebApplication.Repositories;
 
 namespace TestWebApplication.Controllers
 {
+    [AllowAnonymous]
     [Route("test")]
-    public class TestController : Controller
+    [ApiController]
+    public class TestController : ControllerBase
     {
         private readonly IFakeVehicleRepository _fakeVehicleRepository;
 
@@ -20,15 +25,15 @@ namespace TestWebApplication.Controllers
         {
             _fakeVehicleRepository = fakeVehicleRepository ?? throw new ArgumentNullException(nameof(fakeVehicleRepository));
         }
-        
+
         // GET: /test/1 | 200 OK.
         [HttpGet("{id:int}", Name ="GetId")]
         public IActionResult Get(int id)
         {
             var model = _fakeVehicleRepository.Get(id);
 
-            return model == null 
-                ? (IActionResult)NotFound() 
+            return model == null
+                ? (IActionResult)NotFound()
                 : Ok(model);
         }
 
@@ -41,8 +46,13 @@ namespace TestWebApplication.Controllers
 
         // POST: /test | 201 Created.
         [HttpPost]
-        public IActionResult Post(FakeVehicle fakeVehicle)
+        public IActionResult Post([FromForm] FakeVehicle fakeVehicle)
         {
+            if (!ModelState.IsValid)
+            {
+                throw new Exception("Model is invalid -> it should have been auto checked and auto 400 returned.");
+            }
+
             _fakeVehicleRepository.Add(fakeVehicle);
 
             return CreatedAtRoute("GetId", new { id = fakeVehicle.Id }, null);
@@ -64,39 +74,52 @@ namespace TestWebApplication.Controllers
         }
 
         // GET: /test/validationerror | 400 Bad Request.
-        [HttpGet("validationError/{id?}")]
-        public IActionResult ValidationError(int id = 1)
+        [HttpGet("validationerror")]
+        public IActionResult ValidationError()
         {
-            var errors = new List<ValidationFailure>
-            {
-                new ValidationFailure("age", "Age is not valid."),
-                new ValidationFailure("id", "no person Id was provided."),
-                new ValidationFailure("name", "No person name was provided.")
-            };
-            
-            throw new ValidationException(errors);
-        }
+            ModelState.AddModelError("someProperty", "This property failed validation.");
 
-        // GET: /test/dynamicValidationerror | 400 Bad Request.
-        // This tests that the validation error doesn't get cached.
-        [HttpGet("dynamicValidationError")]
-        public IActionResult DynamicValidationError()
-        {
-            var errors = new List<ValidationFailure>
+            var validation = new ValidationProblemDetails(ModelState)
             {
-                new ValidationFailure("age", "Age is not valid."),
-                new ValidationFailure("id", Guid.NewGuid().ToString()),
-                new ValidationFailure("name", "No person name was provided.")
+                Type = "https://httpstatuses.com/400",
+                Status = StatusCodes.Status400BadRequest
             };
-            
-            throw new ValidationException(errors);
+
+            throw new ProblemDetailsException(validation);
         }
 
         // Specific Status Code check | 409 Conflict.
         [HttpGet("conflict")]
-        public IActionResult Conflict()
+        public IActionResult ConflictCheck()
         {
-            return base.StatusCode(409, new ApiErrorResult("agent was already modified"));
+            var error = new ProblemDetails
+            {
+                Type = "https://httpstatuses.com/409",
+                Title = "Agent was already modified.",
+                Status = StatusCodes.Status409Conflict,
+                Instance = "/test/conflict",
+                Detail = "agent was already modified after you retrieved the latest data. So you would then override the most recent copy. As such, you will need to refresh the page (to get the latest data) then modify that, if required."
+            };
+
+            return StatusCode(409, error);
+        }
+
+        [HttpGet("slowDelay")]
+        [HttpGet("slowDelay/{seconds:int}")]
+        public async Task<IActionResult> SlowDelay(CancellationToken cancellationToken, int seconds = 50)
+        {
+            // Pretend some logic takes a long time. Like getting some data from a database.
+            var startTime = DateTime.UtcNow;
+
+            await Task.Delay(1000 * seconds, cancellationToken);
+
+            var endTime = DateTime.UtcNow;
+
+            return Ok(new
+            {
+                startTime,
+                endTime
+            });
         }
     }
 }

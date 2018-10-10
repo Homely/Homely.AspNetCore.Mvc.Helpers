@@ -5,12 +5,12 @@ using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
+namespace Homely.AspNetCore.Mvc.Helpers.Tests.HomeControllerTests
 {
-    public class ErrorTests : TestSetup
+    public class ExceptionTestTests : TestSetup
     {
         [Fact]
-        public async Task GivenAGetRequest_Error_ReturnsAnHttp500()
+        public async Task GivenARequest_ExceptionTests_ReturnsAnHttp500()
         {
             // Arrange.
             var error = new ProblemDetails
@@ -21,9 +21,10 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             };
 
             // Act.
-            var response = await Client.GetAsync("/test/error");
+            var response = await Client.GetAsync("/exceptionTest");
 
             // Assert.
+            response.IsSuccessStatusCode.ShouldBeFalse();
             response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             await response.Content.ShouldLookLike(error);
         }

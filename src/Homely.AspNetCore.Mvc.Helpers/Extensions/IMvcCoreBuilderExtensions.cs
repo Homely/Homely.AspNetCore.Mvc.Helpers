@@ -1,10 +1,8 @@
-﻿using FluentValidation.AspNetCore;
-using Homely.AspNetCore.Mvc.Helpers.ActionFilters;
+﻿using Homely.AspNetCore.Mvc.Helpers.Controllers;
+using Homely.AspNetCore.Mvc.Helpers.Helpers;
+using Homely.AspNetCore.Mvc.Helpers.Models;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using System;
-using System.Collections.Generic;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Extensions
 {
@@ -13,58 +11,53 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         /// <summary>
         /// Specifies how any JSON output will default-render in the Response.
         /// </summary>
+        /// <param name="mvcCoreBuilder">Configuring essential MVC services.</param>
         public static IMvcCoreBuilder AddACommonJsonFormatter(this IMvcCoreBuilder mvcCoreBuilder)
         {
-            return mvcCoreBuilder.AddJsonFormatters(settings =>
+            return mvcCoreBuilder.AddJsonFormatters(options =>
             {
-                settings.NullValueHandling = NullValueHandling.Ignore;
-                settings.Formatting = Formatting.Indented;
-                settings.Converters.Add(new StringEnumConverter());
+                // Currently, there's no easy way to say: MVC pipelines use -this- instance of some JSS.
+                // So, we have to manually set those values. Yes, if we add a new property setting (in the 
+                // static class, then we have to add it here and yes ... we might forget to do that :(
+                var settings = JsonHelpers.CreateJsonSerializerSettings();
+                options.ContractResolver = settings.ContractResolver;
+                options.Formatting = settings.Formatting;
+                options.NullValueHandling = settings.NullValueHandling;
+                options.DateFormatHandling = settings.DateFormatHandling;
+
+                options.Converters = settings.Converters;
             });
         }
 
         /// <summary>
-        /// Registers all FluentValidation validators found in all assemblies then wires up auto model validation against these validators.
+        /// Registers a common webapi home controller.
         /// </summary>
-        public static IMvcCoreBuilder AddCustomFluentValidation(this IMvcCoreBuilder mvcCoreBuilder, IEnumerable<Type> types)
+        /// <param name="builder">An interface for configuring essential MVC services.</param>
+        /// <param name="services">Specifies the contract for a collection of service descriptors.</param>
+        /// <param name="callingType">Type of the calling assembly. This would usually be the main assembly of the web site.</param>
+        /// <param name="asciiBanner">Optional: some text to display in the home controller output.</param>
+        /// <returns>Chaining: the interface for configuring essential MVC services.</returns>
+        public static IMvcCoreBuilder AddAHomeController(this IMvcCoreBuilder builder,
+                                                         IServiceCollection services,
+                                                         Type callingType,
+                                                         string asciiBanner = null)
         {
-            if (mvcCoreBuilder == null)
+            if (services == null)
             {
-                throw new ArgumentNullException(nameof(mvcCoreBuilder));
+                throw new ArgumentNullException(nameof(services));
             }
 
-            if (types == null)
+            if (callingType == null)
             {
-                throw new ArgumentNullException(nameof(types));
+                throw new ArgumentNullException(nameof(callingType));
             }
 
-            return mvcCoreBuilder.AddFluentValidation(options =>
-                                 {
-                                     foreach(var type in types)
-                                     {
-                                        options.RegisterValidatorsFromAssemblyContaining(type);
-                                     }
-                                     options.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
-                                 })
-                                 .AddMvcOptions(options => options.Filters.Add(new ValidateModelAttribute()));
-        }
+            var banner = new HomeControllerBanner(callingType, asciiBanner);
+            services.AddSingleton<IHomeControllerBanner>(banner);
 
-        /// <summary>
-        /// Registers all FluentValidation validators found in a single assembly and then wires up auto model validation against these validators.
-        /// </summary>
-        public static IMvcCoreBuilder AddCustomFluentValidation(this IMvcCoreBuilder mvcCoreBuilder, Type type)
-        {
-            if (mvcCoreBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(mvcCoreBuilder));
-            }
+            builder.AddApplicationPart(typeof(HomeController).Assembly);
 
-            var types = new List<Type>
-            {
-                type
-            };
-
-            return mvcCoreBuilder.AddCustomFluentValidation(types);
+            return builder;
         }
     }
 }

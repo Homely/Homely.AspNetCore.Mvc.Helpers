@@ -6,22 +6,27 @@ namespace Homely.AspNetCore.Mvc.Helpers.Helpers
 {
     public static class JsonHelpers
     {
-        public static JsonSerializerSettings JsonSerializerSettings 
+        /// <summary>
+        /// Some consistent JSON settings.
+        /// </summary>
+        /// <remarks>- Camel casing.<br/>
+        /// - Indented formatting.<br/>
+        /// - Ignores null properties.<br/>
+        /// - DateTime's are in ISO format.</br>
+        /// - Enums are converted to strings (for easy reading + maintainability)</remarks>
+        public static JsonSerializerSettings CreateJsonSerializerSettings()
         {
-            get
+            var settings = new JsonSerializerSettings
             {
-                var settings = new JsonSerializerSettings
-                {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                    Formatting = Formatting.Indented,
-                    NullValueHandling = NullValueHandling.Ignore,
-                    DateFormatHandling = DateFormatHandling.IsoDateFormat
-                };
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                Formatting = Formatting.Indented,
+                NullValueHandling = NullValueHandling.Ignore,
+                DateFormatHandling = DateFormatHandling.IsoDateFormat
+            };
 
-                settings.Converters.Add(new StringEnumConverter());
-            
-                return settings;
-            }
+            settings.Converters.Add(new StringEnumConverter());
+
+            return settings;
         }
     }
 }

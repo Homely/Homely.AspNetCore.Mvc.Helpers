@@ -7,7 +7,7 @@ namespace TestWebApplication.Repositories
 {
     public class FakeVehicleRepository : IFakeVehicleRepository
     {
-        private IDictionary<int, FakeVehicle> _fakeVehicles = new Dictionary<int, FakeVehicle>();
+        private readonly IDictionary<int, FakeVehicle> _fakeVehicles = new Dictionary<int, FakeVehicle>();
 
         public void Add(FakeVehicle fakeVehicle)
         {

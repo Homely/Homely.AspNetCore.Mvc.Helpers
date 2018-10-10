@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ExtensionsTests\**" />
+    <EmbeddedResource Remove="ExtensionsTests\**" />
+    <None Remove="ExtensionsTests\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
     <PackageReference Include="Moq" Version="4.10.0" />
@@ -24,10 +30,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TestWebApplication\TestWebApplication.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ExtensionsTests\" />
   </ItemGroup>
 
 </Project>

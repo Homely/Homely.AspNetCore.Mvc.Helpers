@@ -8,156 +8,127 @@ This library contains a collection of helpers, models and extension methods that
 
 ---
 
-## Sample / highlights
+## Samples / highlights
 
-- [Consistent Api Error schema.](#Sample1)
-- [500 Internal Server Error (unhandled errors) are Json results.](#Sample2) (this is an API after all...)
-- [Automatic Model Validation via FluentValidation.](#Sample3)
-- Graceful handling of interupted/cut/cancelled Requests, mid flight.
-- Global Authorization (of a default policy).
+- [Uses ProblemDetails for consistent error models](#Sample1) [Shoutout to [@khellang Middleware library](https://github.com/khellang/Middleware)]
+- [ModelStates that fail validation will use ProblemDetails are the error model](#Sample2)
+- [Graceful handling of interupted/cut/cancelled Requests, mid flight.](#Sample3)
+- [Simple HomeController [HTTP-GET /] which can show a banner + assembly/build info.](#Sample4)
+- [Common JsonSerializerSettings.](#Sample5)
+- [Json output default to use the common JsonSerializerSettings.](#Sample6)
 
-### <a name="Sample1">Consistent Api Error schema and JSON responses.</a>
+### <a name="Sample1">Uses ProblemDetails for consistent error models.</a>
 
-Schema is as follows:
-- Collection of `errors`
-- Optional: Stacktrace of the error.
+This is based off:
+- ProblemDetails inclusion into ASP.NET Core 2.1.
+- @KHellang's Middleware which simplifies the ceremony to leverage ProblemDetails. ASP.NET Core 2.2 _should_ bake this ceremony in, which should then mean we can remove this middleware and use the official one.
 
-```
-{
-    "errors": [
-        {
-            "key": <some key>,
-            "message": <description of the error>
-        },
-        {
-            ... <api error in here> ...
-        }
-    ],
-    "stackTrace": "<blah">
-}
-```
-
-### <a name="Sample3">500 Internal Server Error (unhandled errors) are Json results.
-
-When an unhandled error is encountered and would then be returned as a 500 Server Error, the data is returned as json instead of the default HTML content.
-
-1. Simple setup.
- - No stacktrace.
- - No CORS.
- - No custom exception handler logic.
+Step 1: Add the service.
 
 ```
 public void ConfigureServices(IServiceCollection services)
 {
-    // Common/standard usage: some nice consistent and readable Json settings.
-    services.AddMvcCore()
-            .AddACommonJsonFormatter(); // So the JSON is nicely formatted.
-}
+    services.AddMvcCore( ... )
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-{
-    app.UseStaticFiles()
-        .UseStatusCodePages()
-        .UseJsonExceptionPages()
-        .UseMvc();
+    services.AddProblemDetails(options => options.IncludeExceptionDetails = _ => 
+                                              _hostingEnvironment.IsDevelopment());
 }
 ```
 
-2. Standard settings but adding a stacktrace to the output if there's an error.
+Step 2: Configure the HTTP Pipeline to use these ProblemDetails.
 
 ```
-public void ConfigureServices(IServiceCollection services)
+public void Configure(IApplicationBuilder app)
 {
-    // Common/standard usage: some nice consistent and readable Json settings.
-    services.AddACommonJsonFormatter();
-}
-
-public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-{
-    app.UseJsonExceptionPages(includeStackTrace: env.IsDevelopment())
-       .UseStaticFiles() // etc.
+    app.UseProblemDetails()
        .UseMvc();
 }
 ```
 
-3. Settings a CORS policy.
+### <a name="Sample1">ModelStates that fail validation will use ProblemDetails are the error model</a>
+If a ModelState fails validation during the start of handling the request, the framework responds with an `HTTP Status - 400 BAD REQUEST` but uses a simple key/value "error" model.
 
- Why? If there's an AJAX request which errors, we need to make sure the client which executes the AJAX request can correctly accept the error response. CORS are required when doing AJAX requests.
-
-```
-public void ConfigureServices(IServiceCollection services)
-{
-    // Common/standard usage: some nice consistent and readable Json settings.
-    services.AddACommonJsonFormatter();
-}
-
-public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-{
-	var corsPolicyName = "Some Cors policy blah blah";
-    app.UseJsonExceptionPages(corsPolicyName)
-       .UseStaticFiles() // etc.
-       .UseMvc();
-}
-```
-
-4. Some custom exception handling, during the exception. 
-
-This would be if you want to return some specific result for a specific status code. For example, if the status code was an HTTP409 you might have a custom json schema. While for everything else, you have some other result.
+Instead, this uses `ProblemDetails` as the error model.
 
 ```
 public void ConfigureServices(IServiceCollection services)
 {
-    // Common/standard usage: some nice consistent and readable Json settings.
-    services.AddACommonJsonFormatter();
-}
+    services.AddMvcCore( ... )
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-{
-    JsonExceptionPageResult HandleException(Exception result) 
-    { 
-        // E.g. Real life scenario:
-        //      If status code == 401, then return some result
-        //      else if status code == 409 then resturn another result
-        //      else return some default result or return null (for default handling to kick in).
-
-        // Contrite hardcoded example to return a hardcoded result.
-        // Of course you wouldn't *really* do this, in production.
-        return new JsonExceptionPageResult
-        {
-            StatusCode = System.Net.HttpStatusCode.UpgradeRequired,
-            ApiErrors = new List<ApiError>
-            {
-                new ApiError
-                {
-                    Message = "I'm a little tea pot, short and stout."
-                }
-            }
-        };
-    };
-
-    app.UseJsonExceptionPages(customExceptionFunction: HandleException)
-       .UseStaticFiles() // etc.
-       .UseMvc();
+    services.ConfigureInvalidModelStateProblemDetails();
 }
 ```
 
-### <a name="Sample3">Automatic Model Validation via FluentValidation.</a>
+### <a name="Sample3">Graceful handling of interupted/cut/cancelled Requests, mid flight.</a>
+
+If the request is cancelled (either from the user, response is taking too long or some technical hicup between client & server) then stop processing the request. Of course, your own code needs to have smarts to react/handle to `CancellationToken`'s.
 
 ```
 public void ConfigureServices(IServiceCollection services)
 {
-    // Reflect through the current assembly looking for FluentValidation Validators 
-    services.AddCustomFluentValidation(this.GetType());
-}
+    services.AddMvcCore(options =>
+                        {
+                            options.WithGlobalCancelledRequestHandler();
+                        })
+```
 
- -- or --
+### <a name="Sample4">Simple HomeController [HTTP-GET /] which can show a banner + assembly/build info.</a>
 
+Great for API's, this will create the default "root/home" route => `HTTP GET /` with:
+- Optional banner - some text (like ASCII ART)
+- Build information about the an assembly.
+
+```
 public void ConfigureServices(IServiceCollection services)
 {
-    // Reflect through the *all* assemblies looking for any FluentValidation Validators. 
-    var types = new [] { typeof(Startup), typeof(AnotherClassFromAnotherAssembly) };
-    services.AddCustomFluentValidation(types);
+    services.AddMvcCore( ... )
+            .AddAHomeController(services, typeof(Startup), SomeASCIIArt);
+}
+```
+E.g. output
+
+
+```
+      ___           ___           ___           ___           ___           ___                    ___           ___                 
+     /\__\         /\  \         /\  \         /\__\         /\  \         /\  \                  /\  \         /\  \          ___   
+    /:/  /        /::\  \       /::\  \       /::|  |       /::\  \        \:\  \                /::\  \       /::\  \        /\  \  
+   /:/__/        /:/\:\  \     /:/\:\  \     /:|:|  |      /:/\:\  \        \:\  \              /:/\:\  \     /:/\:\  \       \:\  \ 
+  /::\  \ ___   /:/  \:\  \   /::\~\:\  \   /:/|:|  |__   /::\~\:\  \       /::\  \            /::\~\:\  \   /::\~\:\  \      /::\__\
+ /:/\:\  /\__\ /:/__/ \:\__\ /:/\:\ \:\__\ /:/ |:| /\__\ /:/\:\ \:\__\     /:/\:\__\          /:/\:\ \:\__\ /:/\:\ \:\__\  __/:/\/__/
+ \/__\:\/:/  / \:\  \ /:/  / \/_|::\/:/  / \/__|:|/:/  / \:\~\:\ \/__/    /:/  \/__/          \/__\:\/:/  / \/__\:\/:/  / /\/:/  /   
+      \::/  /   \:\  /:/  /     |:|::/  /      |:/:/  /   \:\ \:\__\     /:/  /                    \::/  /       \::/  /  \::/__/    
+      /:/  /     \:\/:/  /      |:|\/__/       |::/  /     \:\ \/__/     \/__/                     /:/  /         \/__/    \:\__\    
+     /:/  /       \::/  /       |:|  |         /:/  /       \:\__\                                /:/  /                    \/__/    
+     \/__/         \/__/         \|__|         \/__/         \/__/                                \/__/                              
+
+                                                                                                        A P I    G A T E W A Y  -  W E B
+
+Name: ApiGateway.Web
+Version: 3.1.0.0
+Date: 10-October-2018 05:53:36
+
+```
+
+### <a name="Sample5">Common JsonSerializerSettings.</a>
+
+Some common JSON settings. This keeps things consistent across projects.
+- CamelCase property names.
+- Indented formatting.
+- Ignore null properties which have values.
+- DateTimes are ISO formatted.
+- Enums are rendered as `string`'s ... not their backing number-value. 
+
+### <a name="Sample6">Json output default to use the common JsonSerializerSettings.</a>
+
+All responses are JSON and formatted using the common JSON settings (above).
+
+```
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddMvcCore( ... )
+            .AddACommonJsonFormatter();
 }
 ```
 

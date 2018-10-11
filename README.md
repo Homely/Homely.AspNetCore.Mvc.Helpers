@@ -1,4 +1,9 @@
 
+<div>
+    <p align="center">
+    <img src="https://imgur.com/9E8hN79.png" alt="Homely - ASP.NET Core MVC Helpers" />
+    </p>
+</div>
 
 # Homely - ASP.NET Core MVC Helpers
 

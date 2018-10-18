@@ -15,41 +15,12 @@ This library contains a collection of helpers, models and extension methods that
 
 ## Samples / highlights
 
-- [Uses ProblemDetails for consistent error models](#Sample1) [Shoutout to [@khellang Middleware library](https://github.com/khellang/Middleware)]
-- [ModelStates that fail validation will use ProblemDetails are the error model](#Sample2)
-- [Graceful handling of interupted/cut/cancelled Requests, mid flight.](#Sample3)
-- [Simple HomeController [HTTP-GET /] which can show a banner + assembly/build info.](#Sample4)
-- [Common JsonSerializerSettings.](#Sample5)
-- [Json output default to use the common JsonSerializerSettings.](#Sample6)
+- [ModelStates that fail validation will use ProblemDetails are the error model](#Sample1)
+- [Graceful handling of interupted/cut/cancelled Requests, mid flight.](#Sample2)
+- [Simple HomeController [HTTP-GET /] which can show a banner + assembly/build info.](#Sample3)
+- [Common JsonSerializerSettings.](#Sample4)
+- [Json output default to use the common JsonSerializerSettings.](#Sample5)
 
-### <a name="Sample1">Uses ProblemDetails for consistent error models.</a>
-
-This is based off:
-- ProblemDetails inclusion into ASP.NET Core 2.1.
-- @KHellang's Middleware which simplifies the ceremony to leverage ProblemDetails. ASP.NET Core 2.2 _should_ bake this ceremony in, which should then mean we can remove this middleware and use the official one.
-
-Step 1: Add the service.
-
-```
-public void ConfigureServices(IServiceCollection services)
-{
-    services.AddMvcCore( ... )
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-    services.AddProblemDetails(options => options.IncludeExceptionDetails = _ => 
-                                              _hostingEnvironment.IsDevelopment());
-}
-```
-
-Step 2: Configure the HTTP Pipeline to use these ProblemDetails.
-
-```
-public void Configure(IApplicationBuilder app)
-{
-    app.UseProblemDetails()
-       .UseMvc();
-}
-```
 
 ### <a name="Sample1">ModelStates that fail validation will use ProblemDetails are the error model</a>
 If a ModelState fails validation during the start of handling the request, the framework responds with an `HTTP Status - 400 BAD REQUEST` but uses a simple key/value "error" model.
@@ -66,7 +37,7 @@ public void ConfigureServices(IServiceCollection services)
 }
 ```
 
-### <a name="Sample3">Graceful handling of interupted/cut/cancelled Requests, mid flight.</a>
+### <a name="Sample2">Graceful handling of interupted/cut/cancelled Requests, mid flight.</a>
 
 If the request is cancelled (either from the user, response is taking too long or some technical hicup between client & server) then stop processing the request. Of course, your own code needs to have smarts to react/handle to `CancellationToken`'s.
 
@@ -79,7 +50,7 @@ public void ConfigureServices(IServiceCollection services)
                         })
 ```
 
-### <a name="Sample4">Simple HomeController [HTTP-GET /] which can show a banner + assembly/build info.</a>
+### <a name="Sample3">Simple HomeController [HTTP-GET /] which can show a banner + assembly/build info.</a>
 
 Great for API's, this will create the default "root/home" route => `HTTP GET /` with:
 - Optional banner - some text (like ASCII ART)
@@ -108,7 +79,7 @@ E.g. output
      /:/  /       \::/  /       |:|  |         /:/  /       \:\__\                                /:/  /                    \/__/    
      \/__/         \/__/         \|__|         \/__/         \/__/                                \/__/                              
 
-                                                                                                        A P I    G A T E W A Y  -  W E B
+                                                                                                      S E R V I C E  ->  A C C O U N T S
 
 Name: ApiGateway.Web
 Version: 3.1.0.0
@@ -116,7 +87,7 @@ Date: 10-October-2018 05:53:36
 
 ```
 
-### <a name="Sample5">Common JsonSerializerSettings.</a>
+### <a name="Sample4">Common JsonSerializerSettings.</a>
 
 Some common JSON settings. This keeps things consistent across projects.
 - CamelCase property names.
@@ -125,7 +96,7 @@ Some common JSON settings. This keeps things consistent across projects.
 - DateTimes are ISO formatted.
 - Enums are rendered as `string`'s ... not their backing number-value. 
 
-### <a name="Sample6">Json output default to use the common JsonSerializerSettings.</a>
+### <a name="Sample5">Json output default to use the common JsonSerializerSettings.</a>
 
 All responses are JSON and formatted using the common JSON settings (above).
 

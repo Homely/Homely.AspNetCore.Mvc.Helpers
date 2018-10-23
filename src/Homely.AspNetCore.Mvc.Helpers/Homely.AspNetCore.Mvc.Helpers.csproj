@@ -17,7 +17,7 @@
         <PackageIconUrl>https://i.imgur.com/PnxWhuz.jpg</PackageIconUrl>
         <RepositoryUrl>https://github.com/Homely/Homely.AspNetCore.Mvc.Helpers</RepositoryUrl>
         <RepositoryType>.net c# .net-core</RepositoryType>
-        <PackageTags>net netstandard netstandard20 aspnetcore aspnet-core aspnet-core-2 c#</PackageTags>
+        <PackageTags>homely aspnet-core-helpers</PackageTags>
     </PropertyGroup>
 
     <ItemGroup>

@@ -7,7 +7,7 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
         <Version>0.0.0</Version>
-        <Authors>Homely's developers</Authors>
+        <Authors>Homely</Authors>
         <Company>Homely</Company>
         <Product>Homely - ASPNet Core Mvc Helpers</Product>
         <Description>This library is a set of some helper methods, models and extensions for an ASP.NET Core MVC application. It can help reduce the ceremony required in setting up a new web application by offering various opinionated options and settings.</Description>

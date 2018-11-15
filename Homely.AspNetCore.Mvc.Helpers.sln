@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Homely.AspNetCore.Mvc.Helpe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestWebApplication", "tests\TestWebApplication\TestWebApplication.csproj", "{56778678-D218-4D40-BDBF-6F862803F3F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Homely.AspNetCore.Mvc.Helpers.Tests", "tests\Homely.AspNetCore.Mvc.Helpers.Tests\Homely.AspNetCore.Mvc.Helpers.Tests.csproj", "{22381896-5D30-4B69-8D95-95A2D546E85B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Homely.AspNetCore.Mvc.Helpers.Tests", "tests\Homely.AspNetCore.Mvc.Helpers.Tests\Homely.AspNetCore.Mvc.Helpers.Tests.csproj", "{22381896-5D30-4B69-8D95-95A2D546E85B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

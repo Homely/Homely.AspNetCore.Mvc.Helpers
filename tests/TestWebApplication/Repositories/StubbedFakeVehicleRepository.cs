@@ -31,11 +31,26 @@ namespace TestWebApplication.Repositories
             stubbedFakeVehicleRepository.Add(new FakeVehicle
             {
                 Id = 4,
-                Colour = ColourType.Green,
+                Colour = ColourType.GreenAndPink,
                 Name = "Name4",
                 RegistrationNumber = "RegistrationNumber4"
             });
 
+            stubbedFakeVehicleRepository.Add(new FakeVehicle
+            {
+                Id = 5,
+                Colour = ColourType.Green,
+                Name = "Name5",
+                RegistrationNumber = "RegistrationNumber5"
+            });
+
+            stubbedFakeVehicleRepository.Add(new FakeVehicle
+            {
+                Id = 6,
+                Colour = ColourType.BlackAndYellow,
+                Name = "Name6",
+                RegistrationNumber = "RegistrationNumber6"
+            });
             return stubbedFakeVehicleRepository;
         }
     }

@@ -10,6 +10,8 @@
         Black,
         Purple,
         Yellow,
-        Pink
+        Pink,
+        BlackAndYellow,
+        GreenAndPink
     }
 }

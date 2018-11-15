@@ -13,7 +13,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Helpers
         /// - Indented formatting.<br/>
         /// - Ignores null properties.<br/>
         /// - DateTime's are in ISO format.</br>
-        /// - Enums are converted to strings (for easy reading + maintainability)</remarks>
+        /// - Enums are converted to strings (for easy reading + maintainability). Camel cased.</remarks>
         public static JsonSerializerSettings CreateJsonSerializerSettings()
         {
             var settings = new JsonSerializerSettings
@@ -24,7 +24,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Helpers
                 DateFormatHandling = DateFormatHandling.IsoDateFormat
             };
 
-            settings.Converters.Add(new StringEnumConverter());
+            settings.Converters.Add(new StringEnumConverter { CamelCaseText = true });
 
             return settings;
         }

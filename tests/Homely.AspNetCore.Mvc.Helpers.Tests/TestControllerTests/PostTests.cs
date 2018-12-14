@@ -35,7 +35,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             // Assert.
             response.EnsureSuccessStatusCode();
             response.StatusCode.ShouldBe(HttpStatusCode.Created);
-            response.Headers.Location.ShouldBe(new Uri("http://localhost/test/5"));
+            response.Headers.Location.ShouldBe(new Uri("http://localhost/test/7"));
             var responseString = await response.Content.ReadAsStringAsync();
             responseString.ShouldBeNullOrWhiteSpace();
         }

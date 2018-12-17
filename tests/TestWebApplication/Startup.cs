@@ -31,11 +31,11 @@ namespace TestWebApplication
                                })
                     .AddAHomeController(services, typeof(Startup), "pew pew")
                     .AddACommonJsonFormatter()
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                    .AddApiExplorer() // For Swagger/OpenAPI Documentation.
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            // Invalid model states display ProblemDetails as their model.
-            services.ConfigureInvalidModelStateProblemDetails()
-                    .AddProblemDetails(options => options.IncludeExceptionDetails = _ => _hostingEnvironment.IsDevelopment());
+            services.AddProblemDetails(options => options.IncludeExceptionDetails = _ => _hostingEnvironment.IsDevelopment())
+                    .AddCustomSwagger("Test API");
 
             ConfigureRepositories(services);
         }
@@ -44,6 +44,7 @@ namespace TestWebApplication
         public void Configure(IApplicationBuilder app)
         {
             app.UseProblemDetails()
+               .UseCustomSwagger(title: "Test API")
                .UseMvc();
         }
 

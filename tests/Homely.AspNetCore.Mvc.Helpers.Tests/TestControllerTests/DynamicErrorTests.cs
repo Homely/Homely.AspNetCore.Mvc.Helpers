@@ -32,8 +32,8 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             response1.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
             response2.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
 
-            await response1.Content.ShouldLookLike(error);
-            await response2.Content.ShouldLookLike(error);
+            await response1.Content.ShouldHaveSameProblemDetails(error);
+            await response2.Content.ShouldHaveSameProblemDetails(error);
         }
     }
 }

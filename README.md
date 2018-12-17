@@ -15,25 +15,29 @@ This library contains a collection of helpers, models and extension methods that
 
 ## Samples / highlights
 
-- [ModelStates that fail validation will use ProblemDetails are the error model](#Sample1)
+- [ProblemDetails for all 4xx/5xx HTTP Errors](#Sample1)
 - [Graceful handling of interupted/cut/cancelled Requests, mid flight.](#Sample2)
 - [Simple HomeController [HTTP-GET /] which can show a banner + assembly/build info.](#Sample3)
 - [Common JsonSerializerSettings.](#Sample4)
 - [Json output default to use the common JsonSerializerSettings.](#Sample5)
+- [Custom Swagger wired up](#Sample6)
 
 
-### <a name="Sample1">ModelStates that fail validation will use ProblemDetails are the error model</a>
-If a ModelState fails validation during the start of handling the request, the framework responds with an `HTTP Status - 400 BAD REQUEST` but uses a simple key/value "error" model.
-
-Instead, this uses `ProblemDetails` as the error model.
+### <a name="Sample1">ProblemDetails for all 4xx/5xx HTTP Errors</a>
+When any 4xx/5xx error occurs, then this will be expressed as a" [Problem Detail](https://tools.ietf.org/html/rfc7807)". This includes the following example scenarios:
+- Model binding fails.
+- Route doesn't exist.
+- Credentials required but failed/missing.
+- Manual 4XX responses.
+- Manual 5XX responses.
 
 ```
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddMvcCore( ... )
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-    services.ConfigureInvalidModelStateProblemDetails();
+    services.AddProblemDetails(options => options.IncludeExceptionDetails = _ => _hostingEnvironment.IsDevelopment());
 }
 ```
 
@@ -105,6 +109,25 @@ public void ConfigureServices(IServiceCollection services)
 {
     services.AddMvcCore( ... )
             .AddACommonJsonFormatter();
+}
+```
+
+### <a name="sample6">Custom Swagger wired up</a>
+
+Swagger (using the [Swashbuckle library](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)) has been wired up and allows for you to define the `title` and `version` of this API and also a custom `route prefix` (which is good for a gateway API with multiple swagger endpoints because each microservice has their own swagger doc).
+
+```
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddMvcCore( ... )
+            .AddCustomSwagger("Test API", "v2");
+}
+
+public void Configure(IApplicationBuilder app)
+{
+    app.UseProblemDetails()
+       .UseCustomSwagger("accounts/swagger", "Test API", "v2")
+       .UseMvc();
 }
 ```
 

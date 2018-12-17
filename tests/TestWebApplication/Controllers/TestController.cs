@@ -73,7 +73,14 @@ namespace TestWebApplication.Controllers
             throw new Exception(Guid.NewGuid().ToString());
         }
 
-        // GET: /test/validationerror | 400 Bad Request.
+        // GET: /test/modelbindingerror | 400 Bad Request. (Model Binding failure check)
+        [HttpGet("modelbinding/{colour}")]
+        public IActionResult ModelBindingTest(ColourType colour = ColourType.Unknown)
+        {
+            return Ok(colour);
+        }
+
+        // GET: /test/validationerror | 400 Bad Request. (Manual validation check)
         [HttpGet("validationerror")]
         public IActionResult ValidationError()
         {

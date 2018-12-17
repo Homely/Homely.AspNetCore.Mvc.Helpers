@@ -1,4 +1,5 @@
 ﻿using Homely.AspNetCore.Mvc.Helpers.Helpers;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Shouldly;
 using System.Net.Http;
@@ -42,6 +43,43 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
             ShouldLookLike(responseJson, expected);
         }
 
+        public static async Task ShouldHaveSameProblemDetails(this HttpContent content, ProblemDetails expectedProblemDetails)
+        {
+            if (content == null)
+            {
+                throw new System.ArgumentNullException(nameof(content));
+            }
+
+            if (expectedProblemDetails == null)
+            {
+                throw new System.ArgumentNullException(nameof(expectedProblemDetails));
+            }
+
+            var problemDetails = await DeserializeAProblemDetaiAsync<ProblemDetails>(content);
+
+            problemDetails.Type.ShouldBe(expectedProblemDetails.Type);
+            problemDetails.Title.ShouldBe(expectedProblemDetails.Title);
+            problemDetails.Status.ShouldBe(expectedProblemDetails.Status);
+        }
+
+        public static async Task ShouldHaveSameProblemDetails(this HttpContent content, ValidationProblemDetails expectedProblemDetails)
+        {
+            if (content == null)
+            {
+                throw new System.ArgumentNullException(nameof(content));
+            }
+
+            if (expectedProblemDetails == null)
+            {
+                throw new System.ArgumentNullException(nameof(expectedProblemDetails));
+            }
+
+            await content.ShouldHaveSameProblemDetails(expectedProblemDetails as ProblemDetails);
+            var problemDetails = await DeserializeAProblemDetaiAsync<ValidationProblemDetails>(content);
+
+            problemDetails.Errors.ShouldLookLike(expectedProblemDetails.Errors);
+        }
+
         private static void ShouldLookLike<T>(string actual, T expected)
         {
             if (string.IsNullOrWhiteSpace(actual) &&
@@ -52,6 +90,17 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
 
             var expectedJson = JsonConvert.SerializeObject(expected, JsonHelpers.CreateJsonSerializerSettings());
             actual.ShouldBe(expectedJson);
+        }
+
+        private static async Task<T> DeserializeAProblemDetaiAsync<T>(HttpContent content) where T : ProblemDetails
+        {
+            if (content == null)
+            {
+                throw new System.ArgumentNullException(nameof(content));
+            }
+
+            var responseJson = await content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<T>(responseJson);
         }
     }
 }

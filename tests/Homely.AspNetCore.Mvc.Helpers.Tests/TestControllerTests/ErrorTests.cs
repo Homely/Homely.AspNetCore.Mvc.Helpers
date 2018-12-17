@@ -25,7 +25,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 
             // Assert.
             response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
-            await response.Content.ShouldLookLike(error);
+            await response.Content.ShouldHaveSameProblemDetails(error);
         }
     }
 }

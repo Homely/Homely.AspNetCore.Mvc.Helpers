@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shouldly;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,7 +29,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             // Assert.
             response.IsSuccessStatusCode.ShouldBeFalse();
             ((int)response.StatusCode).ShouldBe(499);
-            await response.Content.ShouldLookLike(error);
+            await response.Content.ShouldHaveSameProblemDetails(error);
         }
 
         [Fact]

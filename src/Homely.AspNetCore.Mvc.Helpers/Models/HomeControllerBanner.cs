@@ -20,7 +20,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Models
             var assembly = callingType.GetTypeInfo().Assembly;
             var assemblyDate = assembly.Location == null
                                    ? "-- unknown --"
-                                   : System.IO.File.GetLastWriteTime(assembly.Location).ToString("dd-MMMM-yyyy hh:mm:ss");
+                                   : System.IO.File.GetLastWriteTime(assembly.Location).ToString("dd-MMMM-yyyy HH:mm:ss");
             var assemblyInfo = $"Name: {assembly.GetName().Name}{Environment.NewLine}" +
                                    $"Version: {assembly.GetName().Version}{Environment.NewLine}" +
                                    $"Date: {assemblyDate}";

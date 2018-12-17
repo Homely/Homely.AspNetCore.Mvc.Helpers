@@ -57,8 +57,8 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 
             var error = new ValidationProblemDetails
             {
-                Type = "https://httpstatuses.com/400",
-                Title = "Request model contains invalid data.",
+                //Type = "https://httpstatuses.com/400",
+                Title = "One or more validation errors occurred.",
                 Status = StatusCodes.Status400BadRequest,
                 Detail = "Please refer to the errors property for additional details.",
                 Instance = "/test"
@@ -70,8 +70,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 
             // Assert.  
             response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
-            var sss = await response.Content.ReadAsStringAsync();
-            await response.Content.ShouldLookLike(error);
+            await response.Content.ShouldHaveSameProblemDetails(error);
         }
     }
 }

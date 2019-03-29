@@ -28,6 +28,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Controllers
         }
 
         [HttpGet("exceptionTest")]
+        [ProducesResponseType(500)]
         public ActionResult ExceptionTest()
         {
             throw new Exception($"Testing exceptions. {DateTime.UtcNow}");

@@ -28,7 +28,9 @@ namespace Homely.AspNetCore.Mvc.Helpers.Models
                                    $"Build Date : {assemblyDate}{Environment.NewLine}" +
                                    $"Application Started: {ApplicationStartedOn.ToString("U")}";
 
-            Banner = banner + Environment.NewLine + assemblyInfo;
+            var serverDetails = $"Server name: {Environment.MachineName}";
+
+            Banner = banner + Environment.NewLine + assemblyInfo + Environment.NewLine + serverDetails;
         }
 
         public string Banner { get; }

@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.OpenApi.Models;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Extensions
 {
@@ -22,7 +22,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc(version,
-                    new Info
+                    new OpenApiInfo
                     {
                         Title = title,
                         Version = version

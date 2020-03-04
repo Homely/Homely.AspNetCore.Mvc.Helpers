@@ -1,13 +1,12 @@
 
 version: '{build}.0.0-dev'
-configuration: Release
-os: Visual Studio 2017
+image: Ubuntu
 pull_requests:
   do_not_increment_build_number: true
 
 environment:
-  codecov_token:
-    secure: Tis+n7V0gFaHKdN0QSwwUqa6NFR4jO5m07gbDaGfDMmhR6mnDMw3hM6I6u4o2Hzc
+  codecov_token: 11549d94-ad60-43eb-82bb-c4f91a855cf0
+    #secure: Tis+n7V0gFaHKdN0QSwwUqa6NFR4jO5m07gbDaGfDMmhR6mnDMw3hM6I6u4o2Hzc
 
 # Override the 'version' if this is a GH-tag-commit -or- this is a custom branch (i.e not 'master').
 init:
@@ -20,28 +19,67 @@ init:
       iex ((new-object net.webclient).DownloadString('https://gist.githubusercontent.com/PureKrome/0f79e25693d574807939/raw/f5b40256fc2ca77d49f1c7773d28406152544c1e/appveyor-build-info.ps'))
 
 
+matrix:
+  fast_finish: true
+
+configuration:
+  - Debug
+  - Release
+
 before_build:
   # Display .NET Core version
-  - cmd: dotnet --info
-  # Install Codecov prerequisite
-  - choco install opencover.portable
-  - choco install codecov
-  # Display minimal restore text
-  - cmd: dotnet restore --verbosity quiet
+  - dotnet --info
 
 build_script:
-  - dotnet build -c %CONFIGURATION% -v minimal /p:Version=%APPVEYOR_BUILD_VERSION% /p:DebugType=full --no-restore
+  - dotnet restore --verbosity quiet
+  - ps: dotnet build -c $env:CONFIGURATION -v minimal /p:Version=$env:APPVEYOR_BUILD_VERSION --no-restore
 
 test_script:
-  - OpenCover.Console.exe -register:user -target:"dotnet.exe" -targetargs:"test tests\Homely.AspNetCore.Mvc.Helpers.Tests -c %CONFIGURATION% -v minimal --no-restore --no-build " -filter:"+[Homely.*]* -[Homely.*.Tests]*" -output:".\coverage.xml" -oldstyle
+  - ps: |
+      if ($env:CONFIGURATION -eq 'Debug')
+      {
+          dotnet test tests\Homely.AspNetCore.Mvc.Helpers.Tests -c $env:CONFIGURATION -v minimal --no-build --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory './CodeCoverageResults'
+      }
+      else
+      {
+          dotnet test tests\Homely.AspNetCore.Mvc.Helpers.Tests -c $env:CONFIGURATION -v minimal --no-build
+      }
 
+
+# We only:
+#   - Send DEBUG results up to codecov.
+#   - Pack for RELEASE only.
 after_test:
-  - codecov -f "coverage.xml" -t $(codecov_token)
-  - dotnet pack -c %CONFIGURATION% /p:Version=%APPVEYOR_BUILD_VERSION% --no-restore --no-build
+  - ps: |
+      if ($env:CONFIGURATION -eq 'Debug')
+      {
+          
+          $env:APPVEYOR = 'true' # is 'True' on windows, which fails with the BASH script, below
+          $env:CI = 'true'
+
+          if ($env:codecov_token)
+          {
+            Write-Host "We have a codecov token, so lets push the report up to codecov."
+            Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
+            bash codecov.sh -s './CodeCoverageResults/' -f '*.xml' -Z -t $env:codecov_token
+          }
+          else
+          {
+              Write-Host "No codecov token provided. Probably because this a PR from a fork"
+          }
+      }
+      
+      if ($env:CONFIGURATION -eq 'Release')
+      {
+          dotnet pack src\Homely.AspNetCore.Mvc.Helpers -c $env:CONFIGURATION --include-symbols -p:SymbolPackageFormat=snupkg /p:Version=$env:APPVEYOR_BUILD_VERSION --no-build
+      }
 
 artifacts:
   - path: '**\*.nupkg'
-    name: homely-nugets
+    name: nuget-packages
+    type: NuGetPackage
+  - path: '**\*.snupkg'
+    name: nuget-symbols
     type: NuGetPackage
 
 deploy:
@@ -50,17 +88,16 @@ deploy:
     api_key:
       secure: Hjh+3kM8vuQOP1NCxEMJA85F4ieaRNNWxGo+I4dxxYAZdjaHLy7tVmxw7lLmqDke
     skip_symbols: true
-    artifact: homely-nugets
+    artifact: nuget-packages #MyGet doesn't support symbols packages.
     on:
       appveyor_repo_tag: false
+      configuration: Debug
+
   - provider: NuGet
     api_key:
       secure: 36NxHYhJErlI2N+nlVlzxRPeNoujnX2l8JyCLgn48v+S3sEZfEesZSzB9W3QW3ZY
     skip_symbols: true
-    artifact: homely-nugets
     on:
       branch: master
       appveyor_repo_tag: true
-
-cache:
-  - packages -> **\packages.config
+      configuration: Release

@@ -4,10 +4,6 @@ image: Ubuntu
 pull_requests:
   do_not_increment_build_number: true
 
-environment:
-  codecov_token: 11549d94-ad60-43eb-82bb-c4f91a855cf0
-    #secure: Tis+n7V0gFaHKdN0QSwwUqa6NFR4jO5m07gbDaGfDMmhR6mnDMw3hM6I6u4o2Hzc
-
 # Override the 'version' if this is a GH-tag-commit -or- this is a custom branch (i.e not 'master').
 init:
   - ps: |
@@ -60,8 +56,11 @@ after_test:
           if ($env:codecov_token)
           {
             Write-Host "We have a codecov token, so lets push the report up to codecov."
-            Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-            bash codecov.sh -s './CodeCoverageResults/' -f '*.xml' -Z -t $env:codecov_token
+            #Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
+            #bash codecov.sh -s './CodeCoverageResults/' -f '*.xml' -Z -t $env:codecov_token
+
+            dotnet tool install --global Codecov.Tool
+            codecov -f './CodeCoverageResults/' --required
           }
           else
           {

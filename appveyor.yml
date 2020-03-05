@@ -49,23 +49,9 @@ after_test:
   - ps: |
       if ($env:CONFIGURATION -eq 'Debug')
       {
-          
-          $env:APPVEYOR = 'true' # is 'True' on windows, which fails with the BASH script, below
-          $env:CI = 'true'
-
-          if ($env:codecov_token)
-          {
-            Write-Host "We have a codecov token, so lets push the report up to codecov."
-            #Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-            #bash codecov.sh -s './CodeCoverageResults/' -f '*.xml' -Z -t $env:codecov_token
-
-            dotnet tool install --global Codecov.Tool
-            codecov -f './CodeCoverageResults/' --required
-          }
-          else
-          {
-              Write-Host "No codecov token provided. Probably because this a PR from a fork"
-          }
+          # Currently, the bash script version is better than the .exe version.
+          Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
+          bash codecov.sh -s './CodeCoverageResults/' -f '*.xml' -Z
       }
       
       if ($env:CONFIGURATION -eq 'Release')
@@ -90,7 +76,6 @@ deploy:
     artifact: nuget-packages #MyGet doesn't support symbols packages.
     on:
       appveyor_repo_tag: false
-      configuration: Debug
 
   - provider: NuGet
     api_key:
@@ -99,4 +84,3 @@ deploy:
     on:
       branch: master
       appveyor_repo_tag: true
-      configuration: Release

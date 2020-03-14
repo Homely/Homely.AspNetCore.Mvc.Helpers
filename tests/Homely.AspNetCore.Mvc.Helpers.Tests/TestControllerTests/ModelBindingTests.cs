@@ -4,12 +4,23 @@ using Newtonsoft.Json;
 using Shouldly;
 using System.Net;
 using System.Threading.Tasks;
+using TestWebApplication.Models;
 using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 {
     public class ModelBindingTests : TestSetup
     {
+        [Fact]
+        public async Task GivenAValidModelBind_Get_ReturnsAnHttp200()
+        {
+            // Arrange & Act.
+            var response = await Client.GetAsync($"/test/modelbinding/{ColourType.GreenAndPink}");
+
+            // Assert.
+            response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        }
+
         [Fact]
         public async Task GivenABadModelBind_Get_ReturnsAnHttp400()
         {

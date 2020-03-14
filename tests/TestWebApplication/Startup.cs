@@ -3,22 +3,23 @@ using Homely.AspNetCore.Mvc.Helpers.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
+using System.Reflection;
 using TestWebApplication.Repositories;
 
 namespace TestWebApplication
 {
     public class Startup
     {
-        private readonly IConfiguration _configuration;
+        private const string SwaggerVersion = "v2";
+
         private readonly IHostingEnvironment _hostingEnvironment;
 
-        public Startup(IConfiguration configuration,
-                       IHostingEnvironment hostingEnvironment)
+        public Startup(IHostingEnvironment hostingEnvironment)
         {
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _hostingEnvironment = hostingEnvironment ?? throw new ArgumentNullException(nameof(hostingEnvironment));
         }
 
@@ -35,16 +36,19 @@ namespace TestWebApplication
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddProblemDetails(options => options.IncludeExceptionDetails = _ => _hostingEnvironment.IsDevelopment())
-                    .AddCustomSwagger("Test API");
-
+                    .AddCustomSwagger("Test API",
+                                      SwaggerVersion,
+                                      CustomOperationIdSelector);
+            
             ConfigureRepositories(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
+
             app.UseProblemDetails()
-               .UseCustomSwagger(title: "Test API")
+               .UseCustomSwagger(title: "Test API XXX", version: SwaggerVersion)
                .UseMvc();
         }
 
@@ -59,6 +63,14 @@ namespace TestWebApplication
 
             // Inject our repo.
             services.AddSingleton<IFakeVehicleRepository>(stubbedFakeVehicleRepository);
+        }
+
+        // Format: <Microservice>_<HTTP Method>_<MethodName>
+        // E.g. : Search_Head_GetListingsAsync
+        private string CustomOperationIdSelector(ApiDescription apiDescription)
+        {
+            var methodName = apiDescription.TryGetMethodInfo(out MethodInfo methodInfo) ? methodInfo.Name : Guid.NewGuid().ToString();
+            return $"TestMicroservice_{apiDescription.HttpMethod}_{methodName}_{Guid.NewGuid().ToString()}";
         }
     }
 }

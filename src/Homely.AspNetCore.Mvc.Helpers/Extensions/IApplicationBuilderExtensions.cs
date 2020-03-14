@@ -25,12 +25,13 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
                 throw new ArgumentException(nameof(title));
             }
 
-            application.UseSwagger(c => c.RouteTemplate = routePrefix + "/{documentName}/swagger.json");
+            application.UseSwagger();
+            //application.UseSwagger(c => c.RouteTemplate = routePrefix + "/{documentName}/swagger.json");
 
             application.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint($"/{routePrefix}/{version}/swagger.json", title);
-                c.RoutePrefix = routePrefix;
+                //c.RoutePrefix = routePrefix;
             });
 
             return application;

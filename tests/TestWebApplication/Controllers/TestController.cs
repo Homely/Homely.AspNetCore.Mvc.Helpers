@@ -27,7 +27,8 @@ namespace TestWebApplication.Controllers
         }
 
         // GET: /test/1 | 200 OK.
-        [HttpGet("{id:int}", Name ="GetId")]
+        //[HttpGet("{id:int}", Name ="GetId")]
+        [HttpGet("{id:int}", Name = "GetId")]
         public IActionResult Get(int id)
         {
             var model = _fakeVehicleRepository.Get(id);
@@ -38,6 +39,7 @@ namespace TestWebApplication.Controllers
         }
 
         // GET: /test/notFound | 404 Not Found.
+        [HttpHead("notfound")]
         [HttpGet("notfound")]
         public IActionResult GetNotFound()
         {

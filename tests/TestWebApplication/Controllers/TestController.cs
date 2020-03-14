@@ -27,7 +27,6 @@ namespace TestWebApplication.Controllers
         }
 
         // GET: /test/1 | 200 OK.
-        //[HttpGet("{id:int}", Name ="GetId")]
         [HttpGet("{id:int}", Name = "GetId")]
         public IActionResult Get(int id)
         {

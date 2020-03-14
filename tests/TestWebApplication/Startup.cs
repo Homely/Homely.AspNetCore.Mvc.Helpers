@@ -48,7 +48,7 @@ namespace TestWebApplication
         {
 
             app.UseProblemDetails()
-               .UseCustomSwagger(title: "Test API XXX", version: SwaggerVersion)
+               .UseCustomSwagger("Test API XXX", SwaggerVersion)
                .UseMvc();
         }
 

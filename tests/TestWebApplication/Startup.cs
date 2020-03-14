@@ -15,6 +15,7 @@ namespace TestWebApplication
     public class Startup
     {
         private const string SwaggerVersion = "v2";
+        private const string SwaggerTitle = "Test API";
 
         private readonly IHostingEnvironment _hostingEnvironment;
 
@@ -36,7 +37,7 @@ namespace TestWebApplication
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddProblemDetails(options => options.IncludeExceptionDetails = _ => _hostingEnvironment.IsDevelopment())
-                    .AddCustomSwagger("Test API",
+                    .AddCustomSwagger(SwaggerTitle
                                       SwaggerVersion,
                                       CustomOperationIdSelector);
             
@@ -48,7 +49,7 @@ namespace TestWebApplication
         {
 
             app.UseProblemDetails()
-               .UseCustomSwagger("Test API XXX", SwaggerVersion)
+               .UseCustomSwagger(SwaggerTitle, SwaggerVersion)
                .UseMvc();
         }
 
@@ -66,7 +67,7 @@ namespace TestWebApplication
         }
 
         // Format: <Microservice>_<HTTP Method>_<MethodName>
-        // E.g. : Search_Head_GetListingsAsync
+        // E.g. : TestMicroservice__Head_GetListingsAsync
         private string CustomOperationIdSelector(ApiDescription apiDescription)
         {
             var methodName = apiDescription.TryGetMethodInfo(out MethodInfo methodInfo) ? methodInfo.Name : Guid.NewGuid().ToString();

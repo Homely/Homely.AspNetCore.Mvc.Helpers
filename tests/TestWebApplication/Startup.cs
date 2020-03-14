@@ -37,7 +37,7 @@ namespace TestWebApplication
                     .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddProblemDetails(options => options.IncludeExceptionDetails = _ => _hostingEnvironment.IsDevelopment())
-                    .AddCustomSwagger(SwaggerTitle
+                    .AddCustomSwagger(SwaggerTitle,
                                       SwaggerVersion,
                                       CustomOperationIdSelector);
             

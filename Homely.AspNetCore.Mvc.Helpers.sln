@@ -1,13 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Homely.AspNetCore.Mvc.Helpers", "src\Homely.AspNetCore.Mvc.Helpers\Homely.AspNetCore.Mvc.Helpers.csproj", "{04B7F2CF-CE32-413B-B9AA-01AA6EC4F340}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestWebApplication", "tests\TestWebApplication\TestWebApplication.csproj", "{56778678-D218-4D40-BDBF-6F862803F3F0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Homely.AspNetCore.Mvc.Helpers.Tests", "tests\Homely.AspNetCore.Mvc.Helpers.Tests\Homely.AspNetCore.Mvc.Helpers.Tests.csproj", "{22381896-5D30-4B69-8D95-95A2D546E85B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6F6F0A84-3C6C-4FB2-A08E-E40BA03A05B4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{BD11E9E6-8173-498B-A7EA-D16D78155A90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +34,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{04B7F2CF-CE32-413B-B9AA-01AA6EC4F340} = {6F6F0A84-3C6C-4FB2-A08E-E40BA03A05B4}
+		{56778678-D218-4D40-BDBF-6F862803F3F0} = {BD11E9E6-8173-498B-A7EA-D16D78155A90}
+		{22381896-5D30-4B69-8D95-95A2D546E85B} = {BD11E9E6-8173-498B-A7EA-D16D78155A90}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CAE1AB89-D2DD-4A8E-8738-947BA3F1D089}

@@ -6,9 +6,9 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
     public static class IApplicationBuilderExtensions
     {
         public static IApplicationBuilder UseCustomSwagger(this IApplicationBuilder application,
-                                                           string routePrefix = "swagger",
                                                            string title = "My API",
-                                                           string version = "v1")
+                                                           string version = "v1",
+                                                           string routePrefix = "swagger")
         {
             if (string.IsNullOrWhiteSpace(routePrefix))
             {
@@ -25,12 +25,11 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
                 throw new ArgumentException(nameof(title));
             }
 
-            application.UseSwagger(c => c.RouteTemplate = routePrefix + "/{documentName}/swagger.json");
-
+            application.UseSwagger();
+            
             application.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint($"/{routePrefix}/{version}/swagger.json", title);
-                c.RoutePrefix = routePrefix;
             });
 
             return application;

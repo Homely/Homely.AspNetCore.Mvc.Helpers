@@ -28,12 +28,12 @@ namespace TestWebApplication.Controllers
 
         // GET: /test/1 | 200 OK.
         [HttpGet("{id:int}", Name = "GetId")]
-        public IActionResult Get(int id)
+        public ActionResult<FakeVehicle> Get(int id)
         {
             var model = _fakeVehicleRepository.Get(id);
 
             return model == null
-                ? (IActionResult)NotFound()
+                ? (ActionResult<FakeVehicle>) NotFound()
                 : Ok(model);
         }
 

@@ -7,7 +7,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
 {
     public class TestStartup : Startup
     {
-        public TestStartup(IHostingEnvironment hostingEnvironment) : base(hostingEnvironment)
+        public TestStartup(IWebHostEnvironment webHostEnvironment) : base(webHostEnvironment)
         {
         }
 

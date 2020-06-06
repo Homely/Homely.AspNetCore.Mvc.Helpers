@@ -1,14 +1,29 @@
-﻿using Homely.AspNetCore.Mvc.Helpers.Helpers;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
 using Shouldly;
+using System;
 using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests
 {
     public static class TestHelpers
     {
+        private static Lazy<JsonSerializerOptions> _options = new Lazy<JsonSerializerOptions>(() =>
+        {
+            var options = new JsonSerializerOptions
+            {
+                IgnoreNullValues = true,
+                WriteIndented = true,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            options.Converters.Add(new JsonStringEnumConverter());
+
+            return options;
+        });
+
         /// <summary>
         /// Compares two models and throws an exception if they are not 'equal'.
         /// </summary>
@@ -24,7 +39,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
                 return;
             }
 
-            var actualJson = JsonConvert.SerializeObject(actual, JsonHelpers.CreateJsonSerializerSettings());
+            var actualJson = JsonSerializer.Serialize(actual, _options.Value);
             ShouldLookLike(actualJson, expected);
         }
 
@@ -47,12 +62,12 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
         {
             if (content == null)
             {
-                throw new System.ArgumentNullException(nameof(content));
+                throw new ArgumentNullException(nameof(content));
             }
 
             if (expectedProblemDetails == null)
             {
-                throw new System.ArgumentNullException(nameof(expectedProblemDetails));
+                throw new ArgumentNullException(nameof(expectedProblemDetails));
             }
 
             var problemDetails = await DeserializeAProblemDetaiAsync<ProblemDetails>(content);
@@ -66,12 +81,12 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
         {
             if (content == null)
             {
-                throw new System.ArgumentNullException(nameof(content));
+                throw new ArgumentNullException(nameof(content));
             }
 
             if (expectedProblemDetails == null)
             {
-                throw new System.ArgumentNullException(nameof(expectedProblemDetails));
+                throw new ArgumentNullException(nameof(expectedProblemDetails));
             }
 
             await content.ShouldHaveSameProblemDetails(expectedProblemDetails as ProblemDetails);
@@ -88,7 +103,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
                 return;
             }
 
-            var expectedJson = JsonConvert.SerializeObject(expected, JsonHelpers.CreateJsonSerializerSettings());
+            var expectedJson = JsonSerializer.Serialize(expected, _options.Value);
             actual.ShouldBe(expectedJson);
         }
 
@@ -96,11 +111,11 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
         {
             if (content == null)
             {
-                throw new System.ArgumentNullException(nameof(content));
+                throw new ArgumentNullException(nameof(content));
             }
 
             var responseJson = await content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<T>(responseJson);
+            return JsonSerializer.Deserialize<T>(responseJson);
         }
     }
 }

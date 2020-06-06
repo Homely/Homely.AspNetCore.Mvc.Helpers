@@ -1,19 +1,30 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.TestHost;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
+using System;
 using System.Net.Http;
+using TestWebApplication;
+using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests
 {
-    public abstract class TestSetup
+    public abstract class TestSetup : IClassFixture<WebApplicationFactory<Startup>>, IDisposable
     {
+        private readonly WebApplicationFactory<Startup> _factory;
+
         protected TestSetup()
         {
-            TestServer = new TestServer(new WebHostBuilder().UseStartup<TestStartup>());
-            Client = TestServer.CreateClient();
+            _factory = new WebApplicationFactory<Startup>();
+
+            //TestServer = new TestServer(new WebHostBuilder().UseStartup<TestStartup>());
+            Client = _factory.CreateClient();
         }
 
-        public TestServer TestServer { get; set; }
+        //public TestServer TestServer { get; set; }
 
         public HttpClient Client { get; }
+
+        public void Dispose()
+        {
+            _factory.Dispose();
+        }
     }
 }

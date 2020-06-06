@@ -12,10 +12,12 @@ namespace Homely.AspNetCore.Mvc.Helpers.Filters
     /// </summary>
     public class OperationCancelledExceptionFilter : ExceptionFilterAttribute
     {
+        private const int ClientClosedRequestStatusCode = 499;
         private readonly ILogger _logger;
         private readonly int _statusCode;
+        private readonly string _httpStatusesUri;
 
-        public OperationCancelledExceptionFilter(int statusCode = 499,
+        public OperationCancelledExceptionFilter(int statusCode = ClientClosedRequestStatusCode,
                                                  ILoggerFactory loggerFactory = null)
         {
             if (statusCode <= 0)
@@ -24,7 +26,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Filters
             }
 
             _statusCode = statusCode;
-
+            _httpStatusesUri = $"https://httpstatuses.com/{statusCode}";
             _logger = loggerFactory?.CreateLogger<OperationCancelledExceptionFilter>();
         }
 
@@ -34,19 +36,18 @@ namespace Homely.AspNetCore.Mvc.Helpers.Filters
             {
                 _logger.LogDebug("Request was cancelled by User/Source computer.");
 
-                const int clientClosedRequestStatusCode = 499;
                 var error = new ProblemDetails
                 {
-                    Type = "https://httpstatuses.com/499",
+                    Type = _httpStatusesUri,
                     Title = "Request was cancelled.",
-                    Status = clientClosedRequestStatusCode,
+                    Status = _statusCode,
                     Instance = context.HttpContext.Request.Path
                 };
 
                 context.ExceptionHandled = true;
                 context.Result =   new ObjectResult(error)
                 {
-                    StatusCode = clientClosedRequestStatusCode
+                    StatusCode = _statusCode
                 };
             }
         }

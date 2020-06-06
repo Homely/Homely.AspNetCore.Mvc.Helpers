@@ -3,10 +3,7 @@ using System.Reflection;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Models
 {
-    /// <summary>
-    /// Homepage controller banner - which displays any provided ASCII art + assembly info.
-    /// </summary>
-    /// <remarks>The assembly info is a great option to visually confirm the current build assembly/dll information.</remarks>
+    /// <inheritdoc/>
     public class HomeControllerBanner : IHomeControllerBanner
     {
         private static readonly DateTime ApplicationStartedOn = DateTime.UtcNow;
@@ -26,13 +23,14 @@ namespace Homely.AspNetCore.Mvc.Helpers.Models
             var assemblyInfo = $"Name: {assembly.GetName().Name}{Environment.NewLine}" +
                                    $"Version: {assembly.GetName().Version}{Environment.NewLine}" +
                                    $"Build Date : {assemblyDate}{Environment.NewLine}" +
-                                   $"Application Started: {ApplicationStartedOn.ToString("U")}";
+                                   $"Application Started: {ApplicationStartedOn:U}";
 
             var serverDetails = $"Server name: {Environment.MachineName}";
 
             Banner = banner + Environment.NewLine + assemblyInfo + Environment.NewLine + serverDetails;
         }
 
+        /// <inheritdoc/> 
         public string Banner { get; }
     }
 }

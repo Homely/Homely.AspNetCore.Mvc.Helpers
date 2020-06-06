@@ -2,9 +2,9 @@
 using Homely.AspNetCore.Mvc.Helpers.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Reflection;
@@ -17,26 +17,24 @@ namespace TestWebApplication
         private const string SwaggerVersion = "v2";
         private const string SwaggerTitle = "Test API";
 
-        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public Startup(IHostingEnvironment hostingEnvironment)
+        public Startup(IWebHostEnvironment webHostEnvironment)
         {
-            _hostingEnvironment = hostingEnvironment ?? throw new ArgumentNullException(nameof(hostingEnvironment));
+            _webHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvcCore(options =>
-                               {
-                                   options.WithGlobalCancelledRequestHandler(); // Handle a user-cancelled request.
-                               })
+            services.AddControllers(options =>
+                    {
+                        options.WithGlobalCancelledRequestHandler(); // Handle a user-cancelled request.
+                    })
                     .AddAHomeController(services, typeof(Startup), "pew pew")
-                    .AddACommonJsonFormatter()
-                    .AddApiExplorer() // For Swagger/OpenAPI Documentation.
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                    .AddDefaultJsonOptions();
 
-            services.AddProblemDetails(options => options.IncludeExceptionDetails = _ => _hostingEnvironment.IsDevelopment())
+            services.AddProblemDetails(options => options.IncludeExceptionDetails = (ctx, ex) => _webHostEnvironment.IsDevelopment())
                     .AddCustomSwagger(SwaggerTitle,
                                       SwaggerVersion,
                                       CustomOperationIdSelector);
@@ -47,10 +45,10 @@ namespace TestWebApplication
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
-
             app.UseProblemDetails()
                .UseCustomSwagger(SwaggerTitle, SwaggerVersion)
-               .UseMvc();
+               .UseRouting()
+               .UseEndpoints(endpoints => endpoints.MapControllers());
         }
 
         // TODO: Replace this with proper Integration testing overrides.

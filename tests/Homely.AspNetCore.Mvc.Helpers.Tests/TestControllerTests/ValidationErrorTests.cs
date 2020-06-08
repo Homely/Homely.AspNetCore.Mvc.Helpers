@@ -1,22 +1,33 @@
 ﻿using Homely.AspNetCore.Mvc.Helpers.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using TestWebApplication;
 using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 {
-    public class ValidationErrorTests : TestSetup
+    public class ValidationErrorTests : IClassFixture<TestFixture>
     {
+        private readonly TestFixture _factory;
+
+        public ValidationErrorTests(TestFixture factory)
+        {
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        }
+
         // Controller manually threw a ValidationException.
         [Fact]
         public async Task GivenAGetRequestWhichManuallyThrowsAValidationError_ValidationError_ReturnsAnHttp400()
         {
             // Arrange.
+            var client = _factory.CreateClient();
+
             var error = new ValidationProblemDetails
             {
                 Type = "https://httpstatuses.com/400",
@@ -26,7 +37,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             error.Errors.Add("someProperty", new[] { "This property failed validation." });
 
             // Act.
-            var response = await Client.GetAsync("/test/validationerror");
+            var response = await _factory.CreateClient().GetAsync("/test/validationerror");
 
             // Assert.
             response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);

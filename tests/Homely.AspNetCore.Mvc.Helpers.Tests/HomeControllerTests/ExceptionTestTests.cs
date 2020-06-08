@@ -1,14 +1,22 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shouldly;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.HomeControllerTests
 {
-    public class ExceptionTestTests : TestSetup
+    public class ExceptionTestTests : IClassFixture<TestFixture>
     {
+        private readonly TestFixture _factory;
+
+        public ExceptionTestTests(TestFixture factory)
+        {
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        }
+
         [Fact]
         public async Task GivenARequest_ExceptionTests_ReturnsAnHttp500()
         {
@@ -21,7 +29,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.HomeControllerTests
             };
 
             // Act.
-            var response = await Client.GetAsync("/exceptionTest");
+            var response = await _factory.CreateClient().GetAsync("/exceptionTest");
 
             // Assert.
             response.IsSuccessStatusCode.ShouldBeFalse();

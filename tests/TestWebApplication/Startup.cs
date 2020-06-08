@@ -27,14 +27,17 @@ namespace TestWebApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers(options =>
-                    {
-                        options.WithGlobalCancelledRequestHandler(); // Handle a user-cancelled request.
-                    })
+            services.AddControllers()
                     .AddAHomeController(services, typeof(Startup), "pew pew")
                     .AddDefaultJsonOptions();
 
-            services.AddProblemDetails(options => options.IncludeExceptionDetails = (ctx, ex) => _webHostEnvironment.IsDevelopment())
+            // NOTE: For this test web application, we don't need a TRACE ID because it messes with our tests
+            //       when we need to check the test results.
+            services.AddProblemDetails(options =>
+                                      {
+                                          options.IncludeExceptionDetails = (ctx, ex) => _webHostEnvironment.IsDevelopment();
+                                          options.GetTraceId = new Func<Microsoft.AspNetCore.Http.HttpContext, string>(httpContext => null);
+                                      })
                     .AddCustomSwagger(SwaggerTitle,
                                       SwaggerVersion,
                                       CustomOperationIdSelector);
@@ -65,7 +68,7 @@ namespace TestWebApplication
         }
 
         // Format: <Microservice>_<HTTP Method>_<MethodName>
-        // E.g. : TestMicroservice__Head_GetListingsAsync
+        // E.g. : TestMicroservice_Head_GetListingsAsync
         private string CustomOperationIdSelector(ApiDescription apiDescription)
         {
             var methodName = apiDescription.TryGetMethodInfo(out MethodInfo methodInfo) ? methodInfo.Name : Guid.NewGuid().ToString();

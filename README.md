@@ -16,15 +16,14 @@ This library contains a collection of helpers, models and extension methods that
 ## Samples / highlights
 
 - [ProblemDetails for all 4xx/5xx HTTP Errors](#Sample1)
-- [Graceful handling of interupted/cut/cancelled Requests, mid flight.](#Sample2)
 - [Simple HomeController [HTTP-GET /] which can show a banner + assembly/build info.](#Sample3)
-- [Common JsonSerializerSettings.](#Sample4)
-- [Json output default to use the common JsonSerializerSettings.](#Sample5)
+- [Common JsonSerializerOptions settings.](#Sample4)
+- [Json response-output to default with some common JsonSerializerOptions settings.](#Sample5)
 - [Custom Swagger wired up](#Sample6)
 
 
 ### <a name="Sample1">ProblemDetails for all 4xx/5xx HTTP Errors</a>
-When any 4xx/5xx error occurs, then this will be expressed as a" [Problem Detail](https://tools.ietf.org/html/rfc7807)". This includes the following example scenarios:
+When any 4xx/5xx error occurs, then this will be expressed as a "[Problem Detail](https://tools.ietf.org/html/rfc7807)". This includes the following example scenarios:
 - Model binding fails.
 - Route doesn't exist.
 - Credentials required but failed/missing.
@@ -34,24 +33,10 @@ When any 4xx/5xx error occurs, then this will be expressed as a" [Problem Detail
 ```
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddMvcCore( ... )
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+    services.AddControllers();
 
     services.AddProblemDetails(options => options.IncludeExceptionDetails = _ => _hostingEnvironment.IsDevelopment());
 }
-```
-
-### <a name="Sample2">Graceful handling of interupted/cut/cancelled Requests, mid flight.</a>
-
-If the request is cancelled (either from the user, response is taking too long or some technical hicup between client & server) then stop processing the request. Of course, your own code needs to have smarts to react/handle to `CancellationToken`'s.
-
-```
-public void ConfigureServices(IServiceCollection services)
-{
-    services.AddMvcCore(options =>
-                        {
-                            options.WithGlobalCancelledRequestHandler();
-                        })
 ```
 
 ### <a name="Sample3">Simple HomeController [HTTP-GET /] which can show a banner + assembly/build info.</a>
@@ -63,7 +48,7 @@ Great for API's, this will create the default "root/home" route => `HTTP GET /` 
 ```
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddMvcCore( ... )
+    services.AddControllers( )
             .AddAHomeController(services, typeof(Startup), SomeASCIIArt);
 }
 ```
@@ -87,7 +72,9 @@ E.g. output
 
 Name: ApiGateway.Web
 Version: 3.1.0.0
-Date: 10-October-2018 05:53:36
+Build Date : Sunday, 7 June 2020 2:41:53 PM
+Application Started: Monday, 8 June 2020 12:02:37 PM
+Server name: PUREKROME-PC
 
 ```
 
@@ -97,7 +84,6 @@ Some common JSON settings. This keeps things consistent across projects.
 - CamelCase property names.
 - Indented formatting.
 - Ignore null properties which have values.
-- DateTimes are ISO formatted.
 - Enums are rendered as `string`'s ... not their backing number-value. 
 
 ### <a name="Sample5">Json output default to use the common JsonSerializerSettings.</a>
@@ -107,8 +93,8 @@ All responses are JSON and formatted using the common JSON settings (above).
 ```
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddMvcCore( ... )
-            .AddACommonJsonFormatter();
+    services.AddControllers( ... )
+            .AddDefaultJsonOptions();
 }
 ```
 
@@ -119,7 +105,7 @@ Swagger (using the [Swashbuckle library](https://github.com/domaindrivendev/Swas
 ```
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddMvcCore( ... )
+    services.AddControllers( ... )
             .AddCustomSwagger("Test API", "v2");
 }
 
@@ -127,7 +113,8 @@ public void Configure(IApplicationBuilder app)
 {
     app.UseProblemDetails()
        .UseCustomSwagger("accounts/swagger", "Test API", "v2")
-       .UseMvc();
+       .UseRouting()
+       .UseEndpoints(endpoints => endpoints.MapControllers());
 }
 ```
 

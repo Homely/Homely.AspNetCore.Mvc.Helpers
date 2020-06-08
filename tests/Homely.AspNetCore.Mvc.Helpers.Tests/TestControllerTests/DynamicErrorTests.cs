@@ -1,14 +1,22 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shouldly;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 {
-    public class DynamicErrorTests : TestSetup
+    public class DynamicErrorTests : IClassFixture<TestFixture>
     {
+        private readonly TestFixture _factory;
+
+        public DynamicErrorTests(TestFixture factory)
+        {
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        }
+
         // Controller manually threw a ValidationException.
         [Fact]
         public async Task GivenTwoGetRequestsWhichManuallyThrowsAnError_ValidationError_ReturnsTwoHttp500ResponsesAndTheyAreDifferent()
@@ -22,11 +30,13 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
                 Status = StatusCodes.Status500InternalServerError
             };
 
+            var client = _factory.CreateClient();
+
             // TODO: Set IsDevelopment() so we can proove that both error messages are different.
 
             // Act.
-            var response1 = await Client.GetAsync(route);
-            var response2 = await Client.GetAsync(route);
+            var response1 = await _factory.CreateClient().GetAsync(route);
+            var response2 = await _factory.CreateClient().GetAsync(route);
 
             // Assert.
             response1.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);

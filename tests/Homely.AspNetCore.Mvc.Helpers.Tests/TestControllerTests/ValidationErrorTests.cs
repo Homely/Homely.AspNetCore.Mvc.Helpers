@@ -1,13 +1,9 @@
-﻿using Homely.AspNetCore.Mvc.Helpers.Models;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Shouldly;
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using TestWebApplication;
 using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
@@ -26,11 +22,8 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
         public async Task GivenAGetRequestWhichManuallyThrowsAValidationError_ValidationError_ReturnsAnHttp400()
         {
             // Arrange.
-            var client = _factory.CreateClient();
-
             var error = new ValidationProblemDetails
             {
-                Type = "https://httpstatuses.com/400",
                 Title = "One or more validation errors occurred.",
                 Status = StatusCodes.Status400BadRequest
             };

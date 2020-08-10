@@ -87,13 +87,8 @@ namespace TestWebApplication.Controllers
         {
             ModelState.AddModelError("someProperty", "This property failed validation.");
 
-            var validation = new ValidationProblemDetails(ModelState)
-            {
-                Type = "https://httpstatuses.com/400",
-                Status = StatusCodes.Status400BadRequest
-            };
-
-            throw new ProblemDetailsException(validation);
+            var validationError = new ValidationProblemDetails(ModelState);
+            return BadRequest(validationError);
         }
 
         // Specific Status Code check | 409 Conflict.

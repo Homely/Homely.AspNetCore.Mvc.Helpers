@@ -62,8 +62,8 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
                                                                    string routePrefix = DefaultSwaggerRoutePrefex)
         {
             application.UseProblemDetails()
-               .UseCustomSwagger(title, version, routePrefix)
-               .UseRouting();
+                       .UseCustomSwagger(title, version, routePrefix)
+                       .UseRouting();
 
             if (useAuthorization)
             {

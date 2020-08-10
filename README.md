@@ -28,8 +28,8 @@ Great for API's, this will create the default "root/home" route => `HTTP GET /` 
 ```
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddControllers( )
-            .AddAHomeController(services, typeof(Startup), SomeASCIIArt);
+    services.AddControllers()
+            .AddAHomeController(services, SomeASCIIArt);
 }
 ```
 E.g. output
@@ -61,16 +61,38 @@ Server name: PUREKROME-PC
 ### <a name="Sample5">Json output default to use the common JsonSerializerSettings.</a>
 
 All responses are JSON and formatted using the common JSON settings:
-- CamelCase property names.
-- Indented formatting.
-- Ignore null properties which have values.
-- Enums are rendered as `string`'s ... not their backing number-value. 
+:white_check_mark: CamelCase property names.
+:white_check_mark: Indented formatting.
+:white_check_mark: Ignore null properties which have values.
+:white_check_mark: Enums are rendered as `string`'s ... not their backing number-value. 
 
 ```
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddControllers( ... )
+    services.AddControllers()
             .AddDefaultJsonOptions();
+}
+```
+
+Sample Model/Domain object:
+```
+new FakeVehicle
+{
+    Id = 1,
+    Name = "Name1",
+    RegistrationNumber = "RegistrationNumber1",
+    Colour = ColourType.Grey,
+    VIN = null
+});
+```
+
+Result JSON text:
+```
+{
+  "id": 1,
+  "name": "Name1",
+  "registrationNumber": "RegistrationNumber1",
+  "colour": "Grey"
 }
 ```
 
@@ -81,14 +103,13 @@ Swagger (using the [Swashbuckle library](https://github.com/domaindrivendev/Swas
 ```
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddControllers( ... )
+    services.AddControllers()
             .AddCustomSwagger("Test API", "v2");
 }
 
 public void Configure(IApplicationBuilder app)
 {
-    app.UseProblemDetails()
-       .UseCustomSwagger("accounts/swagger", "Test API", "v2")
+    app.UseCustomSwagger("accounts/swagger", "Test API", "v2")
        .UseRouting()
        .UseEndpoints(endpoints => endpoints.MapControllers());
 }

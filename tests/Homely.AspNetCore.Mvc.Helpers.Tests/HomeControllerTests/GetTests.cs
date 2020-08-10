@@ -20,11 +20,12 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.HomeControllerTests
         public async Task GivenARequest_Get_ReturnsAnHttp200()
         {
             // Arrange.
+            const string banner = "pew pew";
             var client = _factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureServices(services =>
                 {
-                    services.AddControllers().AddAHomeController(services, "pew pew");
+                    services.AddControllers().AddAHomeController(services, banner);
                 });
             }).CreateClient();
 
@@ -34,7 +35,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.HomeControllerTests
             // Assert.
             response.IsSuccessStatusCode.ShouldBeTrue();
             var text = await response.Content.ReadAsStringAsync();
-            text.ShouldStartWith("pew pew"); // Banner ASCII art/text.
+            text.ShouldStartWith(banner); // Banner ASCII art/text.
         }
     }
 }

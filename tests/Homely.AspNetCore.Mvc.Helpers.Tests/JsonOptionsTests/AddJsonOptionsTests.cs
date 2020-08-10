@@ -36,7 +36,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.JsonOptionsTests
             responseBody.ShouldContain("id", Case.Sensitive); // Camel case check.
             responseBody.ShouldNotContain("vin", Case.Insensitive); // IgnoreNullValues check. 
             responseBody.ShouldContain("Grey", Case.Sensitive); // Enum converter check.
-            responseBody.ShouldContain("{\r\n  \""); // WriteIndented check.
+            responseBody.ShouldContain($"{{{Environment.NewLine}  \""); // WriteIndented check.
         }
     }
 }

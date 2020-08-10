@@ -40,8 +40,9 @@ Otherwise, you can pick and choose which items you want.
 ### <a name="Sample3">Simple HomeController [HTTP-GET /] which can show a banner + assembly/build info.</a>
 
 Great for API's, this will create the default "root/home" route => `HTTP GET /` with:
-- Optional banner - some text (like ASCII ART)
-- Build information about the an assembly.
+
+:white_check_mark: Optional banner - some text (like ASCII ART)<br/>
+:white_check_mark: Build information about the an assembly.<br/>
 
 ```
 public void ConfigureServices(IServiceCollection services)
@@ -79,10 +80,11 @@ Server name: PUREKROME-PC
 ### <a name="Sample5">Json output default to use the common JsonSerializerSettings.</a>
 
 All responses are JSON and formatted using the common JSON settings:
-:white_check_mark: CamelCase property names.
-:white_check_mark: Indented formatting.
-:white_check_mark: Ignore null properties which have values.
-:white_check_mark: Enums are rendered as `string`'s ... not their backing number-value. 
+
+:white_check_mark: CamelCase property names.<br/>
+:white_check_mark: Indented formatting.<br/>
+:white_check_mark: Ignore null properties which have values.<br/>
+:white_check_mark: Enums are rendered as `string`'s ... not their backing number-value.<br/>
 
 ```
 public void ConfigureServices(IServiceCollection services)

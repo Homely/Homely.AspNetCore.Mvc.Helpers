@@ -17,7 +17,25 @@ This library contains a collection of helpers, models and extension methods that
 
 - [Simple HomeController [HTTP-GET /] which can show a banner + assembly/build info.](#Sample3)
 - [Json response-output to default with some common JsonSerializerOptions settings.](#Sample5)
-- [Custom Swagger wired up](#Sample6)
+- [Custom OpenAPI (aka. Swagger) wired up](#Sample6)
+- Simple, single way to do all of the above
+
+### Quick Start, do everything, simple and quick.
+
+
+```
+public void ConfigureServices(IServiceCollection services)
+{
+    // - Home controller but no banner.
+    // - Default json options: camel casing, no indention, nulls ignored and enums as strings.
+    // - OpenApi adeed.
+    services.AddControllers()
+             .AddDefaultWebApiSettings(); // Can also be totally customized.
+}
+```
+
+Otherwise, you can pick and choose which items you want.
+
 
 ### <a name="Sample3">Simple HomeController [HTTP-GET /] which can show a banner + assembly/build info.</a>
 
@@ -96,9 +114,9 @@ Result JSON text:
 }
 ```
 
-### <a name="sample6">Custom Swagger wired up</a>
+### <a name="sample6">Custom OpenAPI (aka. Swagger) wired up</a>
 
-Swagger (using the [Swashbuckle library](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)) has been wired up and allows for you to define the `title` and `version` of this API and also a custom `route prefix` (which is good for a gateway API with multiple swagger endpoints because each microservice has their own swagger doc).
+OpenAPI (using the [Swashbuckle library](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)) has been wired up and allows for you to define the `title` and `version` of this API and also a custom `route prefix` (which is good for a gateway API with multiple OpenAPI endpoints because each microservice has their own OpenAPI doc).
 
 ```
 public void ConfigureServices(IServiceCollection services)

@@ -50,12 +50,13 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         /// </summary>
         /// <param name="builder"Mvc builder to help create the Mvc settings.></param>
         /// <returns>IMvcBuilder: the builder, so we can more builder methods.</returns>
-        public static IMvcBuilder AddDefaultJsonOptions(this IMvcBuilder builder)
+        public static IMvcBuilder AddDefaultJsonOptions(this IMvcBuilder builder,
+                                                        bool isIndented = true)
         {
             return builder.AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.IgnoreNullValues = true;
-                options.JsonSerializerOptions.WriteIndented = true;
+                options.JsonSerializerOptions.WriteIndented = isIndented;
                 options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });

@@ -28,8 +28,12 @@ namespace TestWebApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var isStackTraceDisplayed = _webHostEnvironment.IsDevelopment();
+            var isJsonIndented = _webHostEnvironment.IsDevelopment();
+
             services.AddDefaultWebApiSettings("Some Test Api",
-                                              _webHostEnvironment.IsDevelopment(), 
+                                              isStackTraceDisplayed,
+                                              isJsonIndented,
                                               SwaggerTitle, 
                                               SwaggerVersion,
                                               CustomOperationIdSelector);

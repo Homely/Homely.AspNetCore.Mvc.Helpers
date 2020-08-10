@@ -63,15 +63,16 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         /// <param name="operationIdSelector"></param>
         /// <returns></returns>
         public static IServiceCollection AddDefaultWebApiSettings(this IServiceCollection services,
-                                                                  string banner,
-                                                                  bool includeExceptionDetails,
+                                                                  string banner = null,
+                                                                  bool includeExceptionDetails = false,
+                                                                  bool isJsonIndented = false,
                                                                   string title = DefaultSwaggerTitle,
                                                                   string version = DefaultSwaggerVersion,
                                                                   Func<ApiDescription, string> operationIdSelector = null)
         {
             services.AddControllers()
                     .AddAHomeController(services, banner)
-                    .AddDefaultJsonOptions();
+                    .AddDefaultJsonOptions(isJsonIndented);
 
             services.AddProblemDetails(options =>
             {

@@ -15,7 +15,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
             var options = new JsonSerializerOptions
             {
                 IgnoreNullValues = true,
-                WriteIndented = true,
+                WriteIndented = false,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 

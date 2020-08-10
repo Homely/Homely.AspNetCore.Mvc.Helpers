@@ -1,4 +1,6 @@
-﻿using Shouldly;
+﻿using Homely.AspNetCore.Mvc.Helpers.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Shouldly;
 using System;
 using System.Threading.Tasks;
 using Xunit;
@@ -18,9 +20,16 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.HomeControllerTests
         public async Task GivenARequest_Get_ReturnsAnHttp200()
         {
             // Arrange.
+            var client = _factory.WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureServices(services =>
+                {
+                    services.AddControllers().AddAHomeController(services, "pew pew");
+                });
+            }).CreateClient();
 
             // Act.
-            var response = await _factory.CreateClient().GetAsync("/");
+            var response = await client.GetAsync("/");
 
             // Assert.
             response.IsSuccessStatusCode.ShouldBeTrue();

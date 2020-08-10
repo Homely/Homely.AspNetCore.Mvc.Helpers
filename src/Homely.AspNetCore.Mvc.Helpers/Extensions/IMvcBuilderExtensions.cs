@@ -2,6 +2,7 @@
 using Homely.AspNetCore.Mvc.Helpers.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -19,20 +20,20 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         /// <returns>Chaining: the interface for configuring essential MVC services.</returns>
         public static IMvcBuilder AddAHomeController(this IMvcBuilder builder,
                                                      IServiceCollection services,
-                                                     Type callingType,
-                                                     string asciiBanner = null)
+                                                     string asciiBanner = null,
+                                                     Assembly callingAssembly = null)
         {
             if (services == null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
 
-            if (callingType == null)
+            if (callingAssembly == null)
             {
-                throw new ArgumentNullException(nameof(callingType));
+                callingAssembly = Assembly.GetCallingAssembly();
             }
 
-            var banner = new HomeControllerBanner(callingType, asciiBanner);
+            var banner = new HomeControllerBanner(asciiBanner, callingAssembly);
             services.AddSingleton<IHomeControllerBanner>(banner);
 
             builder.AddApplicationPart(typeof(HomeController).Assembly);
@@ -40,6 +41,15 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
             return builder;
         }
 
+        /// <summary>
+        /// Sets up some common, default JsonSerializerOptions settings:<br/>
+        /// - CamelCase property names.
+        /// - Indented formatting.
+        /// - Ignore null properties which have values.
+        /// - Enums are rendered as string's ... not their backing number-value.
+        /// </summary>
+        /// <param name="builder"Mvc builder to help create the Mvc settings.></param>
+        /// <returns>IMvcBuilder: the builder, so we can more builder methods.</returns>
         public static IMvcBuilder AddDefaultJsonOptions(this IMvcBuilder builder)
         {
             return builder.AddJsonOptions(options =>

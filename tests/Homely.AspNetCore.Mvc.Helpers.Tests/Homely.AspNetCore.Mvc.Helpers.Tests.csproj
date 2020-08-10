@@ -2,16 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-
     <IsPackable>false</IsPackable>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-
-  <!--<ItemGroup>
-    <Compile Remove="ExtensionsTests\**" />
-    <EmbeddedResource Remove="ExtensionsTests\**" />
-    <None Remove="ExtensionsTests\**" />
-  </ItemGroup>-->
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="1.3.0">

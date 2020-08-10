@@ -1,6 +1,7 @@
 ﻿using Hellang.Middleware.ProblemDetails;
 using Homely.AspNetCore.Mvc.Helpers.Extensions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,31 +28,18 @@ namespace TestWebApplication
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
-                    .AddAHomeController(services, typeof(Startup), "pew pew")
-                    .AddDefaultJsonOptions();
-
-            // NOTE: For this test web application, we don't need a TRACE ID because it messes with our tests
-            //       when we need to check the test results.
-            services.AddProblemDetails(options =>
-                                      {
-                                          options.IncludeExceptionDetails = (ctx, ex) => _webHostEnvironment.IsDevelopment();
-                                          options.GetTraceId = new Func<Microsoft.AspNetCore.Http.HttpContext, string>(httpContext => null);
-                                      })
-                    .AddCustomSwagger(SwaggerTitle,
-                                      SwaggerVersion,
-                                      CustomOperationIdSelector);
-            
+            services.AddDefaultWebApiSettings("Some Test Api",
+                                              _webHostEnvironment.IsDevelopment(), 
+                                              SwaggerTitle, 
+                                              SwaggerVersion,
+                                              CustomOperationIdSelector);
             ConfigureRepositories(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
-            app.UseProblemDetails()
-               .UseCustomSwagger(SwaggerTitle, SwaggerVersion)
-               .UseRouting()
-               .UseEndpoints(endpoints => endpoints.MapControllers());
+            app.UseDefaultWebApiSettings(true, SwaggerTitle, SwaggerVersion);
         }
 
         // TODO: Replace this with proper Integration testing overrides.
@@ -72,7 +60,7 @@ namespace TestWebApplication
         private string CustomOperationIdSelector(ApiDescription apiDescription)
         {
             var methodName = apiDescription.TryGetMethodInfo(out MethodInfo methodInfo) ? methodInfo.Name : Guid.NewGuid().ToString();
-            return $"TestMicroservice_{apiDescription.HttpMethod}_{methodName}_{Guid.NewGuid().ToString()}";
+            return $"TestMicroservice_{apiDescription.HttpMethod}_{methodName}_{Guid.NewGuid()}";
         }
     }
 }

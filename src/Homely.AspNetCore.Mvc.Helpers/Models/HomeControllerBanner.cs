@@ -8,20 +8,14 @@ namespace Homely.AspNetCore.Mvc.Helpers.Models
     {
         private static readonly DateTime ApplicationStartedOn = DateTime.UtcNow;
 
-        public HomeControllerBanner(Type callingType,
-                                    string banner = null)
+        public HomeControllerBanner(string banner = null,
+                                    Assembly callingAssembly = null)
         {
-            if (callingType == null)
-            {
-                throw new ArgumentNullException(nameof(callingType));
-            }
-
-            var assembly = callingType.GetTypeInfo().Assembly;
-            var assemblyDate = assembly.Location == null
+            var assemblyDate = callingAssembly.Location == null
                                    ? "-- unknown --"
-                                   : System.IO.File.GetLastWriteTime(assembly.Location).ToString("U");
-            var assemblyInfo = $"Name: {assembly.GetName().Name}{Environment.NewLine}" +
-                                   $"Version: {assembly.GetName().Version}{Environment.NewLine}" +
+                                   : System.IO.File.GetLastWriteTime(callingAssembly.Location).ToString("U");
+            var assemblyInfo = $"Name: {callingAssembly.GetName().Name}{Environment.NewLine}" +
+                                   $"Version: {callingAssembly.GetName().Version}{Environment.NewLine}" +
                                    $"Build Date : {assemblyDate}{Environment.NewLine}" +
                                    $"Application Started: {ApplicationStartedOn:U}";
 

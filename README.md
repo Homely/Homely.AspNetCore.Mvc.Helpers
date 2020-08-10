@@ -15,29 +15,9 @@ This library contains a collection of helpers, models and extension methods that
 
 ## Samples / highlights
 
-- [ProblemDetails for all 4xx/5xx HTTP Errors](#Sample1)
 - [Simple HomeController [HTTP-GET /] which can show a banner + assembly/build info.](#Sample3)
-- [Common JsonSerializerOptions settings.](#Sample4)
 - [Json response-output to default with some common JsonSerializerOptions settings.](#Sample5)
 - [Custom Swagger wired up](#Sample6)
-
-
-### <a name="Sample1">ProblemDetails for all 4xx/5xx HTTP Errors</a>
-When any 4xx/5xx error occurs, then this will be expressed as a "[Problem Detail](https://tools.ietf.org/html/rfc7807)". This includes the following example scenarios:
-- Model binding fails.
-- Route doesn't exist.
-- Credentials required but failed/missing.
-- Manual 4XX responses.
-- Manual 5XX responses.
-
-```
-public void ConfigureServices(IServiceCollection services)
-{
-    services.AddControllers();
-
-    services.AddProblemDetails(options => options.IncludeExceptionDetails = _ => _hostingEnvironment.IsDevelopment());
-}
-```
 
 ### <a name="Sample3">Simple HomeController [HTTP-GET /] which can show a banner + assembly/build info.</a>
 
@@ -78,17 +58,13 @@ Server name: PUREKROME-PC
 
 ```
 
-### <a name="Sample4">Common JsonSerializerSettings.</a>
+### <a name="Sample5">Json output default to use the common JsonSerializerSettings.</a>
 
-Some common JSON settings. This keeps things consistent across projects.
+All responses are JSON and formatted using the common JSON settings:
 - CamelCase property names.
 - Indented formatting.
 - Ignore null properties which have values.
 - Enums are rendered as `string`'s ... not their backing number-value. 
-
-### <a name="Sample5">Json output default to use the common JsonSerializerSettings.</a>
-
-All responses are JSON and formatted using the common JSON settings (above).
 
 ```
 public void ConfigureServices(IServiceCollection services)

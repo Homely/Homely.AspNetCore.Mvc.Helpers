@@ -18,14 +18,9 @@
         <RepositoryType>.net c# .net-core</RepositoryType>
         <PackageTags>homely aspnet-core-helpers</PackageTags>
     </PropertyGroup>
-
-    <!--<ItemGroup>
-        <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    </ItemGroup>-->
     
     <ItemGroup>
-        <!--<PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />-->
+        <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="5.1.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.4" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.4" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />

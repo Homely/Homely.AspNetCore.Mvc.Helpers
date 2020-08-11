@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace TestWebApplication.Models
 {
@@ -16,5 +17,6 @@ namespace TestWebApplication.Models
         /// </summary>
         /// <remarks>Optional - might not always have this data.</remarks>
         public string VIN { get; set; }
+        public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
     }
 }

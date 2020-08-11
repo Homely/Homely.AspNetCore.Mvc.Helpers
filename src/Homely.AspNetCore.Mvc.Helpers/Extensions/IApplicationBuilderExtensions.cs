@@ -1,4 +1,4 @@
-﻿using Hellang.Middleware.ProblemDetails;
+using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Builder;
 using System;
 
@@ -6,14 +6,14 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
 {
     public static class IApplicationBuilderExtensions
     {
-        private const string DefaultSwaggerTitle = "My API";
-        private const string DefaultSwaggerVersion = "v1";
-        private const string DefaultSwaggerRoutePrefex = "swagger";
+        private const string DefaultOpenApiTitle = "My API";
+        private const string DefaultOpenApiVersion = "v1";
+        private const string DefaultOpenApiRoutePrefex = "swagger";
 
-        public static IApplicationBuilder UseCustomSwagger(this IApplicationBuilder application,
-                                                           string title = DefaultSwaggerTitle,
-                                                           string version = DefaultSwaggerVersion,
-                                                           string routePrefix = DefaultSwaggerRoutePrefex)
+        public static IApplicationBuilder UseCustomOpenApi(this IApplicationBuilder application,
+                                                           string title = DefaultOpenApiTitle,
+                                                           string version = DefaultOpenApiVersion,
+                                                           string routePrefix = DefaultOpenApiRoutePrefex)
         {
             if (string.IsNullOrWhiteSpace(routePrefix))
             {
@@ -44,7 +44,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         /// <summary>
         /// This menthod uses the common Web Api settings:<br/>
         /// - UseProblemDetails<br/>
-        /// - UseCustomSwagger<br/>
+        /// - UseCustomOpenApi<br/>
         /// - UseRouting<br/>
         /// - OPTIONAL: UseAuthorization<br/>
         /// - UseEndpoints that map controllers<br/>
@@ -57,12 +57,12 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         /// <returns></returns>
         public static IApplicationBuilder UseDefaultWebApiSettings(this IApplicationBuilder application,
                                                                    bool useAuthorization = true,
-                                                                   string title = DefaultSwaggerTitle,
-                                                                   string version = DefaultSwaggerVersion,
-                                                                   string routePrefix = DefaultSwaggerRoutePrefex)
+                                                                   string title = DefaultOpenApiTitle,
+                                                                   string version = DefaultOpenApiVersion,
+                                                                   string routePrefix = DefaultOpenApiRoutePrefex)
         {
             application.UseProblemDetails()
-                       .UseCustomSwagger(title, version, routePrefix)
+                       .UseCustomOpenApi(title, version, routePrefix)
                        .UseRouting();
 
             if (useAuthorization)

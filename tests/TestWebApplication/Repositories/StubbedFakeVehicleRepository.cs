@@ -1,4 +1,4 @@
-﻿using TestWebApplication.Models;
+using TestWebApplication.Models;
 
 namespace TestWebApplication.Repositories
 {
@@ -12,22 +12,28 @@ namespace TestWebApplication.Repositories
                 Id = 1,
                 Name = "Name1",
                 RegistrationNumber = "RegistrationNumber1",
-                Colour = ColourType.Grey
+                Colour = ColourType.Grey,
+                CreatedOn = new System.DateTime(2000, 1, 2, 3, 4, 5, 0) // Testing ZERO milliseconds.
             });
+
             stubbedFakeVehicleRepository.Add(new FakeVehicle
             {
                 Id = 2,
-                Colour = ColourType.Black,
+                Colour = ColourType.Grey,
                 Name = "Name2",
-                RegistrationNumber = "RegistrationNumber2"
+                RegistrationNumber = "RegistrationNumber2",
+                CreatedOn = new System.DateTime(2000, 1, 2, 3, 4, 5, 666) // Testing with milliseconds.
             });
+
             stubbedFakeVehicleRepository.Add(new FakeVehicle
             {
                 Id = 3,
-                Colour = ColourType.Blue,
+                Colour = ColourType.Grey,
                 Name = "Name3",
-                RegistrationNumber = "RegistrationNumber3"
+                RegistrationNumber = "RegistrationNumber3",
+                CreatedOn = new System.DateTime(2000, 1, 2, 3, 4, 5, 1) // Testing with 1 (not 3) milliseconds.
             });
+
             stubbedFakeVehicleRepository.Add(new FakeVehicle
             {
                 Id = 4,
@@ -51,6 +57,23 @@ namespace TestWebApplication.Repositories
                 Name = "Name6",
                 RegistrationNumber = "RegistrationNumber6"
             });
+
+            stubbedFakeVehicleRepository.Add(new FakeVehicle
+            {
+                Id = 7,
+                Colour = ColourType.Black,
+                Name = "Name7",
+                RegistrationNumber = "RegistrationNumber7"
+            });
+
+            stubbedFakeVehicleRepository.Add(new FakeVehicle
+            {
+                Id = 8,
+                Colour = ColourType.Blue,
+                Name = "Name8",
+                RegistrationNumber = "RegistrationNumber8"
+            });
+
             return stubbedFakeVehicleRepository;
         }
     }

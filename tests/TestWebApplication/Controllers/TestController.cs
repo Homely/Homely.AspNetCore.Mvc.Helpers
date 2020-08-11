@@ -87,13 +87,8 @@ namespace TestWebApplication.Controllers
         {
             ModelState.AddModelError("someProperty", "This property failed validation.");
 
-            var validation = new ValidationProblemDetails(ModelState)
-            {
-                Type = "https://httpstatuses.com/400",
-                Status = StatusCodes.Status400BadRequest
-            };
-
-            throw new ProblemDetailsException(validation);
+            var validationError = new ValidationProblemDetails(ModelState);
+            return BadRequest(validationError);
         }
 
         // Specific Status Code check | 409 Conflict.
@@ -110,24 +105,6 @@ namespace TestWebApplication.Controllers
             };
 
             return StatusCode(409, error);
-        }
-
-        [HttpGet("slowDelay")]
-        [HttpGet("slowDelay/{seconds:int}")]
-        public async Task<IActionResult> SlowDelay(CancellationToken cancellationToken, int seconds = 50)
-        {
-            // Pretend some logic takes a long time. Like getting some data from a database.
-            var startTime = DateTime.UtcNow;
-
-            await Task.Delay(1000 * seconds, cancellationToken);
-
-            var endTime = DateTime.UtcNow;
-
-            return Ok(new
-            {
-                startTime,
-                endTime
-            });
         }
     }
 }

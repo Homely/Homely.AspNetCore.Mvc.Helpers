@@ -1,14 +1,22 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shouldly;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 {
-    public class ErrorTests : TestSetup
+    public class ErrorTests : IClassFixture<TestFixture>
     {
+        private readonly TestFixture _factory;
+
+        public ErrorTests(TestFixture factory)
+        {
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        }
+
         [Fact]
         public async Task GivenAGetRequest_Error_ReturnsAnHttp500()
         {
@@ -21,7 +29,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             };
 
             // Act.
-            var response = await Client.GetAsync("/test/error");
+            var response = await _factory.CreateClient().GetAsync("/test/error");
 
             // Assert.
             response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);

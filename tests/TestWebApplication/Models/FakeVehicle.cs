@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace TestWebApplication.Models
 {
@@ -11,5 +10,11 @@ namespace TestWebApplication.Models
         public string Name { get; set; }
         public string RegistrationNumber { get; set; }
         public ColourType Colour { get; set; }
+
+        /// <summary>
+        /// Optional: VIN of the vehicle.
+        /// </summary>
+        /// <remarks>Optional - might not always have this data.</remarks>
+        public string VIN { get; set; }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -12,8 +11,15 @@ using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 {
-    public class PostTests : TestSetup
+    public class PostTests : IClassFixture<TestFixture>
     {
+        private readonly TestFixture _factory;
+
+        public PostTests(TestFixture factory)
+        {
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        }
+
         [Fact]
         public async Task GivenPostingAValidModel_Post_ReturnsAndHttp201()
         {
@@ -30,7 +36,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             var content = new FormUrlEncodedContent(formData);
 
             // Act.
-            var response = await Client.PostAsync("/test", content);
+            var response = await _factory.CreateClient().PostAsync("/test", content);
 
             // Assert.
             response.EnsureSuccessStatusCode();
@@ -57,16 +63,16 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 
             var error = new ValidationProblemDetails
             {
-                //Type = "https://httpstatuses.com/400",
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
                 Title = "One or more validation errors occurred.",
                 Status = StatusCodes.Status400BadRequest,
                 Detail = "Please refer to the errors property for additional details.",
                 Instance = "/test"
             };
-            error.Errors.Add("colour", new[] { "The value 'pewpew' is not valid for Colour." });
+            error.Errors.Add("Colour", new[] { "The value 'pewpew' is not valid for Colour." });
 
             // Act.
-            var response = await Client.PostAsync("/test", content);
+            var response = await _factory.CreateClient().PostAsync("/test", content);
 
             // Assert.  
             response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);

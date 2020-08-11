@@ -1,14 +1,22 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shouldly;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 {
-    public class GetNotFoundTests : TestSetup
+    public class GetNotFoundTests : IClassFixture<TestFixture>
     {
+        private readonly TestFixture _factory;
+
+        public GetNotFoundTests(TestFixture factory)
+        {
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        }
+
         [Fact]
         public async Task GivenABadRoute_Get_ReturnsAnHttp404()
         {
@@ -20,7 +28,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
                 Status = StatusCodes.Status404NotFound
             };
             // Act.
-            var response = await Client.GetAsync($"/test/pewpewpewpew");
+            var response = await _factory.CreateClient().GetAsync($"/test/pewpewpewpew");
 
             // Assert.
             response.StatusCode.ShouldBe(HttpStatusCode.NotFound);

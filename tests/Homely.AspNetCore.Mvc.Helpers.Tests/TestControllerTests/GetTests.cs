@@ -1,14 +1,22 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shouldly;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 {
-    public class GetTests : TestSetup
+    public class GetTests : IClassFixture<TestFixture>
     {
+        private readonly TestFixture _factory;
+
+        public GetTests(TestFixture factory)
+        {
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        }
+
         [Fact]
         public async Task GivenAValidId_Get_ReturnsAnHttp200()
         {
@@ -17,7 +25,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             var expectedFakeVehicle = FakeVehicleHelpers.CreateAFakeVehicle(1);
 
             // Act.
-            var response = await Client.GetAsync($"/test/{id}");
+            var response = await _factory.CreateClient().GetAsync($"/test/{id}");
 
             // Assert.
             response.IsSuccessStatusCode.ShouldBeTrue();
@@ -37,7 +45,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             };
 
             // Act.
-            var response = await Client.GetAsync($"/test/{id}");
+            var response = await _factory.CreateClient().GetAsync($"/test/{id}");
 
             // Assert.
             response.StatusCode.ShouldBe(HttpStatusCode.NotFound);

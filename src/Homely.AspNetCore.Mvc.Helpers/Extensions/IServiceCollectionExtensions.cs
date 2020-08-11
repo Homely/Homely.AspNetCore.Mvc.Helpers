@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+﻿using Hellang.Middleware.ProblemDetails;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System;
@@ -7,9 +8,12 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
 {
     public static class IServiceCollectionExtensions
     {
+        private const string DefaultSwaggerTitle = "My API";
+        private const string DefaultSwaggerVersion = "v1";
+
         public static IServiceCollection AddCustomSwagger(this IServiceCollection services,
-                                                          string title = "My API",
-                                                          string version = "v1",
+                                                          string title = DefaultSwaggerTitle,
+                                                          string version = DefaultSwaggerVersion,
                                                           Func<ApiDescription, string> operationIdSelector = null)
         {
             if (string.IsNullOrWhiteSpace(title))
@@ -37,10 +41,49 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
                 };
 
                 setupAction.SwaggerDoc(version, info);
-                    
+
             });
 
             return services;
+        }
+
+        /// <summary>
+        /// This method adds the common web api services:<br/>
+        /// - AddControllers<br/>
+        /// - AddHomeController<br/>
+        /// - AddDefaultJsonOptions<br/>
+        /// - AddProblemDeatils<br/>
+        /// - AddCustomSwagger<br/>
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="banner"></param>
+        /// <param name="includeExceptionDetails"></param>
+        /// <param name="title"></param>
+        /// <param name="version"></param>
+        /// <param name="operationIdSelector"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddDefaultWebApiSettings(this IServiceCollection services,
+                                                                  string banner = null,
+                                                                  bool includeExceptionDetails = false,
+                                                                  bool isJsonIndented = false,
+                                                                  string title = DefaultSwaggerTitle,
+                                                                  string version = DefaultSwaggerVersion,
+                                                                  Func<ApiDescription, string> operationIdSelector = null)
+        {
+            services.AddControllers()
+                    .AddAHomeController(services, banner)
+                    .AddDefaultJsonOptions(isJsonIndented);
+
+            services.AddProblemDetails(options =>
+            {
+                options.IncludeExceptionDetails = (ctx, ex) => includeExceptionDetails;
+            })
+                    .AddCustomSwagger(title,
+                                      version,
+                                      operationIdSelector);
+
+            return services;
+
         }
     }
 }

@@ -1,18 +1,26 @@
 ﻿using Shouldly;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.SwaggerTests
 {
-    public class CustomSwaggerTests : TestSetup
+    public class CustomSwaggerTests : IClassFixture<TestFixture>
     {
+        private readonly TestFixture _factory;
+
+        public CustomSwaggerTests(TestFixture factory)
+        {
+            _factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        }
+
         [Fact]
         public async Task GivenASwaggerUiRequest_Get_ReturnsAnHttp200()
         {
             // Arrange.
 
             // Act.
-            var response = await Client.GetAsync("/swagger/index.html");
+            var response = await _factory.CreateClient().GetAsync("/swagger/index.html");
 
             // Assert.
             response.IsSuccessStatusCode.ShouldBeTrue();
@@ -24,7 +32,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.SwaggerTests
             // Arrange.
 
             // Act.
-            var response = await Client.GetAsync("/swagger/v2/swagger.json");
+            var response = await _factory.CreateClient().GetAsync("/swagger/v2/swagger.json");
 
             // Assert.
             response.IsSuccessStatusCode.ShouldBeTrue();

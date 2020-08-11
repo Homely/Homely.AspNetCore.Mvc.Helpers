@@ -15,56 +15,40 @@ This library contains a collection of helpers, models and extension methods that
 
 ## Samples / highlights
 
-- [ProblemDetails for all 4xx/5xx HTTP Errors](#Sample1)
-- [Graceful handling of interupted/cut/cancelled Requests, mid flight.](#Sample2)
 - [Simple HomeController [HTTP-GET /] which can show a banner + assembly/build info.](#Sample3)
-- [Common JsonSerializerSettings.](#Sample4)
-- [Json output default to use the common JsonSerializerSettings.](#Sample5)
-- [Custom Swagger wired up](#Sample6)
+- [Json response-output to default with some common JsonSerializerOptions settings.](#Sample5)
+- [Custom OpenAPI (aka. Swagger) wired up](#Sample6)
+- Simple, single way to do all of the above
 
+### Quick Start, do everything, simple and quick.
 
-### <a name="Sample1">ProblemDetails for all 4xx/5xx HTTP Errors</a>
-When any 4xx/5xx error occurs, then this will be expressed as a" [Problem Detail](https://tools.ietf.org/html/rfc7807)". This includes the following example scenarios:
-- Model binding fails.
-- Route doesn't exist.
-- Credentials required but failed/missing.
-- Manual 4XX responses.
-- Manual 5XX responses.
 
 ```
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddMvcCore( ... )
-            .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-
-    services.AddProblemDetails(options => options.IncludeExceptionDetails = _ => _hostingEnvironment.IsDevelopment());
+    // - Home controller but no banner.
+    // - Default json options: camel casing, no indention, nulls ignored and enums as strings.
+    // - OpenApi adeed.
+    services.AddControllers()
+             .AddDefaultWebApiSettings(); // Can also be totally customized.
 }
 ```
 
-### <a name="Sample2">Graceful handling of interupted/cut/cancelled Requests, mid flight.</a>
+Otherwise, you can pick and choose which items you want.
 
-If the request is cancelled (either from the user, response is taking too long or some technical hicup between client & server) then stop processing the request. Of course, your own code needs to have smarts to react/handle to `CancellationToken`'s.
-
-```
-public void ConfigureServices(IServiceCollection services)
-{
-    services.AddMvcCore(options =>
-                        {
-                            options.WithGlobalCancelledRequestHandler();
-                        })
-```
 
 ### <a name="Sample3">Simple HomeController [HTTP-GET /] which can show a banner + assembly/build info.</a>
 
 Great for API's, this will create the default "root/home" route => `HTTP GET /` with:
-- Optional banner - some text (like ASCII ART)
-- Build information about the an assembly.
+
+:white_check_mark: Optional banner - some text (like ASCII ART)<br/>
+:white_check_mark: Build information about the an assembly.<br/>
 
 ```
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddMvcCore( ... )
-            .AddAHomeController(services, typeof(Startup), SomeASCIIArt);
+    services.AddControllers()
+            .AddAHomeController(services, SomeASCIIArt);
 }
 ```
 E.g. output
@@ -87,47 +71,67 @@ E.g. output
 
 Name: ApiGateway.Web
 Version: 3.1.0.0
-Date: 10-October-2018 05:53:36
+Build Date : Sunday, 7 June 2020 2:41:53 PM
+Application Started: Monday, 8 June 2020 12:02:37 PM
+Server name: PUREKROME-PC
 
 ```
-
-### <a name="Sample4">Common JsonSerializerSettings.</a>
-
-Some common JSON settings. This keeps things consistent across projects.
-- CamelCase property names.
-- Indented formatting.
-- Ignore null properties which have values.
-- DateTimes are ISO formatted.
-- Enums are rendered as `string`'s ... not their backing number-value. 
 
 ### <a name="Sample5">Json output default to use the common JsonSerializerSettings.</a>
 
-All responses are JSON and formatted using the common JSON settings (above).
+All responses are JSON and formatted using the common JSON settings:
+
+:white_check_mark: CamelCase property names.<br/>
+:white_check_mark: Indented formatting.<br/>
+:white_check_mark: Ignore null properties which have values.<br/>
+:white_check_mark: Enums are rendered as `string`'s ... not their backing number-value.<br/>
 
 ```
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddMvcCore( ... )
-            .AddACommonJsonFormatter();
+    services.AddControllers()
+            .AddDefaultJsonOptions();
 }
 ```
 
-### <a name="sample6">Custom Swagger wired up</a>
+Sample Model/Domain object:
+```
+new FakeVehicle
+{
+    Id = 1,
+    Name = "Name1",
+    RegistrationNumber = "RegistrationNumber1",
+    Colour = ColourType.Grey,
+    VIN = null
+});
+```
 
-Swagger (using the [Swashbuckle library](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)) has been wired up and allows for you to define the `title` and `version` of this API and also a custom `route prefix` (which is good for a gateway API with multiple swagger endpoints because each microservice has their own swagger doc).
+Result JSON text:
+```
+{
+  "id": 1,
+  "name": "Name1",
+  "registrationNumber": "RegistrationNumber1",
+  "colour": "Grey"
+}
+```
+
+### <a name="sample6">Custom OpenAPI (aka. Swagger) wired up</a>
+
+OpenAPI (using the [Swashbuckle library](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)) has been wired up and allows for you to define the `title` and `version` of this API and also a custom `route prefix` (which is good for a gateway API with multiple OpenAPI endpoints because each microservice has their own OpenAPI doc).
 
 ```
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddMvcCore( ... )
+    services.AddControllers()
             .AddCustomSwagger("Test API", "v2");
 }
 
 public void Configure(IApplicationBuilder app)
 {
-    app.UseProblemDetails()
-       .UseCustomSwagger("accounts/swagger", "Test API", "v2")
-       .UseMvc();
+    app.UseCustomSwagger("accounts/swagger", "Test API", "v2")
+       .UseRouting()
+       .UseEndpoints(endpoints => endpoints.MapControllers());
 }
 ```
 

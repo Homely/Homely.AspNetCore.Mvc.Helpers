@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shouldly;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using TestWebApplication.Repositories;
 using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
@@ -22,7 +23,8 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
         {
             // Arrange.
             const int id = 1;
-            var expectedFakeVehicle = FakeVehicleHelpers.CreateAFakeVehicle(1);
+            var expectedFakeVehicle = StubbedFakeVehicleRepository.CreateAFakeVehicleRepository()
+                                                                  .Get(id);
 
             // Act.
             var response = await _factory.CreateClient().GetAsync($"/test/{id}");

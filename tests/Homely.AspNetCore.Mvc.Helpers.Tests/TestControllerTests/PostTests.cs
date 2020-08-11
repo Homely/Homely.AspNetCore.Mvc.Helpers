@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shouldly;
 using System;
@@ -41,7 +41,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             // Assert.
             response.EnsureSuccessStatusCode();
             response.StatusCode.ShouldBe(HttpStatusCode.Created);
-            response.Headers.Location.ShouldBe(new Uri("http://localhost/test/7"));
+            response.Headers.Location.ShouldBe(new Uri("http://localhost/test/9"));
             var responseString = await response.Content.ReadAsStringAsync();
             responseString.ShouldBeNullOrWhiteSpace();
         }

@@ -58,7 +58,6 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.JsonOptionsTests
                 ? $"{{{Environment.NewLine}  \""
                 : $"{{\"id\"";
             responseBody.ShouldStartWith(startingJson); // WriteIndented check.
-
         }
     }
 }

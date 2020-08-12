@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using Shouldly;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using TestWebApplication.Models;
+using TestWebApplication.Repositories;
 using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
@@ -25,6 +27,9 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
         {
             // Arrange.
             var fakeVehicle = FakeVehicleHelpers.CreateAFakeVehicle();
+            var currentFakeVehicleCount = StubbedFakeVehicleRepository.CreateAFakeVehicleRepository()
+                                                                      .Index()
+                                                                      .Count();
             var formData = new Dictionary<string, string>
             {
                 { nameof(FakeVehicle.Id), fakeVehicle.Id.ToString() },
@@ -41,7 +46,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             // Assert.
             response.EnsureSuccessStatusCode();
             response.StatusCode.ShouldBe(HttpStatusCode.Created);
-            response.Headers.Location.ShouldBe(new Uri("http://localhost/test/9"));
+            response.Headers.Location.ShouldBe(new Uri($"http://localhost/test/{currentFakeVehicleCount + 1 }"));
             var responseString = await response.Content.ReadAsStringAsync();
             responseString.ShouldBeNullOrWhiteSpace();
         }

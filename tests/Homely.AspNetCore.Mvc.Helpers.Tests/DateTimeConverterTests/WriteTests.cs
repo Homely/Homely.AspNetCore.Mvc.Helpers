@@ -20,7 +20,6 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.DateTimeConverterTests
             {
                 using (var writer = new Utf8JsonWriter(memoryStream))
                 {
-
                     // Act.
                     converter.Write(writer, dateTime, new JsonSerializerOptions());
                 }

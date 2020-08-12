@@ -14,20 +14,24 @@ namespace Homely.AspNetCore.Mvc.Helpers
         {
             if (string.IsNullOrWhiteSpace(dateTimeFormat))
             {
-                throw new ArgumentException($"'{nameof(dateTimeFormat)}' cannot be null or whitespace.", nameof(dateTimeFormat));
+                throw new ArgumentNullException($"'{nameof(dateTimeFormat)}' cannot be null or whitespace.", nameof(dateTimeFormat));
             }
 
             _dateTimeFormat = dateTimeFormat;
         }
 
         /// <inheritdoc/>
-        public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override DateTime Read(ref Utf8JsonReader reader, 
+                                      Type typeToConvert, 
+                                      JsonSerializerOptions options)
         {
             return DateTime.Parse(reader.GetString());
         }
 
         /// <inheritdoc/>
-        public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, 
+                                   DateTime value, 
+                                   JsonSerializerOptions options)
         {
             writer.WriteStringValue(value.ToString(_dateTimeFormat));
         }

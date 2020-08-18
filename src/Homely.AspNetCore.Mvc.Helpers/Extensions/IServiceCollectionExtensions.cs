@@ -1,4 +1,4 @@
-﻿using Hellang.Middleware.ProblemDetails;
+using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -8,12 +8,12 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
 {
     public static class IServiceCollectionExtensions
     {
-        private const string DefaultSwaggerTitle = "My API";
-        private const string DefaultSwaggerVersion = "v1";
+        private const string DefaultOpenApiTitle = "My API";
+        private const string DefaultOpenApiVersion = "v1";
 
-        public static IServiceCollection AddCustomSwagger(this IServiceCollection services,
-                                                          string title = DefaultSwaggerTitle,
-                                                          string version = DefaultSwaggerVersion,
+        public static IServiceCollection AddCustomOpenApi(this IServiceCollection services,
+                                                          string title = DefaultOpenApiTitle,
+                                                          string version = DefaultOpenApiVersion,
                                                           Func<ApiDescription, string> operationIdSelector = null)
         {
             if (string.IsNullOrWhiteSpace(title))
@@ -66,21 +66,20 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
                                                                   string banner = null,
                                                                   bool includeExceptionDetails = false,
                                                                   bool isJsonIndented = false,
-                                                                  string title = DefaultSwaggerTitle,
-                                                                  string version = DefaultSwaggerVersion,
+                                                                  string jsonDateTimeFormat = null,
+                                                                  string title = DefaultOpenApiTitle,
+                                                                  string version = DefaultOpenApiVersion,
                                                                   Func<ApiDescription, string> operationIdSelector = null)
         {
             services.AddControllers()
                     .AddAHomeController(services, banner)
-                    .AddDefaultJsonOptions(isJsonIndented);
+                    .AddDefaultJsonOptions(isJsonIndented, jsonDateTimeFormat);
 
             services.AddProblemDetails(options =>
             {
                 options.IncludeExceptionDetails = (ctx, ex) => includeExceptionDetails;
             })
-                    .AddCustomSwagger(title,
-                                      version,
-                                      operationIdSelector);
+                    .AddCustomOpenApi(title, version, operationIdSelector);
 
             return services;
 

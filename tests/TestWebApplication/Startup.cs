@@ -1,22 +1,20 @@
-﻿using Hellang.Middleware.ProblemDetails;
+using System;
+using System.Reflection;
 using Homely.AspNetCore.Mvc.Helpers.Extensions;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
-using System.Reflection;
 using TestWebApplication.Repositories;
 
 namespace TestWebApplication
 {
     public class Startup
     {
-        private const string SwaggerVersion = "v2";
-        private const string SwaggerTitle = "Test API";
+        private const string OpenApiVersion = "v2";
+        private const string OpenApiTitle = "Test API";
 
         private readonly IWebHostEnvironment _webHostEnvironment;
 
@@ -30,12 +28,14 @@ namespace TestWebApplication
         {
             var isStackTraceDisplayed = _webHostEnvironment.IsDevelopment();
             var isJsonIndented = _webHostEnvironment.IsDevelopment();
+            string jsonDateTimeFormat = null;
 
             services.AddDefaultWebApiSettings("Some Test Api",
                                               isStackTraceDisplayed,
                                               isJsonIndented,
-                                              SwaggerTitle, 
-                                              SwaggerVersion,
+                                              jsonDateTimeFormat,
+                                              OpenApiTitle, 
+                                              OpenApiVersion,
                                               CustomOperationIdSelector);
             ConfigureRepositories(services);
         }
@@ -43,7 +43,7 @@ namespace TestWebApplication
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app)
         {
-            app.UseDefaultWebApiSettings(true, SwaggerTitle, SwaggerVersion);
+            app.UseDefaultWebApiSettings(true, OpenApiTitle, OpenApiVersion);
         }
 
         // TODO: Replace this with proper Integration testing overrides.

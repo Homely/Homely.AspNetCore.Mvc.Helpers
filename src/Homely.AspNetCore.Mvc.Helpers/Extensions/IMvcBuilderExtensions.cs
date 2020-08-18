@@ -1,4 +1,4 @@
-﻿using Homely.AspNetCore.Mvc.Helpers.Controllers;
+using Homely.AspNetCore.Mvc.Helpers.Controllers;
 using Homely.AspNetCore.Mvc.Helpers.Models;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -51,7 +51,8 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         /// <param name="builder"Mvc builder to help create the Mvc settings.></param>
         /// <returns>IMvcBuilder: the builder, so we can more builder methods.</returns>
         public static IMvcBuilder AddDefaultJsonOptions(this IMvcBuilder builder,
-                                                        bool isIndented = true)
+                                                        bool isIndented = false,
+                                                        string dateTimeFormat = null)
         {
             return builder.AddJsonOptions(options =>
             {
@@ -59,6 +60,12 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
                 options.JsonSerializerOptions.WriteIndented = isIndented;
                 options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+
+                // If we have specified a custom date-time format, then use the specific custom converter.
+                if (!string.IsNullOrWhiteSpace(dateTimeFormat))
+                {
+                    options.JsonSerializerOptions.Converters.Add(new DateTimeConverter(dateTimeFormat));
+                }
             });
         }
     }

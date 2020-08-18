@@ -22,6 +22,8 @@ This library contains a collection of helpers, models and extension methods that
 
 ### Quick Start, do everything, simple and quick.
 
+This adds all the items, using Default settings (as listed below). Simple, quick and awesome.  
+Add both of these. 
 
 ```
 public void ConfigureServices(IServiceCollection services)
@@ -30,9 +32,65 @@ public void ConfigureServices(IServiceCollection services)
     // - Default json options: camel casing, no indention, nulls ignored and enums as strings.
     // - OpenApi adeed.
     services.AddControllers()
-             .AddDefaultWebApiSettings(); // Can also be totally customized.
+            .AddDefaultWebApiSettings(); // Can also be totally customized.
+}
+
+public void Configure(IApplicationBuilder app)
+{
+    // - Problem details
+    // - OpenAPI
+    // - Authorisation
+    // - Endpoints (with MapControllers)
+    app.UseDefaultWebApiSettings();
 }
 ```
+
+or a more customized version:
+
+```
+public void ConfigureServices(IServiceCollection services)
+{
+    // - Home controller but no banner.
+    // - Default json options: camel casing, no indention, nulls ignored and enums as strings.
+    // - OpenApi adeed.
+
+    var banner = " -- ascii art --";
+    var isStackTraceDisplayed = _webHostEnvironment.IsDevelopment();
+    var isJsonIndented = _webHostEnvironment.IsDevelopment();
+    var jsonDateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ" // No milliseconds.
+    var openAPITitle = "My API";
+    var openAPIVersion = "v1";
+    var openAPICustomOperationIdSelector = new Func<ApiDescription, string>((apiDescrption, string) => { .. // refer to sample code in website } );
+
+    services.AddControllers()
+            .AddDefaultWebApiSettings(banner,
+                                      isStackTraceDisplayed,
+                                      isJsonIndented,
+                                      jsonDateTimeFormat,
+                                      openAPITitle,
+                                      openAPIVersion,
+                                      openAPICustomOperationIdSelector)
+}
+
+public void Configure(IApplicationBuilder app)
+{
+    // - Problem details
+    // - OpenAPI (Customised)
+    // - Authorisation
+    // - Endpoints (with MapControllers)
+    
+    var useAuthorizatoin = true;
+    var openAPITitle = "My API";
+    var openAPIVersion = "v1";
+    var openAPIRoutePrefix = "swagger";
+
+    app.UseDefaultWebApiSettings(useAuthorization,
+                                 openAPITitle,
+                                 openAPIVersion,
+                                 openAPIRoutePrefix);
+}
+```
+
 
 Otherwise, you can pick and choose which items you want.
 
@@ -47,8 +105,10 @@ Great for API's, this will create the default "root/home" route => `HTTP GET /` 
 ```
 public void ConfigureServices(IServiceCollection services)
 {
+    var someASCIIArt = "... blah .."; // Optional.
+
     services.AddControllers()
-            .AddAHomeController(services, SomeASCIIArt);
+            .AddAHomeController(services, someASCIIArt);
 }
 ```
 E.g. output
@@ -85,13 +145,28 @@ All responses are JSON and formatted using the common JSON settings:
 :white_check_mark: Indented formatting.<br/>
 :white_check_mark: Ignore null properties which have values.<br/>
 :white_check_mark: Enums are rendered as `string`'s ... not their backing number-value.<br/>
+:heart: Can specify a custom DateTime format template.
 
 ```
+// Simplest : i
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddControllers()
             .AddDefaultJsonOptions();
 }
+
+or 
+
+// All options...
+public void ConfigureServices(IServiceCollection services)
+{
+    var isIndented = true;
+    string dateTimeFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ssZ" // No milliseconds.
+
+    services.AddControllers()
+            .AddDefaultJsonOptions(isIndented, dateTimeFormat);
+}
+
 ```
 
 Sample Model/Domain object:
@@ -116,6 +191,9 @@ Result JSON text:
 }
 ```
 
+:pen: Note on the default .NET Core DateTime formatting.<br/>
+By default, it uses the [ISO 8601-1:2019 format](https://docs.microsoft.com/en-us/dotnet/standard/datetime/system-text-json-support). This means _if_ there is some microseconds, then they are rendered. If there's none -> no micrseconds are rendered. This might make it hard for some consumers of this data (e.g. iOS Swift apps consuming a .NET Core API) so you can hardcode a specific format template to get a consistent output.
+
 ### <a name="sample6">Custom OpenAPI (aka. Swagger) wired up</a>
 
 OpenAPI (using the [Swashbuckle library](https://github.com/domaindrivendev/Swashbuckle.AspNetCore)) has been wired up and allows for you to define the `title` and `version` of this API and also a custom `route prefix` (which is good for a gateway API with multiple OpenAPI endpoints because each microservice has their own OpenAPI doc).
@@ -124,12 +202,12 @@ OpenAPI (using the [Swashbuckle library](https://github.com/domaindrivendev/Swas
 public void ConfigureServices(IServiceCollection services)
 {
     services.AddControllers()
-            .AddCustomSwagger("Test API", "v2");
+            .AddCustomOpenApi("Test API", "v2");
 }
 
 public void Configure(IApplicationBuilder app)
 {
-    app.UseCustomSwagger("accounts/swagger", "Test API", "v2")
+    app.UseCustomOpenApi("accounts/swagger", "Test API", "v2")
        .UseRouting()
        .UseEndpoints(endpoints => endpoints.MapControllers());
 }

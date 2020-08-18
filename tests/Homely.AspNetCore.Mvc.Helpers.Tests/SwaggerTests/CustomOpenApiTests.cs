@@ -1,15 +1,15 @@
-﻿using Shouldly;
+using Shouldly;
 using System;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.SwaggerTests
 {
-    public class CustomSwaggerTests : IClassFixture<TestFixture>
+    public class CustomOpenApiTests : IClassFixture<TestFixture>
     {
         private readonly TestFixture _factory;
 
-        public CustomSwaggerTests(TestFixture factory)
+        public CustomOpenApiTests(TestFixture factory)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Reflection;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Extensions
 {
@@ -72,7 +73,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
                                                                   Func<ApiDescription, string> operationIdSelector = null)
         {
             services.AddControllers()
-                    .AddAHomeController(services, banner)
+                    .AddAHomeController(services, banner, Assembly.GetCallingAssembly())
                     .AddDefaultJsonOptions(isJsonIndented, jsonDateTimeFormat);
 
             services.AddProblemDetails(options =>

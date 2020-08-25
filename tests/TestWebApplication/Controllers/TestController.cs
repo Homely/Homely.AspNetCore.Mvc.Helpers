@@ -1,4 +1,6 @@
-﻿using Hellang.Middleware.ProblemDetails;
+using FluentValidation;
+using FluentValidation.Results;
+using Hellang.Middleware.ProblemDetails;
 using Homely.AspNetCore.Mvc.Helpers.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -89,6 +91,19 @@ namespace TestWebApplication.Controllers
 
             var validationError = new ValidationProblemDetails(ModelState);
             return BadRequest(validationError);
+        }
+
+        // GET: /test/validationerror | 400 Bad Request. (Manual validation check)
+        [HttpGet("fluentvalidationerror")]
+        public IActionResult FluentValidationError()
+        {
+            var errors = new List<ValidationFailure>
+            {
+                new ValidationFailure("fundsAmount", "Not enough funds."),
+                new ValidationFailure("age", "Too young.")
+            };
+            
+            throw new ValidationException("Some validation errors.", errors);
         }
 
         // Specific Status Code check | 409 Conflict.

@@ -1,18 +1,18 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Shouldly;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Shouldly;
 using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 {
-    public class ValidationErrorTests : IClassFixture<TestFixture>
+    public class FluentValidationErrorTests : IClassFixture<TestFixture>
     {
         private readonly TestFixture _factory;
 
-        public ValidationErrorTests(TestFixture factory)
+        public FluentValidationErrorTests(TestFixture factory)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
@@ -27,10 +27,11 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
                 Title = "One or more validation errors occurred.",
                 Status = StatusCodes.Status400BadRequest
             };
-            error.Errors.Add("someProperty", new[] { "This property failed validation." });
+            error.Errors.Add("age", new[] { "Too young." });
+            error.Errors.Add("fundsAmount", new[] { "Not enough funds." });
 
             // Act.
-            var response = await _factory.CreateClient().GetAsync("/test/validationerror");
+            var response = await _factory.CreateClient().GetAsync("/test/fluentvalidationerror");
 
             // Assert.
             response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);

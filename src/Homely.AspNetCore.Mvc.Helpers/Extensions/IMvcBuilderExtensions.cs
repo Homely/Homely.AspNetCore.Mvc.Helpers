@@ -59,7 +59,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
                 options.JsonSerializerOptions.IgnoreNullValues = true;
                 options.JsonSerializerOptions.WriteIndented = isIndented;
                 options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 
                 // If we have specified a custom date-time format, then use the specific custom converter.
                 if (!string.IsNullOrWhiteSpace(dateTimeFormat))

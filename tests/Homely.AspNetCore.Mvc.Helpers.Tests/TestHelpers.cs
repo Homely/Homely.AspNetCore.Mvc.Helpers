@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Shouldly;
 using System;
 using System.Net.Http;
@@ -19,7 +19,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
 
-            options.Converters.Add(new JsonStringEnumConverter());
+            options.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 
             return options;
         });

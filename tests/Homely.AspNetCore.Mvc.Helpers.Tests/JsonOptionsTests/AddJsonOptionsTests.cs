@@ -51,7 +51,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.JsonOptionsTests
             var responseBody = await response.Content.ReadAsStringAsync();
             responseBody.ShouldContain("id", Case.Sensitive); // Camel case check.
             responseBody.ShouldNotContain("vin", Case.Insensitive); // IgnoreNullValues check. 
-            responseBody.ShouldContain("Grey", Case.Sensitive); // Enum converter check.
+            responseBody.ShouldContain("grey", Case.Sensitive); // Enum converter check.
             responseBody.ShouldContain(expectedDateTime);
 
             var startingJson = isIdented

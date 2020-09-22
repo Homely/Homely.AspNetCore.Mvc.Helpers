@@ -21,10 +21,10 @@
     
     <ItemGroup>
         <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="5.1.1" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.6" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.6" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.8" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.8" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.1" />
     </ItemGroup>
 
 </Project>

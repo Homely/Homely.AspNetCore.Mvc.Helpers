@@ -58,6 +58,16 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.JsonOptionsTests
                 ? $"{{{Environment.NewLine}  \""
                 : $"{{\"id\"";
             responseBody.ShouldStartWith(startingJson); // WriteIndented check.
+
+            if (id == 1)
+            {
+                responseBody.ShouldContain("someBaseClass", Case.Sensitive); // Base class serializes.
+                responseBody.ShouldContain("aaa", Case.Sensitive); // Abstract class property serializes.
+                responseBody.ShouldContain("bbb", Case.Sensitive); // Base class property serializes.
+
+                responseBody.ShouldContain("someDerivedClass", Case.Sensitive); // Base class serializes.
+                responseBody.ShouldContain("ccc", Case.Sensitive); // Derived class property serializes.
+            }
         }
     }
 }

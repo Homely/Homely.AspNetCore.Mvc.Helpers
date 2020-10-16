@@ -1,10 +1,10 @@
 using Homely.AspNetCore.Mvc.Helpers.Controllers;
 using Homely.AspNetCore.Mvc.Helpers.Models;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Extensions
 {
@@ -54,17 +54,24 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
                                                         bool isIndented = false,
                                                         string dateTimeFormat = null)
         {
-            return builder.AddJsonOptions(options =>
+            return builder.AddNewtonsoftJson(options =>
             {
-                options.JsonSerializerOptions.IgnoreNullValues = true;
-                options.JsonSerializerOptions.WriteIndented = isIndented;
-                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+                var contractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                };
+
+                options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                options.SerializerSettings.Formatting = isIndented
+                    ? Newtonsoft.Json.Formatting.Indented
+                    : Newtonsoft.Json.Formatting.None;
+                options.SerializerSettings.ContractResolver = contractResolver;
+                options.SerializerSettings.Converters.Add(new StringEnumConverter(new CamelCaseNamingStrategy()));
 
                 // If we have specified a custom date-time format, then use the specific custom converter.
                 if (!string.IsNullOrWhiteSpace(dateTimeFormat))
                 {
-                    options.JsonSerializerOptions.Converters.Add(new DateTimeConverter(dateTimeFormat));
+                    options.SerializerSettings.Converters.Add(new IsoDateTimeConverter { DateTimeFormat = dateTimeFormat });
                 }
             });
         }

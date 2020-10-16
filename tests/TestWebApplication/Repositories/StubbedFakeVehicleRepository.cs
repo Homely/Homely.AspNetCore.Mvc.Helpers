@@ -13,7 +13,18 @@ namespace TestWebApplication.Repositories
                 Name = "Name1",
                 RegistrationNumber = "RegistrationNumber1",
                 Colour = ColourType.Grey,
-                CreatedOn = new System.DateTime(2000, 1, 2, 3, 4, 5, 0) // Testing ZERO milliseconds.
+                CreatedOn = new System.DateTime(2000, 1, 2, 3, 4, 5, 0), // Testing ZERO milliseconds.
+                SomeBaseClass = new BaseClass
+                {
+                    SomeAbstractClassProperty = "aaa",
+                    SomeBaseClassProperty = "bbb"
+                },
+                SomeDerivedClass = new DerivedClass
+                {
+                    SomeAbstractClassProperty = "aaa",
+                    SomeBaseClassProperty = "bbb",
+                    SomeDerivedClassProperty = "ccc"
+                }
             });
 
             stubbedFakeVehicleRepository.Add(new FakeVehicle

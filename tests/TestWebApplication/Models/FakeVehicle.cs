@@ -18,5 +18,7 @@ namespace TestWebApplication.Models
         /// <remarks>Optional - might not always have this data.</remarks>
         public string VIN { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
+        public BaseClass SomeBaseClass { get; set; }
+        public DerivedClass SomeDerivedClass { get; set; }
     }
 }

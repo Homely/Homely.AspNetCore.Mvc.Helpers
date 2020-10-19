@@ -11,12 +11,15 @@
         <Product>Homely - ASPNet Core Mvc Helpers</Product>
         <Description>This library is a set of some helper methods, models and extensions for an ASP.NET Core MVC application. It can help reduce the ceremony required in setting up a new web application by offering various opinionated options and settings.</Description>
         <Copyright>2018 Homely Pty. Ltd.</Copyright>
-        <PackageLicenseUrl>https://github.com/Homely/Homely/blob/master/LICENSE.txt</PackageLicenseUrl>
         <PackageProjectUrl>https://github.com/Homely/Homely.AspNetCore.Mvc.Helpers</PackageProjectUrl>
-        <PackageIconUrl>https://i.imgur.com/PnxWhuz.jpg</PackageIconUrl>
         <RepositoryUrl>https://github.com/Homely/Homely.AspNetCore.Mvc.Helpers</RepositoryUrl>
         <RepositoryType>.net c# .net-core</RepositoryType>
         <PackageTags>homely aspnet-core-helpers</PackageTags>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+        <PackageIcon>Icon.png</PackageIcon>
     </PropertyGroup>
     
     <ItemGroup>
@@ -26,6 +29,17 @@
         <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.8" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.1" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <None Include="..\..\LICENSE.txt">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
+      <None Include="..\..\Icon.png">
+        <Pack>True</Pack>
+        <PackagePath></PackagePath>
+      </None>
     </ItemGroup>
 
 </Project>

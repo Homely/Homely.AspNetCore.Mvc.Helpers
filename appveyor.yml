@@ -56,7 +56,7 @@ after_test:
       
       if ($env:CONFIGURATION -eq 'Release')
       {
-          dotnet pack src\Homely.AspNetCore.Mvc.Helpers -c $env:CONFIGURATION --include-symbols -p:SymbolPackageFormat=snupkg /p:Version=$env:APPVEYOR_BUILD_VERSION --no-build
+          dotnet pack src\Homely.AspNetCore.Mvc.Helpers -c $env:CONFIGURATION --no-build /p:ContinuousIntegrationBuild=true /p:Version=$env:APPVEYOR_BUILD_VERSION
       }
 
 artifacts:

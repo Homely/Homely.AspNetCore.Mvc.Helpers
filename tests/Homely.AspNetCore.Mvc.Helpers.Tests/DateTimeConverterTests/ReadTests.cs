@@ -8,6 +8,19 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
 {
     public class ReadTests
     {
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public void GivenABadConstructorArguments_New_ThrowsAnException(string dateTimeFormat)
+        {
+            // Arrange and Act.
+            var exception = Should.Throw<Exception>(() => new DateTimeConverter(dateTimeFormat));
+
+            // Assert.
+            exception.ShouldNotBeNull();
+        }
+
         [Fact]
         public void GivenAValidDateTimeString_Read_ReturnsAValidDateTime()
         {

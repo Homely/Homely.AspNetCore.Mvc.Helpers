@@ -1,10 +1,13 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Homely.AspNetCore.Mvc.Helpers.Controllers;
 using Homely.AspNetCore.Mvc.Helpers.Models;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
-using System;
-using System.Reflection;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Extensions
 {
@@ -52,26 +55,28 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         /// <returns>IMvcBuilder: the builder, so we can more builder methods.</returns>
         public static IMvcBuilder AddDefaultJsonOptions(this IMvcBuilder builder,
                                                         bool isIndented = false,
-                                                        string dateTimeFormat = null)
+                                                        string dateTimeFormat = null,
+                                                        IEnumerable<JsonConverter> converters = null)
         {
-            return builder.AddNewtonsoftJson(options =>
+            return builder.AddJsonOptions(options =>
             {
-                var contractResolver = new DefaultContractResolver
-                {
-                    NamingStrategy = new CamelCaseNamingStrategy()
-                };
-
-                options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-                options.SerializerSettings.Formatting = isIndented
-                    ? Newtonsoft.Json.Formatting.Indented
-                    : Newtonsoft.Json.Formatting.None;
-                options.SerializerSettings.ContractResolver = contractResolver;
-                options.SerializerSettings.Converters.Add(new StringEnumConverter(new CamelCaseNamingStrategy()));
+                options.JsonSerializerOptions.IgnoreNullValues = true;
+                options.JsonSerializerOptions.WriteIndented = isIndented;
+                options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 
                 // If we have specified a custom date-time format, then use the specific custom converter.
                 if (!string.IsNullOrWhiteSpace(dateTimeFormat))
                 {
-                    options.SerializerSettings.Converters.Add(new IsoDateTimeConverter { DateTimeFormat = dateTimeFormat });
+                    options.JsonSerializerOptions.Converters.Add(new DateTimeConverter(dateTimeFormat));
+                }
+
+                if (converters?.Any() == true)
+                {
+                    foreach(var converter in converters)
+                    {
+                        options.JsonSerializerOptions.Converters.Add(converter);
+                    }
                 }
             });
         }

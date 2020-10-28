@@ -7,12 +7,16 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.JsonOptionsTests
 {
     public class BaseClassConverter : JsonConverter<BaseClass>
     {
-        public override BaseClass Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override BaseClass Read(ref Utf8JsonReader reader, 
+                                       Type typeToConvert, 
+                                       JsonSerializerOptions options)
         {
             throw new NotImplementedException();
         }
 
-        public override void Write(Utf8JsonWriter writer, BaseClass value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, 
+                                   BaseClass value, 
+                                   JsonSerializerOptions options)
         {
             writer.WriteStartObject();
 

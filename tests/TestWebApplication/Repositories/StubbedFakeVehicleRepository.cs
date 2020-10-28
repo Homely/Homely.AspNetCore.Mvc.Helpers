@@ -16,14 +16,32 @@ namespace TestWebApplication.Repositories
                 CreatedOn = new System.DateTime(2000, 1, 2, 3, 4, 5, 0), // Testing ZERO milliseconds.
                 SomeBaseClass = new BaseClass
                 {
-                    SomeAbstractClassProperty = "aaa",
-                    SomeBaseClassProperty = "bbb"
+                    SomeAbstractClassProperty = "SBC_Abstract_Property",
+                    SomeBaseClassProperty = "SBC_Base_Property"
+                },
+                AnotherBaseClass1 = new DerivedClass
+                {
+                    SomeAbstractClassProperty = "ABC1_Abstract_Property",
+                    SomeBaseClassProperty = "ABC1_Base_Property",
+                    SomeDerivedClassProperty = "ABC1_Derived_Property"
+                },
+                AnotherBaseClass2 = new AnotherDerivedClass
+                {
+                    SomeAbstractClassProperty = "ABC2_Abstract_Property",
+                    SomeBaseClassProperty = "ABC2_Base_Property",
+                    AnotherDerivedClassProperty = "ABC2_AnotherDerived_Property",
                 },
                 SomeDerivedClass = new DerivedClass
                 {
-                    SomeAbstractClassProperty = "aaa",
-                    SomeBaseClassProperty = "bbb",
-                    SomeDerivedClassProperty = "ccc"
+                    SomeAbstractClassProperty = "SDC_Abstract_Property",
+                    SomeBaseClassProperty = "SDC_Base_Property",
+                    SomeDerivedClassProperty = "SDC_Derived_Property"
+                },
+                AnotherDerivedClass = new AnotherDerivedClass
+                {
+                    SomeAbstractClassProperty = "ADC_Abstract_Property",
+                    SomeBaseClassProperty = "ADC_Base_Property",
+                    AnotherDerivedClassProperty = "ADC_AnotherDerived_Property",
                 }
             });
 

@@ -1,4 +1,4 @@
-﻿using Hellang.Middleware.ProblemDetails;
+using Hellang.Middleware.ProblemDetails;
 using Homely.AspNetCore.Mvc.Helpers.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

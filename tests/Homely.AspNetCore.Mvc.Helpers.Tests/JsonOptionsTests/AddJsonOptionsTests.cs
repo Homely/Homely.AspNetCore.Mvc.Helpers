@@ -1,8 +1,8 @@
+using System;
+using System.Threading.Tasks;
 using Homely.AspNetCore.Mvc.Helpers.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
-using System;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.JsonOptionsTests
@@ -38,9 +38,13 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.JsonOptionsTests
             // Arrange.
             var client = _factory.WithWebHostBuilder(builder =>
             {
+                var baseClassConverter = new BaseClassConverter();
+
                 builder.ConfigureServices(services =>
                 {
-                    services.AddControllers().AddDefaultJsonOptions(isIdented, dateTimeFormat);
+                    services.AddControllers().AddDefaultJsonOptions(isIdented, 
+                                                                    dateTimeFormat, 
+                                                                    new[] { baseClassConverter });
                 });
             }).CreateClient();
 
@@ -61,12 +65,34 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.JsonOptionsTests
 
             if (id == 1)
             {
-                responseBody.ShouldContain("someBaseClass", Case.Sensitive); // Base class serializes.
-                responseBody.ShouldContain("aaa", Case.Sensitive); // Abstract class property serializes.
-                responseBody.ShouldContain("bbb", Case.Sensitive); // Base class property serializes.
+                // SomeBaseClass: this is just a normal concrete.
+                responseBody.ShouldContain("someBaseClass", Case.Sensitive);
+                responseBody.ShouldContain("SBC_Abstract_Property", Case.Sensitive);
+                responseBody.ShouldContain("SBC_Base_Property", Case.Sensitive);
 
-                responseBody.ShouldContain("someDerivedClass", Case.Sensitive); // Base class serializes.
-                responseBody.ShouldContain("ccc", Case.Sensitive); // Derived class property serializes.
+                // SomeBaseClass: polymorphism test #1. Property is a 'base class' while the value is a Derived class.
+                responseBody.ShouldContain("anotherBaseClass1", Case.Sensitive);
+                responseBody.ShouldContain("ABC1_Abstract_Property", Case.Sensitive);
+                responseBody.ShouldContain("ABC1_Base_Property", Case.Sensitive);
+                responseBody.ShouldContain("ABC1_Derived_Property", Case.Sensitive);
+
+                // SomeBaseClass: polymorphism test #2. Property is a 'base class' while the value is a Derived class.
+                responseBody.ShouldContain("anotherBaseClass2", Case.Sensitive);
+                responseBody.ShouldContain("ABC2_Abstract_Property", Case.Sensitive);
+                responseBody.ShouldContain("ABC2_Base_Property", Case.Sensitive);
+                responseBody.ShouldContain("ABC2_AnotherDerived_Property", Case.Sensitive);
+
+                // SomeDerivedClass: another normal concrete.
+                responseBody.ShouldContain("someDerivedClass", Case.Sensitive);
+                responseBody.ShouldContain("SDC_Abstract_Property", Case.Sensitive);
+                responseBody.ShouldContain("SDC_Base_Property", Case.Sensitive);
+                responseBody.ShouldContain("SDC_Derived_Property", Case.Sensitive);
+
+                // AnotherDerivedClass: another normal concrete.
+                responseBody.ShouldContain("someDerivedClass", Case.Sensitive);
+                responseBody.ShouldContain("ADC_Abstract_Property", Case.Sensitive);
+                responseBody.ShouldContain("ADC_Base_Property", Case.Sensitive);
+                responseBody.ShouldContain("ADC_AnotherDerived_Property", Case.Sensitive);
             }
         }
     }

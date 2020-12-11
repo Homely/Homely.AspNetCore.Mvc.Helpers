@@ -15,9 +15,9 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
                                                            string version = DefaultOpenApiVersion,
                                                            string routePrefix = DefaultOpenApiRoutePrefex)
         {
-            if (string.IsNullOrWhiteSpace(routePrefix))
+            if (string.IsNullOrWhiteSpace(title))
             {
-                throw new ArgumentException(nameof(routePrefix));
+                throw new ArgumentException(nameof(title));
             }
 
             if (string.IsNullOrWhiteSpace(version))
@@ -25,9 +25,9 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
                 throw new ArgumentException(nameof(version));
             }
 
-            if (string.IsNullOrWhiteSpace(title))
+            if (string.IsNullOrWhiteSpace(routePrefix))
             {
-                throw new ArgumentException(nameof(title));
+                throw new ArgumentException(nameof(routePrefix));
             }
 
             application.UseSwagger();

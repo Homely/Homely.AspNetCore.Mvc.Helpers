@@ -9,19 +9,14 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.ExtensionsTests.IMvcBuilderExtensi
 {
     public class AddAHomeControllerTests
     {
-        [Theory]
-        [InlineData(null)]
-        [InlineData("")]
-        [InlineData(" ")]
-        public void GivenSomeInvalidArguments_AddAHomeController_ThrowsAnException(string asciiBanner)
+        [Fact]
+        public void GivenNoServiceCollection_AddAHomeController_ThrowsAnException()
         {
             // Arrange.
-            var mvcBuilder = new Mock<IMvcBuilder>().Object;
-            var serviceCollection = new Mock<IServiceCollection>();
+            var mvcBuilder = new Mock<IMvcBuilder>().Object;            
 
             // Act.
-            var exception = Should.Throw<Exception>(() => mvcBuilder.AddAHomeController(serviceCollection.Object,
-                                                                                        asciiBanner));
+            var exception = Should.Throw<Exception>(() => mvcBuilder.AddAHomeController(null));
 
             // Assert.
             exception.ShouldNotBeNull();

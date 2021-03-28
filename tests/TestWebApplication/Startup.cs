@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using TestWebApplication.Repositories;
 
@@ -30,13 +31,26 @@ namespace TestWebApplication
             var isJsonIndented = _webHostEnvironment.IsDevelopment();
             string jsonDateTimeFormat = null;
 
+            // Just mucking around - testing that we can use some custom stuff.
+            var customSwaggerOptions = new Action<SwaggerGenOptions>(setupAction =>
+            {
+                setupAction.CustomOperationIds(CustomOperationIdSelector);
+
+                var info = new OpenApiInfo
+                {
+                    Title = OpenApiTitle,
+                    Version = OpenApiVersion
+                };
+
+                setupAction.SwaggerDoc(OpenApiVersion, info);
+            });
+
             services.AddDefaultWebApiSettings("Some Test Api",
                                               isStackTraceDisplayed,
                                               isJsonIndented,
                                               jsonDateTimeFormat,
-                                              OpenApiTitle, 
-                                              OpenApiVersion,
-                                              CustomOperationIdSelector);
+                                              customSwaggerOptions);
+
             ConfigureRepositories(services);
         }
 
@@ -59,8 +73,10 @@ namespace TestWebApplication
             services.AddSingleton<IFakeVehicleRepository>(stubbedFakeVehicleRepository);
         }
 
-        // Format: <Microservice>_<HTTP Method>_<MethodName>
-        // E.g. : TestMicroservice_Head_GetListingsAsync
+        // Format: <Microservice>_<HTTP Method>_<MethodName>_<Guid>
+        // E.g. : TestMicroservice_Head_GetListingsAsync_e0ded733-11be-4dce-a3d9-ee8483719c4f
+        // Having a randomized GUID for an operationId isn't a good idea. Each time the webserver starts,
+        // a new ID is gerenated, which could ruin things for consumers requiring a consistent OperationId.
         private string CustomOperationIdSelector(ApiDescription apiDescription)
         {
             var methodName = apiDescription.TryGetMethodInfo(out MethodInfo methodInfo) ? methodInfo.Name : Guid.NewGuid().ToString();

@@ -1,6 +1,6 @@
+using System;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Builder;
-using System;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Extensions
 {

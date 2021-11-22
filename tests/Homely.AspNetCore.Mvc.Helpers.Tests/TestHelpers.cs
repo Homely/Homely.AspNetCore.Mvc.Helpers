@@ -10,11 +10,11 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
 {
     public static class TestHelpers
     {
-        private static Lazy<JsonSerializerOptions> _options = new Lazy<JsonSerializerOptions>(() =>
+        private static readonly Lazy<JsonSerializerOptions> _options = new(() =>
         {
             var options = new JsonSerializerOptions
             {
-                IgnoreNullValues = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                 WriteIndented = false,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
@@ -70,7 +70,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
                 throw new ArgumentNullException(nameof(expectedProblemDetails));
             }
 
-            var problemDetails = await DeserializeAProblemDetaiAsync<ProblemDetails>(content);
+            var problemDetails = await DeserializeAProblemDetailAsync<ProblemDetails>(content);
 
             problemDetails.Type.ShouldBe(expectedProblemDetails.Type);
             problemDetails.Title.ShouldBe(expectedProblemDetails.Title);
@@ -90,7 +90,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
             }
 
             await content.ShouldHaveSameProblemDetails(expectedProblemDetails as ProblemDetails);
-            var problemDetails = await DeserializeAProblemDetaiAsync<ValidationProblemDetails>(content);
+            var problemDetails = await DeserializeAProblemDetailAsync<ValidationProblemDetails>(content);
 
             problemDetails.Errors.ShouldLookLike(expectedProblemDetails.Errors);
         }
@@ -107,15 +107,18 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests
             actual.ShouldBe(expectedJson);
         }
 
-        private static async Task<T> DeserializeAProblemDetaiAsync<T>(HttpContent content) where T : ProblemDetails
+        private static async Task<T> DeserializeAProblemDetailAsync<T>(HttpContent content) where T : ProblemDetails
         {
-            if (content == null)
+            var responseJson = await content.ReadAsStringAsync();
+
+            var result = JsonSerializer.Deserialize<T>(responseJson);
+
+            if (result is null)
             {
-                throw new ArgumentNullException(nameof(content));
+                throw new Exception($"Failed to convert content to a strongly-typed instance. Content: [{responseJson}].");
             }
 
-            var responseJson = await content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<T>(responseJson);
+            return result;
         }
     }
 }

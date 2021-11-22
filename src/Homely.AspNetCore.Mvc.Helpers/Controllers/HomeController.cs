@@ -1,4 +1,4 @@
-﻿using Homely.AspNetCore.Mvc.Helpers.Models;
+using Homely.AspNetCore.Mvc.Helpers.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -12,7 +12,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Controllers
 
         public HomeController(IHomeControllerBanner banner)
         {
-            _banner = banner ?? throw new ArgumentNullException(nameof(banner));
+            _banner = banner;
         }
 
         /// <summary>

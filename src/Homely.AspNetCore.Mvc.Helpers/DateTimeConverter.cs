@@ -12,11 +12,6 @@ namespace Homely.AspNetCore.Mvc.Helpers
 
         public DateTimeConverter(string dateTimeFormat)
         {
-            if (string.IsNullOrWhiteSpace(dateTimeFormat))
-            {
-                throw new ArgumentNullException($"'{nameof(dateTimeFormat)}' cannot be null or whitespace.", nameof(dateTimeFormat));
-            }
-
             _dateTimeFormat = dateTimeFormat;
         }
 
@@ -25,15 +20,19 @@ namespace Homely.AspNetCore.Mvc.Helpers
                                       Type typeToConvert,
                                       JsonSerializerOptions options)
         {
-            return DateTime.Parse(reader.GetString());
+            var text = reader.GetString();
+
+            if (string.IsNullOrWhiteSpace(text) )
+            {
+                throw new Exception("Utf8JsonReader contained null/empty/whitespace content. Unble to parse as a DateTime."); 
+            }
+
+            return DateTime.Parse(text);
         }
 
         /// <inheritdoc/>	
         public override void Write(Utf8JsonWriter writer,
                                    DateTime value,
-                                   JsonSerializerOptions options)
-        {
-            writer.WriteStringValue(value.ToString(_dateTimeFormat));
-        }
+                                   JsonSerializerOptions options) => writer.WriteStringValue(value.ToString(_dateTimeFormat));
     }
 }

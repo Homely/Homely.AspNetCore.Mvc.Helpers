@@ -38,9 +38,9 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.HomeControllerTests
             var error = await JsonSerializer.DeserializeAsync<ProblemDetails>(await response.Content.ReadAsStreamAsync());
 
             // We can't check the TraceId because it's different with each HTTP call.
-            error.Type.ShouldBe(expectedError.Type);
-            error.Title.ShouldBe(expectedError.Title);
-            error.Status.ShouldBe(expectedError.Status);
+            error?.Type.ShouldBe(expectedError.Type);
+            error?.Title.ShouldBe(expectedError.Title);
+            error?.Status.ShouldBe(expectedError.Status);
         }
     }
 }

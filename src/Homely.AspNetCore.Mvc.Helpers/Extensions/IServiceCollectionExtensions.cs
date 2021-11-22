@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Hellang.Middleware.ProblemDetails;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -39,22 +41,49 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         /// <param name="banner"></param>
         /// <param name="includeExceptionDetails"></param>
         /// <param name="isJsonIndented"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddDefaultWebApiSettings(this IServiceCollection services,
+                                                                  string? banner = null,
+                                                                  bool includeExceptionDetails = false,
+                                                                  bool isJsonIndented = false)
+        {
+            return services.AddDefaultWebApiSettings(banner,
+                includeExceptionDetails,
+                isJsonIndented,
+                default,
+                DefaultOpenApiTitle,
+                DefaultOpenApiVersion,
+                default);
+        }
+
+        /// <summary>
+        /// This method adds the common web api services:<br/>
+        /// - AddControllers<br/>
+        /// - AddHomeController<br/>
+        /// - AddDefaultJsonOptions<br/>
+        /// - AddProblemDeatils<br/>
+        /// - AddCustomSwagger<br/>
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="banner"></param>
+        /// <param name="includeExceptionDetails"></param>
+        /// <param name="isJsonIndented"></param>
         /// <param name="jsonDateTimeFormat"></param>
         /// <param name="title"></param>
         /// <param name="version"></param>
         /// <param name="otherChainedMethods"></param>
         /// <returns></returns>
         public static IServiceCollection AddDefaultWebApiSettings(this IServiceCollection services,
-                                                                  string banner = null,
+                                                                  string? banner = null,
                                                                   bool includeExceptionDetails = false,
                                                                   bool isJsonIndented = false,
-                                                                  string jsonDateTimeFormat = null,
+                                                                  string? jsonDateTimeFormat = null,
                                                                   string title = DefaultOpenApiTitle,
                                                                   string version = DefaultOpenApiVersion,
-                                                                  IEnumerable<Action<IMvcBuilder>> otherChainedMethods = null)
+                                                                  IEnumerable<Action<IMvcBuilder>>? otherChainedMethods = null)
         {
 
-            var swaggerGenerationOptions = services.CreateCustomOpenApi(title, version);
+            var swaggerGenerationOptions = CreateCustomOpenApi(title, version);
 
             return services.AddDefaultWebApiSettings(banner,
                 includeExceptionDetails,
@@ -81,12 +110,12 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         /// <param name="otherChainedMethods"></param>
         /// <returns></returns>
         public static IServiceCollection AddDefaultWebApiSettings(this IServiceCollection services,
-                                                                  string banner = null,
+                                                                  string? banner = null,
                                                                   bool includeExceptionDetails = false,
                                                                   bool isJsonIndented = false,
-                                                                  string jsonDateTimeFormat = null,
-                                                                  Action<SwaggerGenOptions> customSwaggerGenerationOptions = null,
-                                                                  IEnumerable<Action<IMvcBuilder>> otherChainedMethods = null)
+                                                                  string? jsonDateTimeFormat = null,
+                                                                  Action<SwaggerGenOptions>? customSwaggerGenerationOptions = null,
+                                                                  IEnumerable<Action<IMvcBuilder>>? otherChainedMethods = null)
         {
             var mvcBuilder = services.AddControllers();
 
@@ -117,22 +146,13 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
             return services;
         }
 
-        private static Action<SwaggerGenOptions> CreateCustomOpenApi(this IServiceCollection services,
-                                                             string title = DefaultOpenApiTitle,
-                                                             string version = DefaultOpenApiVersion)
+        private static Action<SwaggerGenOptions> CreateCustomOpenApi(string title = DefaultOpenApiTitle,
+                                                                     string version = DefaultOpenApiVersion)
         {
-            if (string.IsNullOrWhiteSpace(title))
-            {
-                throw new ArgumentException(nameof(title));
-            }
-
-            if (string.IsNullOrWhiteSpace(version))
-            {
-                throw new ArgumentException(nameof(version));
-            }
-
             return new Action<SwaggerGenOptions>(setupAction =>
             {
+                setupAction.CustomOperationIds(CustomOperationIdSelector);
+
                 var info = new OpenApiInfo
                 {
                     Title = title,
@@ -141,6 +161,15 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
 
                 setupAction.SwaggerDoc(version, info);
             });
+        }
+
+        // Format: <Controller>_<HTTP Method>_<MethodName>
+        // E.g. : Home_GET_SearchAsync
+        private static string CustomOperationIdSelector(ApiDescription apiDescription)
+        {
+            var controllerName = ((ControllerActionDescriptor)apiDescription.ActionDescriptor).ControllerName;
+            var methodName = apiDescription.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name : $"Unknown_Method_Name_{Guid.NewGuid()}";
+            return $"{controllerName}_{apiDescription.HttpMethod}_{methodName}";
         }
     }
 }

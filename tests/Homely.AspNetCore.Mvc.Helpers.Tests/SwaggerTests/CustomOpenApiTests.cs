@@ -36,8 +36,8 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.SwaggerTests
 
             // Assert.
             response.IsSuccessStatusCode.ShouldBeTrue();
-            response.Content.Headers.ContentType.MediaType.ShouldBe("application/json");
-            response.Content.Headers.ContentType.CharSet.ShouldBe("utf-8");
+            response.Content.Headers.ContentType?.MediaType.ShouldBe("application/json");
+            response.Content.Headers.ContentType?.CharSet.ShouldBe("utf-8");
         }
     }
 }

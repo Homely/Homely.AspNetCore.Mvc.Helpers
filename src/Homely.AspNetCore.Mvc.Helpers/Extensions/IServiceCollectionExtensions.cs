@@ -24,6 +24,83 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         /// - AddProblemDeatils<br/>
         /// - AddCustomSwagger<br/>
         /// </summary>
+        /// <remarks>This is probably the most common method/parameter combination, to use.</remarks>
+        /// <param name="services"></param>
+        /// <param name="banner"></param>
+        /// <param name="includeExceptionDetails"></param>
+        /// <param name="apiTitle"></param>
+        /// <param name="apiVersion"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddDefaultWebApiSettings(this IServiceCollection services,
+            string banner,
+            bool includeExceptionDetails,
+            string apiTitle,
+            string apiVersion)
+        {
+            return services.AddDefaultWebApiSettings(
+                banner,
+                includeExceptionDetails,
+                false,
+                null,
+                apiTitle,
+                apiVersion,
+                null);
+        }
+
+        /// <summary>
+        /// This method adds the common web api services:<br/>
+        /// - AddControllers<br/>
+        /// - AddHomeController<br/>
+        /// - AddDefaultJsonOptions<br/>
+        /// - AddProblemDeatils<br/>
+        /// - AddCustomSwagger<br/>
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="banner"></param>
+        /// <param name="includeExceptionDetails"></param>
+        /// <param name="isJsonIndented"></param>
+        /// <param name="jsonDateTimeFormat"></param>
+        /// <param name="apiTitle"></param>
+        /// <param name="apiVersion"></param>
+        /// <param name="otherChainedMethods"></param>
+        /// <returns></returns>
+        public static IServiceCollection AddDefaultWebApiSettings(this IServiceCollection services,
+                                                                  string? banner = null,
+                                                                  bool includeExceptionDetails = false,
+                                                                  bool isJsonIndented = false,
+                                                                  string? jsonDateTimeFormat = null,
+                                                                  string apiTitle = DefaultOpenApiTitle,
+                                                                  string apiVersion = DefaultOpenApiTitle,
+                                                                  IEnumerable<Action<IMvcBuilder>>? otherChainedMethods = null)
+        {
+            var customSwaggerGenerationOptions = new Action<SwaggerGenOptions>(setupAction =>
+            {
+                var info = new OpenApiInfo
+                {
+                    Title = apiTitle,
+                    Version = apiVersion
+                };
+
+                setupAction.SwaggerDoc(apiVersion, info);
+            });
+
+            return services.AddDefaultWebApiSettings(
+                banner,
+                includeExceptionDetails,
+                isJsonIndented,
+                jsonDateTimeFormat,
+                customSwaggerGenerationOptions,
+                otherChainedMethods);
+        }
+
+        /// <summary>
+        /// This method adds the common web api services:<br/>
+        /// - AddControllers<br/>
+        /// - AddHomeController<br/>
+        /// - AddDefaultJsonOptions<br/>
+        /// - AddProblemDeatils<br/>
+        /// - AddCustomSwagger<br/>
+        /// </summary>
         /// <param name="services"></param>
         /// <param name="banner"></param>
         /// <param name="includeExceptionDetails"></param>
@@ -71,8 +148,8 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
             return services;
         }
 
-        private static Action<SwaggerGenOptions> CreateCustomOpenApi(string title = DefaultOpenApiTitle,
-                                                                     string version = DefaultOpenApiVersion)
+        private static Action<SwaggerGenOptions> CreateCustomOpenApi(string title,
+                                                                     string version)
         {
             return new Action<SwaggerGenOptions>(setupAction =>
             {

@@ -60,7 +60,13 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.ExtensionsTests.IServiceCollection
             var services = new ServiceCollection();
 
             // Act.
-            var sameServices = services.AddDefaultWebApiSettings(banner: banner, otherChainedMethods: otherMethods);
+            var sameServices = services.AddDefaultWebApiSettings(
+                banner: banner,
+                false,
+                false,
+                null,
+                null,
+                otherChainedMethods: otherMethods);
 
             // Assert.
             sameServices.ShouldNotBeNull();

@@ -38,6 +38,10 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.SwaggerTests
             response.IsSuccessStatusCode.ShouldBeTrue();
             response.Content.Headers.ContentType?.MediaType.ShouldBe("application/json");
             response.Content.Headers.ContentType?.CharSet.ShouldBe("utf-8");
+
+            var json = await response.Content.ReadAsStringAsync();
+            json.ShouldContain("\"title\": \"Test API\"");
+            json.ShouldContain("\"version\": \"v2\"");
         }
     }
 }

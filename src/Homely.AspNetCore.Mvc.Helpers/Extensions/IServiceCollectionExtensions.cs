@@ -16,83 +16,6 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         private const string DefaultOpenApiTitle = "My API";
         private const string DefaultOpenApiVersion = "v1";
 
-        public static IServiceCollection AddDefaultWebApiSettings(this IServiceCollection services,
-                                                                  string title = DefaultOpenApiTitle,
-                                                                  string version = DefaultOpenApiVersion)
-        {
-            return services.AddDefaultWebApiSettings(default,
-                default,
-                default,
-                default,
-                title,
-                version,
-                default);
-        }
-
-        /// <summary>
-        /// This method adds the common web api services:<br/>
-        /// - AddControllers<br/>
-        /// - AddHomeController<br/>
-        /// - AddDefaultJsonOptions<br/>
-        /// - AddProblemDeatils<br/>
-        /// - AddCustomSwagger<br/>
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="banner"></param>
-        /// <param name="includeExceptionDetails"></param>
-        /// <param name="isJsonIndented"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddDefaultWebApiSettings(this IServiceCollection services,
-                                                                  string? banner = null,
-                                                                  bool includeExceptionDetails = false,
-                                                                  bool isJsonIndented = false)
-        {
-            return services.AddDefaultWebApiSettings(banner,
-                includeExceptionDetails,
-                isJsonIndented,
-                default,
-                DefaultOpenApiTitle,
-                DefaultOpenApiVersion,
-                default);
-        }
-
-        /// <summary>
-        /// This method adds the common web api services:<br/>
-        /// - AddControllers<br/>
-        /// - AddHomeController<br/>
-        /// - AddDefaultJsonOptions<br/>
-        /// - AddProblemDeatils<br/>
-        /// - AddCustomSwagger<br/>
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="banner"></param>
-        /// <param name="includeExceptionDetails"></param>
-        /// <param name="isJsonIndented"></param>
-        /// <param name="jsonDateTimeFormat"></param>
-        /// <param name="title"></param>
-        /// <param name="version"></param>
-        /// <param name="otherChainedMethods"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddDefaultWebApiSettings(this IServiceCollection services,
-                                                                  string? banner = null,
-                                                                  bool includeExceptionDetails = false,
-                                                                  bool isJsonIndented = false,
-                                                                  string? jsonDateTimeFormat = null,
-                                                                  string title = DefaultOpenApiTitle,
-                                                                  string version = DefaultOpenApiVersion,
-                                                                  IEnumerable<Action<IMvcBuilder>>? otherChainedMethods = null)
-        {
-
-            var swaggerGenerationOptions = CreateCustomOpenApi(title, version);
-
-            return services.AddDefaultWebApiSettings(banner,
-                includeExceptionDetails,
-                isJsonIndented,
-                jsonDateTimeFormat,
-                swaggerGenerationOptions,
-                otherChainedMethods);
-        }
-
         /// <summary>
         /// This method adds the common web api services:<br/>
         /// - AddControllers<br/>
@@ -117,6 +40,8 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
                                                                   Action<SwaggerGenOptions>? customSwaggerGenerationOptions = null,
                                                                   IEnumerable<Action<IMvcBuilder>>? otherChainedMethods = null)
         {
+            customSwaggerGenerationOptions ??= CreateCustomOpenApi(DefaultOpenApiTitle, DefaultOpenApiVersion);
+
             var mvcBuilder = services.AddControllers();
 
             mvcBuilder

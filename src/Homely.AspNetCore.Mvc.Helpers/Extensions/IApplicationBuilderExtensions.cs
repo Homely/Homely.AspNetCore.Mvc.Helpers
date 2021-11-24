@@ -1,4 +1,3 @@
-using System;
 using Hellang.Middleware.ProblemDetails;
 using Homely.AspNetCore.Mvc.Helpers.Models;
 using Microsoft.AspNetCore.Builder;

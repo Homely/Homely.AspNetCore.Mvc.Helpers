@@ -15,8 +15,8 @@ namespace TestWebApplication
 {
     public class Startup
     {
-        private const string OpenApiVersion = "v2";
         private const string OpenApiTitle = "Test API";
+        private const string OpenApiVersion = "v2";
 
         private readonly IWebHostEnvironment _webHostEnvironment;
 
@@ -30,7 +30,6 @@ namespace TestWebApplication
         {
             var isStackTraceDisplayed = _webHostEnvironment.IsDevelopment();
             var isJsonIndented = _webHostEnvironment.IsDevelopment();
-            string jsonDateTimeFormat = null;
 
             // Just mucking around - testing that we can use some custom stuff.
             var customSwaggerOptions = new Action<SwaggerGenOptions>(setupAction =>
@@ -48,9 +47,7 @@ namespace TestWebApplication
 
             services.AddDefaultWebApiSettings("Some Test Api",
                                               isStackTraceDisplayed,
-                                              isJsonIndented,
-                                              jsonDateTimeFormat,
-                                              customSwaggerOptions);
+                                              customSwaggerGenerationOptions: customSwaggerOptions);
 
             ConfigureRepositories(services);
         }

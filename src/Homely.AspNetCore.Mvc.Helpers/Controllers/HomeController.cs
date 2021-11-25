@@ -20,13 +20,13 @@ namespace Homely.AspNetCore.Mvc.Helpers.Controllers
         /// </summary>
         /// <returns>Some health-related text.</returns>
         /// <response code="200">Some text saying "yep, we're up!".</response>
-        [HttpGet("")]
+        [HttpGet("", Name = "GET_Home")]
         public OkObjectResult Get()
         {
             return Ok(_banner.Banner);
         }
 
-        [HttpGet("exceptionTest")]
+        [HttpGet("exceptionTest", Name = "GET_ExceptionTest")]
         [ProducesResponseType(500)]
         public ActionResult ExceptionTest()
         {

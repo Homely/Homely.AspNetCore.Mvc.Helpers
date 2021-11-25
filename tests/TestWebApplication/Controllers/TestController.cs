@@ -27,7 +27,7 @@ namespace TestWebApplication.Controllers
         }
 
         // GET: /test/1 | 200 OK.
-        [HttpGet("{id:int}", Name = "GetId")]
+        [HttpGet("{id:int}", Name = "GET_TestId")]
         public ActionResult<FakeVehicle> Get(int id)
         {
             var model = _fakeVehicleRepository.Get(id);

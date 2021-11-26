@@ -9,8 +9,24 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.ExtensionsTests.IServiceCollection
 {
     public class AddDefaultWebApiSettingsTests
     {
-        public static TheoryData<string?, IEnumerable<Action<IMvcBuilder>>?> Data =>
-            new TheoryData<string?, IEnumerable<Action<IMvcBuilder>>?>
+        [Fact]
+        public void GivenSomeSmallAmountOfData_AddDefaultWebApiSettings_ShouldSetupTheSettings()
+        {
+            // Arrange.
+            var services = new ServiceCollection();
+
+            // Act.
+            var sameServices = services.AddDefaultWebApiSettings(
+                "some banner",
+                true,
+                "some title",
+                "some apiVersion");
+
+            // Assert.
+            sameServices.ShouldNotBeNull();
+        }
+
+        public static TheoryData<string?, IEnumerable<Action<IMvcBuilder>>?> Data => new()
             {
                 // Nothing.
                 {
@@ -67,6 +83,45 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.ExtensionsTests.IServiceCollection
                 null,
                 null,
                 otherChainedMethods: otherMethods);
+
+            // Assert.
+            sameServices.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void GivenLargishAmountOfData_AddDefaultWebApiSettings_ShouldSetupTheSettings()
+        {
+            // Arrange.
+            var services = new ServiceCollection();
+
+            // Act.
+            var sameServices = services.AddDefaultWebApiSettings(
+                "some banner",
+                true,
+                true,
+                null,
+                "some title",
+                "some apiVersion",
+                null);
+
+            // Assert.
+            sameServices.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void GivenTheFullData_AddDefaultWebApiSettings_ShouldSetupTheSettings()
+        {
+            // Arrange.
+            var services = new ServiceCollection();
+
+            // Act.
+            var sameServices = services.AddDefaultWebApiSettings(
+                "some banner",
+                true,
+                true,
+                null,
+                null,
+                null);
 
             // Assert.
             sameServices.ShouldNotBeNull();

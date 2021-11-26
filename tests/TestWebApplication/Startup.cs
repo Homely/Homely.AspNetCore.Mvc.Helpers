@@ -79,7 +79,7 @@ namespace TestWebApplication
         private string CustomOperationIdSelector(ApiDescription apiDescription)
         {
             var controllerName = ((ControllerActionDescriptor)apiDescription.ActionDescriptor).ControllerName;
-            var methodName = apiDescription.TryGetMethodInfo(out MethodInfo methodInfo) ? methodInfo.Name : $"Unknown_Method_Name_{Guid.NewGuid()}";
+            var methodName = apiDescription.TryGetMethodInfo(out var methodInfo) ? methodInfo.Name : $"Unknown_Method_Name_{Guid.NewGuid()}";
             return $"{controllerName}_{apiDescription.HttpMethod}_{methodName}_{Guid.NewGuid()}"; // Guid is for custom testing purposes.
         }
     }

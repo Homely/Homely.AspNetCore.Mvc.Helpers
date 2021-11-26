@@ -56,7 +56,7 @@ namespace TestWebApplication.Controllers
 
             _fakeVehicleRepository.Add(fakeVehicle);
 
-            return CreatedAtRoute("GetId", new { id = fakeVehicle.Id }, null);
+            return CreatedAtRoute("GET_TestId", new { id = fakeVehicle.Id }, null);
         }
 
         // GET: /test/error | 500 Server Error.

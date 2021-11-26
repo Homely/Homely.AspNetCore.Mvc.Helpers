@@ -7,11 +7,11 @@ using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.JsonOptionsTests
 {
-    public class AddJsonOptionsTests : IClassFixture<TestFixture>
+    public class AddJsonOptionsTests : IClassFixture<CustomWebApplicationFactory>
     {
-        private readonly TestFixture _factory;
+        private readonly CustomWebApplicationFactory _factory;
 
-        public AddJsonOptionsTests(TestFixture factory)
+        public AddJsonOptionsTests(CustomWebApplicationFactory factory)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }

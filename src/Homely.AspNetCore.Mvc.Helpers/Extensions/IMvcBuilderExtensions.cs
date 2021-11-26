@@ -28,7 +28,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         {
             if (callingAssembly == null)
             {
-                callingAssembly = Assembly.GetCallingAssembly();
+                callingAssembly = Assembly.GetExecutingAssembly();
             }
 
             var banner = new HomeControllerBanner(callingAssembly, asciiBanner);

@@ -122,7 +122,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
             var mvcBuilder = services.AddControllers();
 
             mvcBuilder
-                .AddAHomeController(services, banner, Assembly.GetCallingAssembly())
+                .AddAHomeController(services, banner, Assembly.GetEntryAssembly())
                 .AddDefaultJsonOptions(isJsonIndented, jsonDateTimeFormat);
 
             services.AddProblemDetails(options =>

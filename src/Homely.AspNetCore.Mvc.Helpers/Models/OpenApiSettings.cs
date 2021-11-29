@@ -11,9 +11,3 @@ namespace Homely.AspNetCore.Mvc.Helpers.Models
         public string RoutePrefix { get; init; } = DefaultOpenApiRoutePrefex;
     }
 }
-
-// Below is need for records to work on netcoreapp3.1
-namespace System.Runtime.CompilerServices
-{
-    public class IsExternalInit { }
-}

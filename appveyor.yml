@@ -70,16 +70,14 @@ artifacts:
 deploy:
   - provider: NuGet
     server: https://www.myget.org/F/homely-oss/api/v2/package
-    api_key:
-      secure: $(global_myget_api_key)
+    api_key: $(global_myget_osshomely_api_key)
     skip_symbols: true
     artifact: nuget-packages #MyGet doesn't support symbols packages.
     on:
       APPVEYOR_REPO_TAG: false
 
   - provider: NuGet
-    api_key:
-      secure: $(global_nuget.org_api_key)
+    api_key: $(global_nugetorg_api_key)
     on:
       branch: master
       APPVEYOR_REPO_TAG: true

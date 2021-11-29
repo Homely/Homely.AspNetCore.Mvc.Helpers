@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
-        <LangVersion>latest</LangVersion>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>enable</Nullable>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <Version>0.0.0</Version>
@@ -23,11 +23,14 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="5.1.1" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.9" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.9" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+        <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.2.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
     
     <ItemGroup>

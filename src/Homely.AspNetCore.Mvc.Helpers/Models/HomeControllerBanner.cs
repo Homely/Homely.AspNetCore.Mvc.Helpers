@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Models
@@ -8,12 +8,12 @@ namespace Homely.AspNetCore.Mvc.Helpers.Models
     {
         private static readonly DateTime ApplicationStartedOn = DateTime.UtcNow;
 
-        public HomeControllerBanner(string banner = null,
-                                    Assembly callingAssembly = null)
+        public HomeControllerBanner(Assembly callingAssembly, string? banner = null)
         {
             var assemblyDate = callingAssembly.Location == null
                                    ? "-- unknown --"
                                    : System.IO.File.GetLastWriteTime(callingAssembly.Location).ToString("U");
+
             var assemblyInfo = $"Name: {callingAssembly.GetName().Name}{Environment.NewLine}" +
                                    $"Version: {callingAssembly.GetName().Version}{Environment.NewLine}" +
                                    $"Build Date : {assemblyDate}{Environment.NewLine}" +

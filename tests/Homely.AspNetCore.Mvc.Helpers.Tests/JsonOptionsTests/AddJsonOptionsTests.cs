@@ -7,16 +7,16 @@ using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.JsonOptionsTests
 {
-    public class AddJsonOptionsTests : IClassFixture<TestFixture>
+    public class AddJsonOptionsTests : IClassFixture<CustomWebApplicationFactory>
     {
-        private readonly TestFixture _factory;
+        private readonly CustomWebApplicationFactory _factory;
 
-        public AddJsonOptionsTests(TestFixture factory)
+        public AddJsonOptionsTests(CustomWebApplicationFactory factory)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
 
-        public static TheoryData<int, string, string, bool> Data => new TheoryData<int, string, string, bool>
+        public static TheoryData<int, string?, string, bool> Data => new()
         {
             { 1, null, "2000-01-02T03:04:05", false }, // Default formatter with no milliseconds.
             { 1, null, "2000-01-02T03:04:05", true }, // Default formatter with no milliseconds + Indented.
@@ -31,7 +31,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.JsonOptionsTests
         [Theory]
         [MemberData(nameof(Data))]
         public async Task GivenSomeModel_Get_ReturnsASyntaxCorrectJsonText(int id,
-                                                                           string dateTimeFormat, 
+                                                                           string? dateTimeFormat, 
                                                                            string expectedDateTime,
                                                                            bool isIdented = false)
         {

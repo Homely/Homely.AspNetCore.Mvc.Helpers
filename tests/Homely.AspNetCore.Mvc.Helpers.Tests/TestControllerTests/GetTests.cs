@@ -9,11 +9,11 @@ using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 {
-    public class GetTests : IClassFixture<TestFixture>
+    public class GetTests : IClassFixture<CustomWebApplicationFactory>
     {
-        private readonly TestFixture _factory;
+        private readonly CustomWebApplicationFactory _factory;
 
-        public GetTests(TestFixture factory)
+        public GetTests(CustomWebApplicationFactory factory)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }

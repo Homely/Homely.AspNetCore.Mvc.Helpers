@@ -23,20 +23,15 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         /// <returns>Chaining: the interface for configuring essential MVC services.</returns>
         public static IMvcBuilder AddAHomeController(this IMvcBuilder builder,
                                                      IServiceCollection services,
-                                                     string asciiBanner = null,
-                                                     Assembly callingAssembly = null)
+                                                     string? asciiBanner = null,
+                                                     Assembly? callingAssembly = null)
         {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
-
             if (callingAssembly == null)
             {
-                callingAssembly = Assembly.GetCallingAssembly();
+                callingAssembly = Assembly.GetExecutingAssembly();
             }
 
-            var banner = new HomeControllerBanner(asciiBanner, callingAssembly);
+            var banner = new HomeControllerBanner(callingAssembly, asciiBanner);
             services.AddSingleton<IHomeControllerBanner>(banner);
 
             builder.AddApplicationPart(typeof(HomeController).Assembly);
@@ -55,12 +50,12 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
         /// <returns>IMvcBuilder: the builder, so we can more builder methods.</returns>
         public static IMvcBuilder AddDefaultJsonOptions(this IMvcBuilder builder,
                                                         bool isIndented = false,
-                                                        string dateTimeFormat = null,
-                                                        IEnumerable<JsonConverter> converters = null)
+                                                        string? dateTimeFormat = null,
+                                                        IEnumerable<JsonConverter>? converters = null)
         {
             return builder.AddJsonOptions(options =>
             {
-                options.JsonSerializerOptions.IgnoreNullValues = true;
+                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 options.JsonSerializerOptions.WriteIndented = isIndented;
                 options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));

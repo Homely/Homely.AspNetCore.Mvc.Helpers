@@ -27,7 +27,7 @@ namespace TestWebApplication.Controllers
         }
 
         // GET: /test/1 | 200 OK.
-        [HttpGet("{id:int}", Name = "GetId")]
+        [HttpGet("{id:int}", Name = "GET_TestId")]
         public ActionResult<FakeVehicle> Get(int id)
         {
             var model = _fakeVehicleRepository.Get(id);
@@ -56,7 +56,7 @@ namespace TestWebApplication.Controllers
 
             _fakeVehicleRepository.Add(fakeVehicle);
 
-            return CreatedAtRoute("GetId", new { id = fakeVehicle.Id }, null);
+            return CreatedAtRoute("GET_TestId", new { id = fakeVehicle.Id }, null);
         }
 
         // GET: /test/error | 500 Server Error.

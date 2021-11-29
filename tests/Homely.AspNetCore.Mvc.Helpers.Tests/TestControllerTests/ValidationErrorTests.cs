@@ -8,11 +8,11 @@ using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 {
-    public class ValidationErrorTests : IClassFixture<TestFixture>
+    public class ValidationErrorTests : IClassFixture<CustomWebApplicationFactory>
     {
-        private readonly TestFixture _factory;
+        private readonly CustomWebApplicationFactory _factory;
 
-        public ValidationErrorTests(TestFixture factory)
+        public ValidationErrorTests(CustomWebApplicationFactory factory)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }

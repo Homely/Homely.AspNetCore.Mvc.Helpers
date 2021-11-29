@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shouldly;
 using System;
@@ -8,11 +8,11 @@ using Xunit;
 
 namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
 {
-    public class DynamicErrorTests : IClassFixture<TestFixture>
+    public class DynamicErrorTests : IClassFixture<CustomWebApplicationFactory>
     {
-        private readonly TestFixture _factory;
+        private readonly CustomWebApplicationFactory _factory;
 
-        public DynamicErrorTests(TestFixture factory)
+        public DynamicErrorTests(CustomWebApplicationFactory factory)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));
         }
@@ -35,8 +35,8 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             // TODO: Set IsDevelopment() so we can proove that both error messages are different.
 
             // Act.
-            var response1 = await _factory.CreateClient().GetAsync(route);
-            var response2 = await _factory.CreateClient().GetAsync(route);
+            var response1 = await client.GetAsync(route);
+            var response2 = await client.GetAsync(route);
 
             // Assert.
             response1.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);

@@ -13,10 +13,11 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.ExtensionsTests.IMvcBuilderExtensi
         public void GivenNoServiceCollection_AddAHomeController_ThrowsAnException()
         {
             // Arrange.
-            var mvcBuilder = new Mock<IMvcBuilder>().Object;            
+            var mvcBuilder = new Mock<IMvcBuilder>().Object;
+            var services = new ServiceCollection();
 
             // Act.
-            var exception = Should.Throw<Exception>(() => mvcBuilder.AddAHomeController(null));
+            var exception = Should.Throw<Exception>(() => mvcBuilder.AddAHomeController(services));
 
             // Assert.
             exception.ShouldNotBeNull();

@@ -1,5 +1,6 @@
 using System;
 using Homely.AspNetCore.Mvc.Helpers.Extensions;
+using Homely.AspNetCore.Mvc.Helpers.Models;
 using Microsoft.AspNetCore.Builder;
 using Moq;
 using Shouldly;
@@ -26,10 +27,15 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.ExtensionsTests.IApplicationBuilde
             // Arrange.
             var applicationBuilder = new Mock<IApplicationBuilder>().Object;
 
+            OpenApiSettings openApiSettings = new()
+            {
+                Title = title,
+                Version = version,
+                RoutePrefix = routePrefix
+            };
+
             // Act.
-            var exception = Should.Throw<Exception>(() => applicationBuilder.UseCustomOpenApi(title,
-                                                                                              version,
-                                                                                              routePrefix));
+            var exception = Should.Throw<Exception>(() => applicationBuilder.UseCustomOpenApi(openApiSettings));
 
             // Assert.
             exception.ShouldNotBeNull();

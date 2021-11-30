@@ -20,64 +20,64 @@ matrix:
 
 configuration:
   - Debug
-  - Release
+  #- Release
 
 before_build:
   # Display .NET Core version
   - dotnet --info
 
-build_script:
-  - dotnet restore --verbosity quiet
-  - ps: dotnet build -c $env:CONFIGURATION -v minimal /p:Version=$env:APPVEYOR_BUILD_VERSION --no-restore
+#build_script:
+#  - dotnet restore --verbosity quiet
+#  - ps: dotnet build -c $env:CONFIGURATION -v minimal /p:Version=$env:APPVEYOR_BUILD_VERSION --no-restore
 
-test_script:
-  - ps: |
-      if ($env:CONFIGURATION -eq 'Debug')
-      {
-          dotnet test tests\Homely.AspNetCore.Mvc.Helpers.Tests -c $env:CONFIGURATION -v minimal --no-build --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory './CodeCoverageResults'
-      }
-      else
-      {
-          dotnet test tests\Homely.AspNetCore.Mvc.Helpers.Tests -c $env:CONFIGURATION -v minimal --no-build
-      }
+#test_script:
+#  - ps: |
+#      if ($env:CONFIGURATION -eq 'Debug')
+#      {
+#          dotnet test tests\Homely.AspNetCore.Mvc.Helpers.Tests -c $env:CONFIGURATION -v minimal --no-build --collect:"XPlat Code Coverage" --settings coverlet.runsettings --results-directory './CodeCoverageResults'
+#      }
+#      else
+#      {
+#          dotnet test tests\Homely.AspNetCore.Mvc.Helpers.Tests -c $env:CONFIGURATION -v minimal --no-build
+#      }
 
 
-# We only:
-#   - Send DEBUG results up to codecov.
-#   - Pack for RELEASE only.
-after_test:
-  - ps: |
-      if ($env:CONFIGURATION -eq 'Debug')
-      {
-          # Currently, the bash script version is better than the .exe version.
-          Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
-          bash codecov.sh -s './CodeCoverageResults/' -f '*.xml' -Z
-      }
+## We only:
+##   - Send DEBUG results up to codecov.
+##   - Pack for RELEASE only.
+#after_test:
+#  - ps: |
+#      if ($env:CONFIGURATION -eq 'Debug')
+#      {
+#          # Currently, the bash script version is better than the .exe version.
+#          Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
+#          bash codecov.sh -s './CodeCoverageResults/' -f '*.xml' -Z
+#      }
       
-      if ($env:CONFIGURATION -eq 'Release')
-      {
-          dotnet pack src\Homely.AspNetCore.Mvc.Helpers -c $env:CONFIGURATION --no-build /p:ContinuousIntegrationBuild=true /p:Version=$env:APPVEYOR_BUILD_VERSION
-      }
+#      if ($env:CONFIGURATION -eq 'Release')
+#      {
+#          dotnet pack src\Homely.AspNetCore.Mvc.Helpers -c $env:CONFIGURATION --no-build /p:ContinuousIntegrationBuild=true /p:Version=$env:APPVEYOR_BUILD_VERSION
+#      }
 
-artifacts:
-  - path: '**\*.nupkg'
-    name: nuget-packages
-    type: NuGetPackage
-  - path: '**\*.snupkg'
-    name: nuget-symbols
-    type: NuGetPackage
+#artifacts:
+#  - path: '**\*.nupkg'
+#    name: nuget-packages
+#    type: NuGetPackage
+#  - path: '**\*.snupkg'
+#    name: nuget-symbols
+#    type: NuGetPackage
 
-deploy:
-  - provider: NuGet
-    server: https://www.myget.org/F/homely-oss/api/v2/package
-    api_key: $(global_myget_osshomely_api_key)
-    skip_symbols: true
-    artifact: nuget-packages #MyGet doesn't support symbols packages.
-    on:
-      APPVEYOR_REPO_TAG: false
+#deploy:
+#  - provider: NuGet
+#    server: https://www.myget.org/F/homely-oss/api/v2/package
+#    api_key: $(global_myget_osshomely_api_key)
+#    skip_symbols: true
+#    artifact: nuget-packages #MyGet doesn't support symbols packages.
+#    on:
+#      APPVEYOR_REPO_TAG: false
 
-  - provider: NuGet
-    api_key: $(global_nugetorg_api_key)
-    on:
-      branch: master
-      APPVEYOR_REPO_TAG: true
+#  - provider: NuGet
+#    api_key: $(global_nugetorg_api_key)
+#    on:
+#      branch: master
+#      APPVEYOR_REPO_TAG: true

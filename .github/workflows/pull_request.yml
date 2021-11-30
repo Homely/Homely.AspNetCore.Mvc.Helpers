@@ -1,0 +1,52 @@
+name: Pull Request
+
+on: pull_request
+
+env:
+  DOTNET_NOLOGO: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        config:
+          - debug
+          - release
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build version suffix
+        run: echo "VERSION_SUFFIX=alpha.${{ github.event.number }}" >> $GITHUB_ENV
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+
+      - run: dotnet restore --verbosity minimal
+
+      - run: dotnet build --configuration ${{ matrix.config }} /p:ContinuousIntegrationBuild=true --no-restore
+
+      - run: dotnet test --configuration ${{ matrix.config }} --no-build
+        if: matrix.config == 'release'
+
+      - run: dotnet test --configuration ${{ matrix.config }} --verbosity minimal --no-build --collect:"XPlat Code Coverage" --results-directory "./.codecoverage"
+        if: matrix.config == 'debug'
+
+      - run: dotnet pack --configuration ${{ matrix.config }} --no-build --output ./artifacts --version-suffix $VERSION_SUFFIX
+        if: matrix.config == 'release'
+
+      - name: Code coverage
+        if: matrix.config == 'debug'
+        uses: codecov/codecov-action@v2
+        with:
+          directory: "./.codecoverage"
+          fail_ci_if_error: true
+
+      - name: Publish artifacts
+        if: matrix.config == 'release'
+        uses: actions/upload-artifact@v2
+        with:
+          path: ./artifacts/*

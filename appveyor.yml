@@ -7,6 +7,7 @@ pull_requests:
 # Override the 'version' if this is a GH-tag-commit -or- this is a custom branch (i.e not 'master').
 init:
   - ps: |
+      iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
       if ($env:APPVEYOR_REPO_TAG -eq $TRUE -and $env:APPVEYOR_REPO_BRANCH -eq 'master')
       { 
           Write-Host " !! Commit is Tagged and branch is 'master' - forcing build version to tag-value." -ForegroundColor Red; 
@@ -25,6 +26,9 @@ configuration:
 before_build:
   # Display .NET Core version
   - dotnet --info
+
+on_finish:
+  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 
 #build_script:
 #  - dotnet restore --verbosity quiet

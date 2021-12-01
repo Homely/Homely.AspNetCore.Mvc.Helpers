@@ -1,4 +1,4 @@
-name: Merge PR into 'master'
+name: 2. Merge PR into 'master'
 
 on:
   push:

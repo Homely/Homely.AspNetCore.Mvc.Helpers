@@ -1,4 +1,4 @@
-name: Pull Requests
+name: 1. Pull Requests
 
 on: pull_request
 

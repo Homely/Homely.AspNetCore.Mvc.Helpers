@@ -1,4 +1,4 @@
-name: Publish Release to nuget.org
+name: 3. Publish Release to nuget.org
 
 on:
   push:

@@ -12,8 +12,7 @@ env:
 
 jobs:
 
-  # We build a release nuget package.
-  buildnuget:
+  build_nuget_and_publish_to_GPR:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,14 +27,14 @@ jobs:
 
       - run: dotnet restore --verbosity minimal
 
-      - run: dotnet build --configuration Release /p:ContinuousIntegrationBuild=true --no-restore
+      - run: dotnet build --configuration Release /p:ContinuousIntegrationBuild=true --no-restore 
 
       - run: dotnet test --configuration Release --no-build
 
       - run: dotnet pack --configuration Release --no-build --output ./artifacts --version-suffix $VERSION_SUFFIX
 
       - name: Publish artifacts
-        uses: actions/upload-artifact@v2.2.4
+        uses: actions/upload-artifact@v2
         with:
           path: ./artifacts/*
 
@@ -46,7 +45,7 @@ jobs:
             --api-key ${{ secrets.GITHUB_TOKEN }} \
             --source https://nuget.pkg.github.com/${{ github.repository_owner }}
 
-  codecoverage:
+  build_test_and_publish_codecoverage_report:
     runs-on: ubuntu-latest
 
     steps:

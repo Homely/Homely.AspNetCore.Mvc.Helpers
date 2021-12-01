@@ -46,7 +46,7 @@ jobs:
             --source https://nuget.pkg.github.com/${{ github.repository_owner }}
 
       - name: Remove old pre-release packages (keeping the GPR cleanish)
-      - uses: actions/delete-package-versions@v2
+        uses: actions/delete-package-versions@v2
         with: 
           package-name: 'Homely.AspNetCore.Mvc.Helpers'
           min-versions-to-keep: 10

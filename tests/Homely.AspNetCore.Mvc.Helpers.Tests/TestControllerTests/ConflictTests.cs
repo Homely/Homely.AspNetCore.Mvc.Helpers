@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shouldly;
 using System;
@@ -23,7 +23,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             // Arrange.
             var error = new ProblemDetails
             {
-                Type = "https://httpstatuses.com/409",
+                Type = "https://httpstatuses.io/409",
                 Title = "Agent was already modified.",
                 Status = StatusCodes.Status409Conflict,
                 Detail = "agent was already modified after you retrieved the latest data. So you would then override the most recent copy. As such, you will need to refresh the page (to get the latest data) then modify that, if required.",

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -22,14 +22,14 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.3.0" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
-        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+        <PackageReference Include="Hellang.Middleware.ProblemDetails" Version="6.5.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.9.0" />
     </ItemGroup>
     
     <ItemGroup>

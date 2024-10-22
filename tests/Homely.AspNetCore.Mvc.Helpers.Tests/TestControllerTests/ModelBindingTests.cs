@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shouldly;
 using System;
@@ -34,7 +34,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             // Arrange.
             var error = new ValidationProblemDetails
             {
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+                Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
                 Title = "One or more validation errors occurred.",
                 Status = StatusCodes.Status400BadRequest,
                 Detail = "Please refer to the errors property for additional details.",

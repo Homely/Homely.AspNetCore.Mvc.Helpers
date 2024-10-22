@@ -1,7 +1,8 @@
-﻿using Homely.AspNetCore.Mvc.Helpers.Extensions;
+using Homely.AspNetCore.Mvc.Helpers.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -21,11 +22,12 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.HomeControllerTests
         {
             // Arrange.
             const string banner = "pew pew";
+            var currentAssembly = Assembly.GetExecutingAssembly();
             var client = _factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureServices(services =>
                 {
-                    services.AddControllers().AddAHomeController(services, banner);
+                    services.AddControllers().AddAHomeController(services, banner, currentAssembly);
                 });
             }).CreateClient();
 
@@ -36,6 +38,10 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.HomeControllerTests
             response.IsSuccessStatusCode.ShouldBeTrue();
             var text = await response.Content.ReadAsStringAsync();
             text.ShouldStartWith(banner); // Banner ASCII art/text.
+
+            var buildDate = System.IO.File.GetLastWriteTime(currentAssembly.Location).ToString("F");
+
+            text.ShouldContain(buildDate);
         }
     }
 }

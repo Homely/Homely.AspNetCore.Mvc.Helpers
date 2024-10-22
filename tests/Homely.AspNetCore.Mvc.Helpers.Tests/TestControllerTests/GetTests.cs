@@ -41,7 +41,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             const int id = int.MaxValue;
             var error = new ProblemDetails
             {
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.4",
+                Type = "https://tools.ietf.org/html/rfc9110#section-15.5.5",
                 Title = "Not Found",
                 Status = StatusCodes.Status404NotFound
             };

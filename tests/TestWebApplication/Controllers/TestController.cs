@@ -97,7 +97,7 @@ namespace TestWebApplication.Controllers
         {
             var error = new ProblemDetails
             {
-                Type = "https://httpstatuses.com/409",
+                Type = "https://httpstatuses.io/409",
                 Title = "Agent was already modified.",
                 Status = StatusCodes.Status409Conflict,
                 Instance = "/test/conflict",

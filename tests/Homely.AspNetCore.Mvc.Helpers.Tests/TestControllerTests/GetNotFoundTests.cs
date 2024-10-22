@@ -23,7 +23,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             // Arrange.
             var error = new ProblemDetails
             {
-                Type = "https://httpstatuses.com/404",
+                Type = "https://httpstatuses.io/404",
                 Title = "Not Found",
                 Status = StatusCodes.Status404NotFound
             };

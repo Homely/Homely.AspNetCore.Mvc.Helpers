@@ -23,7 +23,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Tests.TestControllerTests
             // Arrange.
             var error = new ProblemDetails
             {
-                Type = "https://httpstatuses.com/500",
+                Type = "https://httpstatuses.io/500",
                 Title = "Internal Server Error",
                 Status = StatusCodes.Status500InternalServerError
             };

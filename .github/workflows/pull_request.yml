@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build version suffix
-        run: echo "VERSION_SUFFIX=alpha.${{ github.run_number }}" >> $GITHUB_ENV
+        run: echo "VERSION_SUFFIX=beta.${{ github.run_number }}" >> $GITHUB_ENV
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -33,25 +33,39 @@ jobs:
         with:
           path: ./artifacts/*
 
-  codecoverage_report:
-    runs-on: ubuntu-latest
+      - name: Publish to GPR
+        run: |
+          dotnet nuget push "./artifacts/*.nupkg" \
+            --no-symbols \
+            --api-key ${{ secrets.GITHUB_TOKEN }} \
+            --source https://nuget.pkg.github.com/${{ github.repository_owner }}
 
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+      - name: Remove old pre-release packages (keeping the GPR cleanish)
+        uses: actions/delete-package-versions@v5
+        with: 
+          package-name: 'Homely.AspNetCore.Mvc.Helpers'
+          min-versions-to-keep: 10
+          delete-only-pre-release-versions: "true"
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+  # codecoverage_report:
+  #   runs-on: ubuntu-latest
 
-      - run: dotnet restore --verbosity minimal
+  #   steps:
+  #     - name: Checkout repo
+  #       uses: actions/checkout@v4
 
-      - run: dotnet build --configuration Debug
+  #     - name: Setup .NET
+  #       uses: actions/setup-dotnet@v4
 
-      - run: dotnet test --configuration Debug --verbosity minimal --no-build --collect:"XPlat Code Coverage" --results-directory "./.codecoverage"
+  #     - run: dotnet restore --verbosity minimal
 
-      - name: Code coverage
-        uses: codecov/codecov-action@v4
-        with:
-          token: "${{ secrets.CODECOV_TOKEN }}"
-          directory: "./.codecoverage"
-          fail_ci_if_error: true
+  #     - run: dotnet build --configuration Debug
+
+  #     - run: dotnet test --configuration Debug --verbosity minimal --no-build --collect:"XPlat Code Coverage" --results-directory "./.codecoverage"
+
+  #     - name: Code coverage
+  #       uses: codecov/codecov-action@v4
+  #       with:
+  #         token: "${{ secrets.CODECOV_TOKEN }}"
+  #         directory: "./.codecoverage"
+  #         fail_ci_if_error: true

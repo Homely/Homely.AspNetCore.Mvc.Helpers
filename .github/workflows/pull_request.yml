@@ -2,9 +2,6 @@ name: 1. Pull Requests
 
 on: pull_request
 
-permissions:
-  packages: write
-
 env:
   DOTNET_NOLOGO: true
 
@@ -12,7 +9,8 @@ jobs:
 
   build_nuget:
     runs-on: ubuntu-latest
-
+    permissions:
+      packages: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

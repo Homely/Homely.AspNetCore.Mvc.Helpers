@@ -7,6 +7,18 @@ env:
 
 jobs:
 
+  test_remove_nuget:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Remove old pre-release packages (keeping the GPR cleanish)
+        uses: actions/delete-package-versions@v5
+        with: 
+          package-name: 'Homely.AspNetCore.Mvc.Helpers'
+          package-type: 'npm'
+          min-versions-to-keep: 10
+          delete-only-pre-release-versions: "true"
+
   build_nuget:
     runs-on: ubuntu-latest
 

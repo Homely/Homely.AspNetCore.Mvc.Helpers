@@ -48,6 +48,7 @@ jobs:
         uses: actions/delete-package-versions@v5
         with: 
           package-name: 'Homely.AspNetCore.Mvc.Helpers'
+          package-type: 'nuget'
           min-versions-to-keep: 10
           delete-only-pre-release-versions: "true"
 

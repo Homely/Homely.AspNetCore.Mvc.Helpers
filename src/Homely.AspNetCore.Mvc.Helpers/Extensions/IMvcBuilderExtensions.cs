@@ -26,7 +26,7 @@ namespace Homely.AspNetCore.Mvc.Helpers.Extensions
                                                      string? asciiBanner = null,
                                                      Assembly? callingAssembly = null)
         {
-            if (callingAssembly == null)
+            if (callingAssembly == null) 
             {
                 callingAssembly = Assembly.GetExecutingAssembly();
             }
